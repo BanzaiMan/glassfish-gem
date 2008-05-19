@@ -39,10 +39,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.glassfish.distributions</groupId>
-    <artifactId>distributions</artifactId>
-    <version>10.0-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
+        <groupId>org.glassfish.scripting</groupId>
+        <artifactId>rails</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>gem</artifactId>
@@ -50,6 +50,7 @@
   <name>Glassfish JRuby Gem distribution</name>
   <description>This module creates the jruby gem distribution image</description>
 
+  
   <build>
     <plugins>
      <plugin>
@@ -92,7 +93,7 @@
                   <phase>process-resources</phase>
                   <configuration>
                       <tasks>
-                          <filter token="GLASSFISH_VERSION" value="${project.version}"/>
+                          <filter token="GLASSFISH_VERSION" value="${pe.version}"/>
                           <copy file="glassfish_rails" todir="target/dependency/glassfish/bin" filtering="true"/>
                           <copy file="glassfish.rb" todir="target/dependency/glassfish/modules" filtering="true"/>
                           <move file="target/dependency/glassfish/domains/domain1/config/domain.xml" toFile="target/dependency/glassfish/domains/domain1/config/domain.xml_ORIG"/>
@@ -158,23 +159,23 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.glassfish.external</groupId>
+            <groupId>org.glassfish.scripting</groupId>
             <artifactId>grizzly-jruby-module</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.extras</groupId>
+            <groupId>org.glassfish.scripting</groupId>
             <artifactId>gf-jruby-connector</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.common</groupId>
             <artifactId>common-ee-util</artifactId>
-            <version>${project.version}</version>
+            <version>${pe.version}</version>
         </dependency>
     </dependencies>
 
-    <repositories>
+    <!--repositories>
         <repository>
             <id>glassfish-repository</id>
             <name>Java.net Repository for Glassfish</name>
@@ -184,7 +185,6 @@
 				    </snapshots>
         </repository>
         <repository>
-            <!-- back up glassfish maven repository in case the 'glassfish-repository' goes down -->
             <id>glassfish-repository-wsinterop</id>
             <name>Java.net Repository for Glassfish</name>
             <url>http://maven.dyndns.org/glassfish/</url>
@@ -192,7 +192,6 @@
 			          <updatePolicy>never</updatePolicy>
 				    </snapshots>
         </repository>
-        <!-- all the other repositories are inherited -->
-    </repositories>
+    </repositories-->
 
 </project>
