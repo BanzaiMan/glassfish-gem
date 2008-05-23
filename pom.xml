@@ -41,7 +41,7 @@
   <parent>
         <groupId>org.glassfish.scripting</groupId>
         <artifactId>rails</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>0.5-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -167,31 +167,6 @@
             <groupId>org.glassfish.scripting</groupId>
             <artifactId>gf-jruby-connector</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.common</groupId>
-            <artifactId>common-ee-util</artifactId>
-            <version>${pe.version}</version>
-        </dependency>
+        </dependency>        
     </dependencies>
-
-    <!--repositories>
-        <repository>
-            <id>glassfish-repository</id>
-            <name>Java.net Repository for Glassfish</name>
-            <url>http://download.java.net/maven/glassfish</url>
-	          <snapshots>
-			          <updatePolicy>never</updatePolicy>
-				    </snapshots>
-        </repository>
-        <repository>
-            <id>glassfish-repository-wsinterop</id>
-            <name>Java.net Repository for Glassfish</name>
-            <url>http://maven.dyndns.org/glassfish/</url>
-	          <snapshots>
-			          <updatePolicy>never</updatePolicy>
-				    </snapshots>
-        </repository>
-    </repositories-->
-
 </project>
