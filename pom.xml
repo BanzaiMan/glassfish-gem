@@ -100,9 +100,11 @@
                           <filter token="GLASSFISH_VERSION" value="${glassfish.version}"/>
                           <copy file="glassfish_rails" todir="target/dependency/glassfish/bin" filtering="true"/>
                           <copy file="glassfish.rb" todir="target/dependency/glassfish/modules" filtering="true"/>
-                          <move file="target/dependency/glassfish/domains/domain1/config/domain.xml" toFile="target/dependency/glassfish/domains/domain1/config/domain.xml_ORIG"/>
-                          <copy file="domain.xml" todir="target/dependency/glassfish/domains/domain1/config"/>
+                          <copy file="target/dependency/glassfish/domains/domain1/config/domain.xml" toFile="target/dependency/glassfish/domains/domain1/config/domain.xml_ORIG"/>
+                          <copy file="domain.xml" todir="target/dependency/glassfish/domains/domain1/config" overwrite="true"/>
+                          <chmod dir="target/dependency/glassfish/domains"  perm="ugo+rwx" type="both" includes="**/*"/>
                       </tasks>
+
                   </configuration>
                   <goals>
                       <goal>run</goal>
