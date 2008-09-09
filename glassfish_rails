@@ -2,45 +2,38 @@
 require 'java'
 require 'rubygems'
 require 'glassfish'
-
 require 'optparse'
 
 OPTIONS = {
   :runtimes    => 1,
   :contextroot => '/',
-#  :environment => (ENV['RAILS_ENV'] || "development").dup
+  :environment => (ENV['RAILS_ENV'] || "development").dup,
+  :app_dir => Dir.pwd
 }
 
-#ARGV.clone.options do |opts|
 opts = OptionParser.new do |opts|
   opts.on("-n", "--runtimes=runtimes", String, 
         "Number of runtimes to be launched.", "Default: 1") { |v| OPTIONS[:runtimes] = v }
   opts.on("-c", "--contextroot=contextroot", String, 
         "ContextRoot for the application", "Default: /") { |v| OPTIONS[:contextroot] = v }
-#  opts.on("-e", "--environment=name", String,
-#        "Specifies the environment to run this server under (test/development/production).",
-#        "Default: development") { |v| OPTIONS[:environment] = v }
-
+  opts.on("-e", "--environment=name", String,
+        "Specifies the environment to run this server under (test/development/production).",
+        "Default: development") { |v| OPTIONS[:environment] = v }
   opts.separator ""
-
-  opts.on("-h", "--help", "Show this help message.") { puts opts; exit }
-
+  opts.on("-h", "--help", "Show this help message.") { puts opts; exit 0}
 end
+
 
 begin
   opts.parse!(ARGV)
 rescue Exception => e
-  puts e, "", opts
+  if e.message != "exit"
+    print e.backtrace.join("\n")
+  end
   exit
 end
 
-#ENV["RAILS_ENV"] = OPTIONS[:environment]
-#RAILS_ENV.replace(OPTIONS[:environment]) if defined?(RAILS_ENV)
 
-ARGV[ARGV.length] = '--runtimes'  
-ARGV[ARGV.length] = OPTIONS[:runtimes]
-#Ensure that the application is deployed at the ROOT context always for a gem
-ARGV[ARGV.length] = '--contextroot'
-ARGV[ARGV.length] = OPTIONS[:contextroot]
+OPTIONS[:app_dir] = ARGV.shift unless ARGV.empty?
 
-GlassFish.startup(ARGV)
+GlassFish.startup(OPTIONS)
