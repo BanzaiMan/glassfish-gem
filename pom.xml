@@ -134,15 +134,15 @@
                   s.platform = "universal-java"
                   s.summary = "GlassFish V3 Application Server for JRuby"
                   s.description = "GlassFish gem is an embedded GlassFish V3 application server which would help run your Ruby on Rails application"
-                  s.files = FileList["{bin,lib,modules,config,javadb,domains,ext}/**/*"].to_a
+                  s.files = FileList["{bin,lib,felix,modules,config,javadb,domains,ext}/**/*"].to_a
                   s.bindir = "bin"
                   s.require_paths = ["modules"]
-                  s.executables = ["glassfish_rails", "asadmin", "asadmin.bat"]
+                  s.executables = ["glassfish_rails"]
                   s.default_executable = "glassfish_rails"
                   s.autorequire = "GlassFish"
                   s.test_files = FileList["{test}/**/*test.rb"].to_a
                   s.has_rdoc = false
-                  s.extra_rdoc_files = ["README","LICENSE.txt","COPYRIGHT"]
+                  s.extra_rdoc_files = ["LICENSE.txt","COPYRIGHT"]
                   s.rubyforge_project = "glassfishgem"
                 end
 
@@ -173,6 +173,11 @@
             <groupId>org.glassfish.scripting</groupId>
             <artifactId>gf-jruby-connector</artifactId>
             <version>${project.version}</version>
-        </dependency>        
+        </dependency>
+        <dependency>
+            <groupId>com.sun.pkg</groupId>
+            <artifactId>pkg-client</artifactId>
+            <version>1.0.7-14.1120</version>
+        </dependency>
     </dependencies>
 </project>
