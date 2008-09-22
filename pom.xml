@@ -137,7 +137,7 @@
                   s.files = FileList["{bin,lib,felix,modules,config,javadb,domains,ext}/**/*"].to_a
                   s.bindir = "bin"
                   s.require_paths = ["modules"]
-                  s.executables = ["glassfish_rails"]
+                  s.executables = ["glassfish_rails", "asadmin", "asadmin.bat"]
                   s.default_executable = "glassfish_rails"
                   s.autorequire = "GlassFish"
                   s.test_files = FileList["{test}/**/*test.rb"].to_a
