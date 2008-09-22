@@ -27,7 +27,7 @@ end
 def glassfish(home)
       text = <<-TEXT
 # start GlassFish AppServer
-java -jar #{home}/lib/glassfish-10.0-SNAPSHOT.jar "$@"
+java -jar #{home}/modules/glassfish-10.0-SNAPSHOT.jar "$@"
 TEXT
       text
 end

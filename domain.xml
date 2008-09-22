@@ -60,7 +60,7 @@
   <config name="server-config" dynamic-reconfiguration-enabled="true">
     <http-service> 
     <access-log format="%client.name% %auth-user-name% %datetime% %request% %status% %response.length%" rotation-enabled="true" rotation-interval-in-minutes="15" rotation-policy="time" rotation-suffix="yyyy-MM-dd"/>
-    <http-listener id="http-listener-1" address="0.0.0.0" port="3000" acceptor-threads="1" security-enabled="false" default-virtual-server="server" server-name="" xpowered-by="true" enabled="true" family="inet" blocking-enabled="false">
+    <http-listener id="http-listener-1" address="0.0.0.0" port="${jruby.gem.port}" acceptor-threads="1" security-enabled="false" default-virtual-server="server" server-name="" xpowered-by="true" enabled="true" family="inet" blocking-enabled="false">
 <property name="proxiedProtocols" value="ws/tcp"/>
 </http-listener>
     <http-listener id="http-listener-2" address="0.0.0.0" port="3131" acceptor-threads="1" security-enabled="true" default-virtual-server="server" server-name="" xpowered-by="true" enabled="false" family="inet" blocking-enabled="false"/>
