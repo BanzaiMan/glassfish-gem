@@ -41,7 +41,7 @@
   <parent>
         <groupId>org.glassfish.scripting</groupId>
         <artifactId>rails</artifactId>
-        <version>0.6.21-SNAPSHOT</version>
+        <version>0.7.00-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -51,8 +51,8 @@
   <description>This module creates the jruby gem distribution image</description>
 
   <properties>
-      <glassfish.version>10.0-SNAPSHOT</glassfish.version>
-      <nucleus.version>10.0-SNAPSHOT</nucleus.version>
+      <glassfish.version>3.0-Prelude-SNAPSHOT</glassfish.version>
+      <nucleus.version>3.0-Prelude-SNAPSHOT</nucleus.version>
       <gem.version>0.3.2</gem.version>
   </properties>
   <build>
@@ -174,10 +174,32 @@
             <artifactId>gf-jruby-connector</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>com.sun.pkg</groupId>
             <artifactId>pkg-client</artifactId>
             <version>1.0.7-14.1120</version>
-        </dependency>
+        </dependency-->
     </dependencies>
+
+    <repositories>
+        <repository>
+            <!-- back up glassfish maven repository in case the 'glassfish-repository' goes down -->
+            <id>glassfish-repository-wsinterop</id>
+            <name>Java.net Repository for Glassfish</name>
+            <url>http://maven.dyndns.org/glassfish/</url>
+            <snapshots>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>glassfish-repository</id>
+            <name>Java.net Repository for Glassfish</name>
+            <url>http://download.java.net/maven/glassfish</url>
+            <snapshots>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+        <!-- all the other repositories are inherited -->
+    </repositories>
+
 </project>
