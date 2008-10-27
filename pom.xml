@@ -51,8 +51,8 @@
   <description>This module creates the jruby gem distribution image</description>
 
   <properties>
-      <glassfish.version>3.0-Prelude-SNAPSHOT</glassfish.version>
-      <nucleus.version>3.0-Prelude-SNAPSHOT</nucleus.version>
+      <glassfish.version>3.0-Prelude-b28b</glassfish.version>
+      <nucleus.version>3.0-Prelude-b28b</nucleus.version>
       <gem.version>0.3.2</gem.version>
   </properties>
   <build>
