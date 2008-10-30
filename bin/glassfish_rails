@@ -1,0 +1,40 @@
+#!/usr/bin/env jruby
+
+# == Synopsis
+#
+# glassfish: GlassFish v3 server for rails applications
+#
+# == Usage
+#
+# glassfish [OPTION] APPLICATION_DIRECTORY
+#
+# -h, --help::
+#    show help
+#
+# --contextroot PATH, -c PATH::
+#    change the application context root (default: '/')
+#
+# --port PORT, -p PORT::
+#    change server port (default: 3000)
+#
+# --environment ENV, -e ENV::
+#    change rails environment (default: development)
+#
+# --runtimes JRuby runtimes, -n JRuby runtimes::
+#    Number of JRuby runtimes to crete initially
+#
+# --runtimes-min minimum JRuby runtimes::
+#    Minimum JRuby runtimes to crete
+#
+# --runtimes-max mmaximum JRuby runtimes::
+#    Maximum number of JRuby runtimes to crete
+#
+# APPLICATION_PATH (optional):  Path to the application to be run (default: current).
+
+require "java"
+$LOAD_PATH << "#{File.dirname(__FILE__)}/../modules"
+require 'command_line_parser'
+require 'glassfish'
+
+options = CommandLineParser.new.parse
+GlassFish::Server.new  startup(options)

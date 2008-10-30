@@ -2,10 +2,10 @@ require 'ftools'
 
 # installation for glassfish, so far just do a chmod +x on the executables
 task :extension do
-	
+
 	if !RUBY_PLATFORM =~ /java/
   		puts GlassFish needs JRUBY
-	else 
+	else
 		glassfish_home = File.expand_path(File::join(File::join(File.expand_path('.'), '..'), '..'))
 		bin = File::join(glassfish_home, 'bin')
 		generate('glassfish_rails', glassfish(glassfish_home))
@@ -15,19 +15,19 @@ task :extension do
 	end
 end
 
-def generate(filename, text) 
+def generate(filename, text)
 	if (File.exist? filename) then
 		File.delete(filename)
 	end
 	File.open(filename, "w", 0755) do |file|
 	    file.print text
-	end	
+	end
 end
 
 def glassfish(home)
       text = <<-TEXT
 # start GlassFish AppServer
-java -jar #{home}/modules/glassfish-10.0-SNAPSHOT.jar "$@"
+java -jar #{home}/modules/glassfish.jar "$@"
 TEXT
       text
 end
@@ -35,7 +35,7 @@ end
 def asadmin(home)
       text = <<-TEXT
 # asadmin client
-java -jar #{home}/lib/admin-cli-10.0-SNAPSHOT.jar "$@"
+java -jar #{home}/lib/admin-cli.jar "$@"
 TEXT
       text
 end

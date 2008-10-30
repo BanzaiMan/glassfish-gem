@@ -51,7 +51,6 @@
   <description>This module creates the jruby gem distribution image</description>
 
   <properties>
-      <glassfish.version>3.0-Prelude-b28b</glassfish.version>
       <nucleus.version>3.0-Prelude-b28b</nucleus.version>
       <gem.version>0.3.2</gem.version>
   </properties>
@@ -97,12 +96,19 @@
                   <phase>process-resources</phase>
                   <configuration>
                       <tasks>
-                          <filter token="GLASSFISH_VERSION" value="${glassfish.version}"/>
-                          <copy file="glassfish_rails" todir="target/dependency/glassfish/bin" filtering="true"/>
-                          <copy file="glassfish.rb" todir="target/dependency/glassfish/modules" filtering="true"/>
+                          <!--Remove everything from inside glassfish/bin, these are meaningless for gem-->
+                          <delete dir="target/dependency/glassfish/bin" includes="*"/>
+                          <copy file="bin/asadmin" todir="target/dependency/glassfish/bin"/>
+                          <copy file="bin/glassfish" todir="target/dependency/glassfish/bin"/>
+                          <copy file="bin/glassfish_rails" todir="target/dependency/glassfish/bin"/>
+                          <copy todir="target/dependency/glassfish/modules" filtering="true">
+                              <fileset dir="script" includes="*.rb"/>
+                              <filterset>
+                                  <filter token="GLASSFISH_GEM_VERSION" value="${gem.version}"/>
+                              </filterset>
+                          </copy>
                           <copy file="target/dependency/glassfish/domains/domain1/config/domain.xml" toFile="target/dependency/glassfish/domains/domain1/config/domain.xml_ORIG"/>
-                          <copy file="domain.xml" todir="target/dependency/glassfish/domains/domain1/config" overwrite="true"/>
-                          <chmod dir="target/dependency/glassfish/domains"  perm="ugo+rwx" type="both" includes="**/*"/>
+                          <copy file="config/domain.xml" todir="target/dependency/glassfish/domains/domain1/config" overwrite="true"/>
                       </tasks>
 
                   </configuration>
@@ -115,7 +121,7 @@
       <plugin>
         <groupId>org.jruby.plugins</groupId>
         <artifactId>jruby-rake-plugin</artifactId>
-        <version>1.1.2</version>
+        <version>1.1.4</version>
         <executions>
           <execution>
             <id>download-actionwebservice</id>
@@ -128,20 +134,19 @@
                 spec = Gem::Specification.new do |s|
                   s.name = "glassfish"
                   s.version = "${gem.version}"
-                  s.author = "Vivek Pandey, Pramod Gopinath, Jerome Dochez"
-                  s.email = "vivek.pandey@sun.com, pramod.gopinath@sun.com, jerome.dochez@sun.com"
+                  s.author = "Vivek Pandey, Jerome Dochez"
+                  s.email = "vivek.pandey@sun.com, jerome.dochez@sun.com"
                   s.homepage = "http://wiki.glassfish.java.net/Wiki.jsp?page=JRuby"
                   s.platform = "universal-java"
                   s.summary = "GlassFish V3 Application Server for JRuby"
                   s.description = "GlassFish gem is an embedded GlassFish V3 application server which would help run your Ruby on Rails application"
-                  s.files = FileList["{bin,lib,felix,modules,config,javadb,domains,ext}/**/*"].to_a
+                  s.files = FileList["{bin,lib,felix,modules,config,domains}/**/*"].to_a
                   s.bindir = "bin"
                   s.require_paths = ["modules"]
-                  s.executables = ["glassfish_rails", "asadmin", "asadmin.bat"]
-                  s.default_executable = "glassfish_rails"
-                  s.autorequire = "GlassFish"
+                  s.executables = ["glassfish", "glassfish_rails", "asadmin"]
+                  s.default_executable = "glassfish"
                   s.test_files = FileList["{test}/**/*test.rb"].to_a
-                  s.has_rdoc = false
+                  s.has_rdoc = true
                   s.extra_rdoc_files = ["LICENSE.txt","COPYRIGHT"]
                   s.rubyforge_project = "glassfishgem"
                 end
@@ -174,11 +179,6 @@
             <artifactId>gf-jruby-connector</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!--dependency>
-            <groupId>com.sun.pkg</groupId>
-            <artifactId>pkg-client</artifactId>
-            <version>1.0.7-14.1120</version>
-        </dependency-->
     </dependencies>
 
     <repositories>
