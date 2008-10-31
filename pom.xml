@@ -52,7 +52,7 @@
 
   <properties>
       <nucleus.version>3.0-Prelude-b28b</nucleus.version>
-      <gem.version>0.3.2</gem.version>
+      <gem.version>0.9.0</gem.version>
   </properties>
   <build>
     <plugins>
@@ -100,7 +100,8 @@
                           <delete dir="target/dependency/glassfish/bin" includes="*"/>
                           <copy file="bin/asadmin" todir="target/dependency/glassfish/bin"/>
                           <copy file="bin/glassfish" todir="target/dependency/glassfish/bin"/>
-                          <copy file="bin/glassfish_rails" todir="target/dependency/glassfish/bin"/>
+                          <!--For backward compatibility-->
+                          <copy file="bin/glassfish" tofile="target/dependency/glassfish/bin/glassfish_rails"/>
                           <copy todir="target/dependency/glassfish/modules" filtering="true">
                               <fileset dir="script" includes="*.rb"/>
                               <filterset>

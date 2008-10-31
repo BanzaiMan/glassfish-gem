@@ -38,4 +38,5 @@ require 'command_line_parser'
 require 'glassfish'
 
 options = CommandLineParser.new.parse
-GlassFish::Server.new startup(options)
+gf = GlassFish::Server.new
+gf.startup(options)

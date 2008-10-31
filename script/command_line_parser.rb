@@ -18,10 +18,10 @@ class CommandLineParser
     opts = GetoptLong.new(
             [ '--port', '-p', GetoptLong::REQUIRED_ARGUMENT ],
             [ '--environment', '-e', GetoptLong::REQUIRED_ARGUMENT ],
-            [ '--contextroot', '-u', GetoptLong::REQUIRED_ARGUMENT ],
-            ['--runtimes', GetoptLong::REQUIRED_ARGUMENT ],
-            ['--runtimes-min', GetoptLong::REQUIRED_ARGUMENT ],
-            ['--runtimes-max', GetoptLong::REQUIRED_ARGUMENT ],
+            [ '--contextroot', '-c', GetoptLong::REQUIRED_ARGUMENT ],
+            [ '--runtimes', '-n', GetoptLong::REQUIRED_ARGUMENT ],
+            [ '--runtimes_min', GetoptLong::REQUIRED_ARGUMENT ],
+            [ '--runtimes_max', GetoptLong::REQUIRED_ARGUMENT ],
             [ '--version', '-v', GetoptLong::NO_ARGUMENT ],
             [ '--help', '-h', GetoptLong::NO_ARGUMENT ]
     )
@@ -35,11 +35,13 @@ class CommandLineParser
       when '--help'
         RDoc::usage
       when '--contextroot'
-        config[:context_path] = arg
+        config[:contextroot] = arg
       when '--port'
         config[:port] = arg.to_i
       when '--environment'
         config[:environment] = arg
+      when '--runtimes'
+        config[:runtimes] = arg
       when '--runtimes-min'
         config[:runtimes_min] = arg
       when '--runtimes-max'

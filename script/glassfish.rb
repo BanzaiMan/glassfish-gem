@@ -6,8 +6,8 @@ module GlassFish
     def startup(args)
       #set jruby runtime property
       java.lang.System.setProperty("jruby.runtime", args[:runtimes].to_s)
-      java.lang.System.setProperty("jruby.runtime.min", args[:runtimes-min].to_s)
-      java.lang.System.setProperty("jruby.runtime.max", args[:runtimes-max].to_s)
+      java.lang.System.setProperty("jruby.runtime.min", args[:runtimes_min].to_s)
+      java.lang.System.setProperty("jruby.runtime.max", args[:runtimes_max].to_s)
       java.lang.System.setProperty("rails.env", args[:environment])
       java.lang.System.setProperty("jruby.gem.port", args[:port].to_s)
 
