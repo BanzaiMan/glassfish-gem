@@ -41,7 +41,7 @@
   <parent>
         <groupId>org.glassfish.scripting</groupId>
         <artifactId>rails</artifactId>
-        <version>0.7.00-SNAPSHOT</version>
+        <version>0.7.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
   </parent>
 

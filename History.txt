@@ -1,0 +1,72 @@
+== 0.9.0
+* Rack based
+* Auto detection of Rails and Merb applications
+* Merb support
+* Just one command: 'glassfish' would deploy a Rails application or a Merb 
+  application
+* glassfish_rails deprecated but supported for backward compatibility
+* JRuby Runtime Pool, see <tt>glassfish -h</tt>
+
+Following issues fixed in this release
+
+3964[https://glassfish.dev.java.net/issues/show_bug.cgi?id=3964]  Provide -port option to specify port for v3 gem
+
+6470[https://glassfish.dev.java.net/issues/show_bug.cgi?id=6470]  HTTP keep-alive not honored
+
+4823[https://glassfish.dev.java.net/issues/show_bug.cgi?id=4823]  glassfish_rails command should attempt to load the current directory if none specified
+
+5446[https://glassfish.dev.java.net/issues/show_bug.cgi?id=5446]  JRuby on Rails show request header in page
+
+Issues[http://rubyforge.org/tracker/index.php?group_id=5450&atid=21080] reported at rubyforge
+
+== 0.3.1
+* Scaffold adding duplicate entries with v3 gem 0.1.1
+
+== 0.3.0
+* 3976 Rails Gem: Static content not loading
+* 5046 Two concurrent Rails apps are not accessible
+* 5114 JRuby app directory deployment fails for both HK2 and Felix
+* 5160 file uploading is not working when file size exceeds 10 KB
+
+Issues reported at http://forums.java.net/jive/forum.jspa?forumID=138
+
+* 19526 File upload problem using 0.1.2
+* 20680 File uploading is not working when file size exceeds 10 KB
+* Rails logs are wired thru the glassfish gem. Now you would be able to see the Rails log as part of glassfish_rails run.
+
+== 0.1.2
+
+* Scaffold created using Rails 2.0.2 adding duplicate entries with v3 gem 0.1.1
+* After the execution of an Ajax request, all subsequent requests are also 
+  treated as Ajax requests.
+* When using observe_field for AJAX capabilities, it only works once and any 
+  attempt afterwards returns the first selected dataset.
+* Blank page returned if there are no Rails instances available.
+* Based on comments from Thomas Enebo, have changed the way we were processing 
+  requests as part of the gem.
+
+== 0.1.1
+
+* The name of the gem is being changed from GlassFish to glassfish. The rails 
+  naming convention for the gems is with all lower case or with names that 
+  contain underscore.
+* Support for the applications to be deployed at the Root Context ("/") of the 
+  server. The Webrick and Mongrel servers deploy the application to the root 
+  context by default.
+* Change the default port the server to be 3000 from 8080. Port 8080 has been 
+  the default http port of the GlassFish application server, but since we are 
+  targetting the Ruby on Rails market with this space, it is better to have the  
+  http port set to 3000. At this stage I have also changed the SSL port from 
+  the GlassFish default of 8181 to 3131 and the admin default port of 4848 to 
+  be 3838.
+* Provide command arguments to the script to specify the number of runtime to 
+  be created. In v0.1.0 of the gem one could specify the number of runtimes if 
+  it was passed in as a specified as a java system property. With this version 
+  use could use the command -jruby -S glassfish_rails mephisto -n 2 to create 2 
+  rails instance.
+* Create instances of rails in parallel. This would speed up the startup of the 
+  v3 gem
+
+== 0.1.0
+
+First release of GlassFish gem
