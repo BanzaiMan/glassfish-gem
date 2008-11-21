@@ -60,8 +60,8 @@ class CommandLineParser
             [ '--environment', '-e', GetoptLong::REQUIRED_ARGUMENT ],
             [ '--contextroot', '-c', GetoptLong::REQUIRED_ARGUMENT ],
             [ '--runtimes', '-n', GetoptLong::REQUIRED_ARGUMENT ],
-            [ '--runtimes_min', GetoptLong::REQUIRED_ARGUMENT ],
-            [ '--runtimes_max', GetoptLong::REQUIRED_ARGUMENT ],
+            [ '--runtimes-min', GetoptLong::REQUIRED_ARGUMENT ],
+            [ '--runtimes-max', GetoptLong::REQUIRED_ARGUMENT ],
             [ '--version', '-v', GetoptLong::NO_ARGUMENT ],
             [ '--help', '-h', GetoptLong::NO_ARGUMENT ]
     )
@@ -85,7 +85,7 @@ class CommandLineParser
       when '--runtimes-min'
         config[:runtimes_min] = arg
       when '--runtimes-max'
-        config[:runtimes_min] = arg
+        config[:runtimes_max] = arg
       end
     end    
     config[:app_dir] = ARGV.shift unless ARGV.empty?
