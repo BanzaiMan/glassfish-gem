@@ -43,18 +43,7 @@
                                id="http-listener-1">
                     <property value="ws/tcp" name="proxiedProtocols"/>
                 </http-listener>
-                <http-listener default-virtual-server="server" enabled="false" security-enabled="true" server-name=""
-                               address="0.0.0.0" port="8181" id="http-listener-2">
-                    <ssl ssl3-enabled="false" cert-nickname="s1as"/>
-                </http-listener>
-                <http-listener default-virtual-server="__asadmin" server-name="" address="0.0.0.0" port="4848"
-                               id="admin-listener"/>
-                <virtual-server id="server" http-listeners="http-listener-1,http-listener-2">
-                    <property value="${com.sun.aas.instanceRoot}/docroot" name="docroot"/>
-                    <property value="${com.sun.aas.instanceRoot}/logs/access" name="accesslog"/>
-                    <property value="false" name="sso-enabled"/>
-                </virtual-server>
-                <virtual-server id="__asadmin" http-listeners="admin-listener">
+                <virtual-server id="server" http-listeners="http-listener-1">
                     <property value="${com.sun.aas.instanceRoot}/docroot" name="docroot"/>
                     <property value="${com.sun.aas.instanceRoot}/logs/access" name="accesslog"/>
                     <property value="false" name="sso-enabled"/>
@@ -69,41 +58,16 @@
                 <property value="false" name="accessLoggingEnabled"/>
             </http-service>
 
-            <iiop-service>
-                <orb use-thread-pool-ids="thread-pool-1"/>
-                <iiop-listener address="0.0.0.0" port="3700" id="orb-listener-1"/>
-                <iiop-listener security-enabled="true" address="0.0.0.0" port="3820" id="SSL">
-                    <ssl cert-nickname="s1as"/>
-                </iiop-listener>
-                <iiop-listener security-enabled="true" address="0.0.0.0" port="3920" id="SSL_MUTUALAUTH">
-                    <ssl cert-nickname="s1as" client-auth-enabled="true"/>
-                </iiop-listener>
-            </iiop-service>
-
+            <!-- admingui is not needed for gem case. This needs to be fixed. -->
             <admin-service type="das-and-server" system-jmx-connector-name="system">
                 <jmx-connector auth-realm-name="admin-realm" security-enabled="false" address="0.0.0.0" port="8686"
                                name="system"/>
                 <das-config autodeploy-enabled="true" dynamic-reload-enabled="true" deploy-xml-validation="full"
                             autodeploy-dir="${com.sun.aas.instanceRoot}/autodeploy"/>
-                <property value="/admingui" name="adminConsoleContextRoot"/>
+                <property value="/_____admingui" name="adminConsoleContextRoot"/>
                 <property value="glassfish/lib/install/applications/admingui.war" name="adminConsoleDownloadLocation"/>
                 <property value="${com.sun.aas.installRoot}/.." name="ipsRoot"/>
             </admin-service>
-
-            <web-container>
-                <session-config>
-                    <session-manager>
-                        <manager-properties/>
-                        <store-properties/>
-                    </session-manager>
-                    <session-properties/>
-                </session-config>
-            </web-container>
-            <ejb-container steady-pool-size="0" max-pool-size="32"
-                           session-store="${com.sun.aas.instanceRoot}/session-store" pool-resize-quantity="8">
-                <ejb-timer-service/>
-            </ejb-container>
-
 
             <mdb-container steady-pool-size="0" pool-resize-quantity="8" max-pool-size="32"
                            idle-timeout-in-seconds="600"/>
