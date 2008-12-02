@@ -84,6 +84,8 @@
               <goal>copy-dependencies</goal>
             </goals>
             <configuration>
+                <includeArtifactIds>gf-jruby-connector,grizzly-jruby-module,grizzly-jruby</includeArtifactIds>
+                <stripVersion>true</stripVersion>
                 <outputDirectory>${project.build.directory}/dependency/glassfish/modules</outputDirectory>
             </configuration>
           </execution>
