@@ -1,4 +1,4 @@
-= GlassFish v3 server for Rack based applications (Rails, Merb, ...)
+= GlassFish v3 server for Rack based web frameworks (Rails, Merb, ...)
 
 GlassFish gem is a lightweight and robust deployment solution for
 Ruby on Rails applications deployed on JRuby runtime. It is based
@@ -8,8 +8,8 @@ GlassFish v3 is a Java based application server that allows deployment,
 administration and monitoring of JavaEE as well as dynamic languages based web 
 frameworks such as Ruby On Rails, Grails etc.
 
-GlassFish gem is based on GlassFish v3 nucleus. GlassFish v3 nucleus is a core,
-core module of GlassFish v3.
+GlassFish gem is based on GlassFish v3 nucleus. GlassFish v3 nucleus is the core
+module of GlassFish v3.
 
 For more information on GlassFish v3 application server see 
 https://glassfish.dev.java.net/v3.
@@ -93,7 +93,9 @@ TBD
 == Known Issues
 
 * Running <tt>glassfish</tt> in a directory that is neither a Rails or Merb
-  application would not report any meaningful error. See this issue[https://glassfish.dev.java.net/issues/show_bug.cgi?id=6744]
+  application does not report a meaningful error.
+  See this issue[https://glassfish.dev.java.net/issues/show_bug.cgi?id=6744]
+
 
 == Source
 

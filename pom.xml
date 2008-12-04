@@ -35,141 +35,148 @@
 * only if the new code is made subject to such option by the copyright 
 * holder. 
 */ 
---> 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
         <groupId>org.glassfish.scripting</groupId>
         <artifactId>rails</artifactId>
         <version>0.7.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
-  </parent>
+    </parent>
 
   <artifactId>gem</artifactId>
   <packaging>pom</packaging>
   <name>Glassfish JRuby Gem distribution</name>
   <description>This module creates the jruby gem distribution image</description>
 
-  <properties>
-      <nucleus.version>3.0-Prelude-b28b</nucleus.version>
-      <gem.version>0.9.1</gem.version>
-  </properties>
-  <build>
-    <plugins>
-     <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>unpack</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.glassfish.distributions</groupId>
-                  <artifactId>nucleus</artifactId>
-                  <version>${nucleus.version}</version>
-                  <type>zip</type>
-                  <overWrite>true</overWrite>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-          <execution>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-            <configuration>
-                <includeArtifactIds>gf-jruby-connector,grizzly-jruby-module,grizzly-jruby</includeArtifactIds>
-                <stripVersion>true</stripVersion>
-                <outputDirectory>${project.build.directory}/dependency/glassfish/modules</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-          <artifactId>maven-antrun-plugin</artifactId>
-          <executions>
-              <execution>
-                  <phase>process-resources</phase>
-                  <configuration>
-                      <tasks>
-                          <!--Remove everything from inside glassfish/bin, these are meaningless for gem-->
-                          <delete dir="target/dependency/glassfish/bin" includes="*"/>
-                          <copy file="bin/asadmin" todir="target/dependency/glassfish/bin"/>
-                          <copy file="bin/glassfish" todir="target/dependency/glassfish/bin"/>
-                          <!--For backward compatibility-->
-                          <copy file="bin/glassfish" tofile="target/dependency/glassfish/bin/glassfish_rails"/>
-                          <copy todir="target/dependency/glassfish/modules" filtering="true">
-                              <fileset dir="script" includes="*.rb"/>
-                              <filterset>
-                                  <filter token="GLASSFISH_GEM_VERSION" value="${gem.version}"/>
-                              </filterset>
-                          </copy>
-                          <copy file="target/dependency/glassfish/domains/domain1/config/domain.xml" toFile="target/dependency/glassfish/domains/domain1/config/domain.xml_ORIG"/>
-                          <copy file="config/domain.xml" todir="target/dependency/glassfish/domains/domain1/config" overwrite="true"/>
-                      </tasks>
+    <properties>
+        <nucleus.version>3.0-Prelude-b28b</nucleus.version>
+        <gem.version>0.9.1</gem.version>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.glassfish.distributions</groupId>
+                                    <artifactId>nucleus</artifactId>
+                                    <version>${nucleus.version}</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeArtifactIds>gf-jruby-connector,grizzly-jruby-module,grizzly-jruby
+                            </includeArtifactIds>
+                            <stripVersion>true</stripVersion>
+                            <outputDirectory>${project.build.directory}/dependency/glassfish/modules</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <tasks>
+                                <!--Remove everything from inside glassfish/bin, these are meaningless for gem-->
+                                <delete dir="target/dependency/glassfish/bin" includes="*"/>
+                                <copy file="bin/asadmin" todir="target/dependency/glassfish/bin"/>
+                                <copy file="bin/glassfish" todir="target/dependency/glassfish/bin"/>
+                                <!--For backward compatibility-->
+                                <copy file="bin/glassfish" tofile="target/dependency/glassfish/bin/glassfish_rails"/>
+                                <copy todir="target/dependency/glassfish/modules" filtering="true">
+                                    <fileset dir="script" includes="*.rb"/>
+                                    <filterset>
+                                        <filter token="GLASSFISH_GEM_VERSION" value="${gem.version}"/>
+                                    </filterset>
+                                </copy>
+                                <copy file="target/dependency/glassfish/domains/domain1/config/domain.xml"
+                                      toFile="target/dependency/glassfish/domains/domain1/config/domain.xml_ORIG"/>
+                                <copy file="config/domain.xml"
+                                      todir="target/dependency/glassfish/domains/domain1/config" overwrite="true"/>
+                            </tasks>
 
-                  </configuration>
-                  <goals>
-                      <goal>run</goal>
-                  </goals>
-              </execution>
-          </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.jruby.plugins</groupId>
-        <artifactId>jruby-rake-plugin</artifactId>
-        <version>1.1.4</version>
-        <executions>
-          <execution>
-            <id>download-actionwebservice</id>
-            <phase>package</phase>
-            <goals><goal>rake</goal></goals>
-            <configuration>
-              <script>
-                require 'rake/gempackagetask'
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jruby.plugins</groupId>
+                <artifactId>jruby-rake-plugin</artifactId>
+                <version>1.1.4</version>
+                <executions>
+                    <execution>
+                        <id>download-actionwebservice</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>rake</goal>
+                        </goals>
+                        <configuration>
+                            <script>
+                                require 'rake/gempackagetask'
 
-                spec = Gem::Specification.new do |s|
-                  s.name = "glassfish"
-                  s.version = "${gem.version}"
-                  s.author = "Vivek Pandey, Jerome Dochez"
-                  s.email = "vivek.pandey@sun.com, jerome.dochez@sun.com"
-                  s.homepage = "http://wiki.glassfish.java.net/Wiki.jsp?page=JRuby"
-                  s.platform = "universal-java"
-                  s.summary = "GlassFish V3 Application Server for JRuby"
-                  s.description = "GlassFish gem is an embedded GlassFish V3 application server which would help run your Ruby on Rails application"
-                  s.files = FileList["{bin,lib,felix,modules,config,domains}/**/*"].to_a
-                  s.bindir = "bin"
-                  s.require_paths = ["modules"]
-                  s.executables = ["glassfish", "glassfish_rails", "asadmin"]
-                  s.default_executable = "glassfish"
-                  s.test_files = FileList["{test}/**/*test.rb"].to_a
-                  s.has_rdoc = true
-                  s.extra_rdoc_files = ["LICENSE.txt","COPYRIGHT"]
-                  s.rubyforge_project = "glassfishgem"
-                  s.add_dependency('rack', '>= 0.4.0')
+                                spec = Gem::Specification.new do |s|
+                                s.name = "glassfish"
+                                s.version = "${gem.version}"
+                                s.author = "Vivek Pandey, Jerome Dochez"
+                                s.email = "vivek.pandey@sun.com, jerome.dochez@sun.com"
+                                s.homepage = "http://wiki.glassfish.java.net/Wiki.jsp?page=JRuby"
+                                s.platform = "universal-java"
+                                s.summary = "GlassFish V3 Application Server for JRuby"
+                                s.description = "GlassFish gem is an embedded GlassFish V3 application server which
+                                would help run your Ruby on Rails application"
+                                s.files = FileList["{bin,lib,felix,modules,config,domains}/**/*"].to_a
+                                s.bindir = "bin"
+                                s.require_paths = ["modules"]
+                                s.executables = ["glassfish", "glassfish_rails", "asadmin"]
+                                s.default_executable = "glassfish"
+                                s.test_files = FileList["{test}/**/*test.rb"].to_a
+                                s.has_rdoc = true
+                                s.extra_rdoc_files = ["LICENSE.txt","COPYRIGHT"]
+                                s.rubyforge_project = "glassfishgem"
+                                s.add_dependency('rack', '>= 0.4.0')
 
-                end
+                                end
 
-                # Create the gem distribution package
+                                # Create the gem distribution package
 
-                Rake::GemPackageTask.new(spec) do |pkg|
-                  pkg.need_tar = true
-                end
+                                Rake::GemPackageTask.new(spec) do |pkg|
+                                pkg.need_tar = true
+                                end
 
-                task :default => :gem do
-                end
-              </script>
-              <launchDirectory>target/dependency/glassfish</launchDirectory>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+                                task :default => :gem do
+                                end
+                            </script>
+                            <launchDirectory>target/dependency/glassfish</launchDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
