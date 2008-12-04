@@ -4,7 +4,7 @@
    Use is subject to license terms.
 -->
 <!-- Generated from default-domain.xml.template -->
-<!-- Avoid manual edits of this file. Run "asadmin verify-domain-xml" otherwise.-->
+<!-- Avoid manual edits of this file. Run "gfadmin verify-domain-xml" otherwise.-->
 
 <domain application-root="${com.sun.aas.instanceRoot}/applications" log-root="${com.sun.aas.instanceRoot}/logs">
     <applications/>
