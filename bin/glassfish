@@ -2,7 +2,7 @@
 
 # == Synopsis
 #
-# glassfish: GlassFish v3 server for rails, merb, sintra applications
+# glassfish: GlassFish v3 server for Rack based frameworks such as: rails, merb...
 #
 # == Usage:
 #

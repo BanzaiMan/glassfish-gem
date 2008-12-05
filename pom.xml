@@ -102,7 +102,7 @@
                             <tasks>
                                 <!--Remove everything from inside glassfish/bin, these are meaningless for gem-->
                                 <delete dir="target/dependency/glassfish/bin" includes="*"/>
-                                <copy file="bin/asadmin" todir="target/dependency/glassfish/bin"/>
+                                <copy file="bin/gfadmin" todir="target/dependency/glassfish/bin"/>
                                 <copy file="bin/glassfish" todir="target/dependency/glassfish/bin"/>
                                 <!--For backward compatibility-->
                                 <copy file="bin/glassfish" tofile="target/dependency/glassfish/bin/glassfish_rails"/>
@@ -153,7 +153,7 @@
                                 s.files = FileList["{bin,lib,felix,modules,config,domains}/**/*"].to_a
                                 s.bindir = "bin"
                                 s.require_paths = ["modules"]
-                                s.executables = ["glassfish", "glassfish_rails", "asadmin"]
+                                s.executables = ["glassfish", "glassfish_rails", "gfadmin"]
                                 s.default_executable = "glassfish"
                                 s.test_files = FileList["{test}/**/*test.rb"].to_a
                                 s.has_rdoc = true

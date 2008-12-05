@@ -2,24 +2,35 @@
 * Performance improvements. The request message headers are passed on from java to ruby using byte[] to avoid extra
   encoding resulting from String conversion.
 
-=== Bugs fixed in this release
+====Bugs fixed in this release
 
-==== RubyForge Issues[http://rubyforge.org/tracker/index.php?group_id=5450&atid=21080]
+=====RubyForge Issues[http://rubyforge.org/tracker/index.php?group_id=5450&atid=21080]
 
 22724[http://rubyforge.org/tracker/index.php?func=detail&aid=22724&group_id=5450&atid=21080] "asadmin" in %JRUBY_HOME\bin should be renamed to avoid confliction
+
 22741[http://rubyforge.org/tracker/index.php?func=detail&aid=22741&group_id=5450&atid=21080] JRuby on Rails on Glassfish -- Unexplainable NameError
+
 22774[http://rubyforge.org/tracker/index.php?func=detail&aid=22774&group_id=5450&atid=21080] Gem 0.9.0 does not work in Production on Windows with JRuby 1.4+
+
 22793[http://rubyforge.org/tracker/index.php?func=detail&aid=22793&group_id=5450&atid=21080] 0.9.0 gem has 'Activator start error'
+
 22795[http://rubyforge.org/tracker/index.php?func=detail&aid=22795&group_id=5450&atid=21080] -p option throws BindException
+
 22836[http://rubyforge.org/tracker/index.php?func=detail&aid=22836&group_id=5450&atid=21080] Glassfish gem 0.9 problems on Ubuntu and Windows
+
 22861[http://rubyforge.org/tracker/index.php?func=detail&aid=22861&group_id=5450&atid=21080] Error if RAILS_GEM_VERSION isn't defined
+
 23007[http://rubyforge.org/tracker/index.php?func=detail&aid=23007&group_id=5450&atid=21080] uninitialized constant Rack while creating error app
+
 23090[http://rubyforge.org/tracker/index.php?func=detail&aid=23090&group_id=5450&atid=21080] Environment flag -e is not correctly used for Merb app
 
-=== Java.net Issues[https://glassfish.dev.java.net/servlets/ProjectIssues]
+===== Java.net Issues[https://glassfish.dev.java.net/servlets/ProjectIssues]
 6754[https://glassfish.dev.java.net/issues/show_bug.cgi?id=6754] Running Typo in GlassFish Gem throws multiple exceptions
+
 6764[https://glassfish.dev.java.net/issues/show_bug.cgi?id=6764] "Rails" text shows up when deploying anything
+
 6765[https://glassfish.dev.java.net/issues/show_bug.cgi?id=6765] GlassFish Gem does not list rack as a dependency
+
 6767[https://glassfish.dev.java.net/issues/show_bug.cgi?id=6767] Impossible to set production environment for merb
 
 == 0.9.0
