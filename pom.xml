@@ -53,7 +53,7 @@
 
     <properties>
         <nucleus.version>3.0-Prelude-b28b</nucleus.version>
-        <gem.version>0.9.1</gem.version>
+        <gem.version>0.9.2</gem.version>
     </properties>
     <build>
         <plugins>
