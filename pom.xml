@@ -52,7 +52,7 @@
   <description>This module creates the jruby gem distribution image</description>
 
     <properties>
-        <nucleus.version>3.0-SNAPSHOT</nucleus.version>
+        <nucleus.version>3.0-b34</nucleus.version>
         <gem.version>0.9.2</gem.version>
     </properties>
     <build>
