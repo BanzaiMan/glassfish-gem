@@ -52,7 +52,7 @@
   <description>This module creates the jruby gem distribution image</description>
 
     <properties>
-        <nucleus.version>3.0-b32</nucleus.version>
+        <nucleus.version>3.0-SNAPSHOT</nucleus.version>
         <gem.version>0.9.2</gem.version>
     </properties>
     <build>
@@ -112,10 +112,9 @@
                                         <filter token="GLASSFISH_GEM_VERSION" value="${gem.version}"/>
                                     </filterset>
                                 </copy>
-                                <copy file="target/dependency/glassfish/domains/domain1/config/domain.xml"
-                                      toFile="target/dependency/glassfish/domains/domain1/config/domain.xml_ORIG"/>
                                 <copy file="config/domain.xml"
                                       todir="target/dependency/glassfish/domains/domain1/config" overwrite="true"/>
+                                <delete file="target/dependency/glassfish/modules/osgi-adapter.jar"/>
                             </tasks>
 
                         </configuration>
@@ -150,7 +149,7 @@
                                 s.summary = "GlassFish V3 Application Server for JRuby"
                                 s.description = "GlassFish gem is an embedded GlassFish V3 application server which
                                 would help run your Ruby on Rails application"
-                                s.files = FileList["{bin,lib,felix,modules,config,domains}/**/*"].to_a
+                                s.files = FileList["{bin,lib,modules,config,domains}/**/*"].to_a
                                 s.bindir = "bin"
                                 s.require_paths = ["modules"]
                                 s.executables = ["glassfish", "glassfish_rails", "gfadmin"]
