@@ -49,6 +49,8 @@ module GlassFish
       java.lang.System.setProperty("jruby.runtime.max", args[:runtimes_max].to_s)
       java.lang.System.setProperty("rails.env", args[:environment])
       java.lang.System.setProperty("jruby.gem.port", args[:port].to_s)
+      java.lang.System.setProperty("GlassFish_Platform", "Static")
+      #java.lang.System.setProperty("glassfish.static.cache.dir", args[:app_dir]+"/tmp")
 
       ASMain.main([args[:app_dir], "--contextroot", args[:contextroot]].to_java(:string))
     end
