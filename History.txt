@@ -1,3 +1,18 @@
+== 0.9.2
+
+====Bugs fixed in this release
+
+Startup improvements. 
+=====RubyForge Issues[http://rubyforge.org/tracker/index.php?group_id=5450&atid=21080]
+
+23279[http://rubyforge.org/tracker/index.php?func=detail&aid=23279&group_id=5450&atid=21080] com.sun.grizzly.jruby.rack.RackInitializationException: Bad file descriptor - Bad file descriptor
+
+23443[http://rubyforge.org/tracker/index.php?func=detail&aid=23443&group_id=5450&atid=21080] PUBLIC_ROOT variable not set correctly under mac osx in 0.9.1
+
+===== Java.net Issues[https://glassfish.dev.java.net/servlets/ProjectIssues]
+
+6959[https://glassfish.dev.java.net/issues/show_bug.cgi?id=6959] com.sun.grizzly.jruby.rack.RackInitializationException: Bad file descriptor - Bad file descriptor
+
 == 0.9.1
 * Performance improvements. The request message headers are passed on from java to ruby using byte[] to avoid extra
   encoding resulting from String conversion.
