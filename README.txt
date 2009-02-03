@@ -14,6 +14,9 @@ module of GlassFish v3.
 For more information on GlassFish v3 application server see 
 https://glassfish.dev.java.net/v3.
 
+== Requires JDK 6
+Get JDK 6 from here[http://java.sun.com/javase/downloads/index.jsp]
+
 == Supported Rack based frameworks
 
 * Rails
