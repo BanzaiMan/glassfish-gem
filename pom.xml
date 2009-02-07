@@ -46,17 +46,44 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-  <artifactId>gem</artifactId>
-  <packaging>pom</packaging>
-  <name>Glassfish JRuby Gem distribution</name>
-  <description>This module creates the jruby gem distribution image</description>
+    <artifactId>glassfish-gem</artifactId>
+    <packaging>jar</packaging>
+    <name>Glassfish JRuby Gem distribution</name>
+    <description>This module creates the jruby gem distribution image</description>
 
     <properties>
         <nucleus.version>3.0-b34</nucleus.version>
-        <gem.version>0.9.2</gem.version>
+        <gem.version>0.9.3</gem.version>
     </properties>
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <finalName>${artifactId}</finalName>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.glassfish.scripting.gem.GlassFishMain</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -71,7 +98,7 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.glassfish.distributions</groupId>
-                                    <artifactId>nucleus</artifactId>
+                                    <artifactId>nucleus</artifactId>plugin
                                     <version>${nucleus.version}</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
@@ -85,7 +112,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>gf-jruby-connector,grizzly-jruby-module,grizzly-jruby
+                            <includeArtifactIds>gf-jruby-connector,grizzly-jruby-module,grizzly-jruby,akuma,jna
                             </includeArtifactIds>
                             <stripVersion>true</stripVersion>
                             <outputDirectory>${project.build.directory}/dependency/glassfish/modules</outputDirectory>
@@ -97,7 +124,7 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
-                        <phase>process-resources</phase>
+                        <phase>pre-integration-test</phase>
                         <configuration>
                             <tasks>
                                 <!--Remove everything from inside glassfish/bin, these are meaningless for gem-->
@@ -115,6 +142,7 @@
                                 <copy file="config/domain.xml"
                                       todir="target/dependency/glassfish/domains/domain1/config" overwrite="true"/>
                                 <delete file="target/dependency/glassfish/modules/osgi-adapter.jar"/>
+                                <copy file="target/glassfish-gem.jar" todir="target/dependency/glassfish/modules/"/>
                             </tasks>
 
                         </configuration>
@@ -131,7 +159,7 @@
                 <executions>
                     <execution>
                         <id>download-actionwebservice</id>
-                        <phase>package</phase>
+                        <phase>install</phase>
                         <goals>
                             <goal>rake</goal>
                         </goals>
@@ -176,10 +204,87 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.4.2</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/itest/**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
+    <profiles>
+
+        <profile>
+            <id>itest</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>surefire-itest</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <configuration>
+                                    <excludes>
+                                        <exclude>none</exclude>
+                                    </excludes>
+                                    <systemProperties>
+                                        <property>
+                                            <name>glassfish.home</name>
+                                            <value>${project.build.outputDirectory}/../dependency/glassfish</value>
+                                        </property>
+
+                                        <property>
+                                            <name>test.home</name>
+                                            <value>${project.build.outputDirectory}/../test-classes</value>
+                                        </property>
+                                    </systemProperties>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <dependencies>
+        <dependency>
+            <groupId>com.sun.akuma</groupId>
+            <artifactId>akuma</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>3.0.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jruby</groupId>
+            <artifactId>jruby-complete</artifactId>
+            <version>1.1.6</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.core</groupId>
+            <artifactId>glassfish</artifactId>
+            <version>${nucleus.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.glassfish.scripting</groupId>
             <artifactId>grizzly-jruby-module</artifactId>
@@ -188,7 +293,7 @@
         <dependency>
             <groupId>org.glassfish.scripting</groupId>
             <artifactId>gf-jruby-connector</artifactId>
-            <version>${project.version}</version>
+            <version>${project.version}</version>            
         </dependency>
     </dependencies>
 

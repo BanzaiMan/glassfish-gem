@@ -1,0 +1,62 @@
+--- !ruby/object:Gem::Specification 
+required_ruby_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - '>='
+    - !ruby/object:Gem::Version 
+      version: "0"
+  version: 
+email: nick@nicksieger.com, ola.bini@gmail.com
+cert_chain: []
+
+summary: SQLite3 JDBC driver for Java and SQLite3/ActiveRecord-JDBC.
+post_install_message: 
+extra_rdoc_files: 
+- Manifest.txt
+- README.txt
+- LICENSE.txt
+homepage: http://jruby-extras.rubyforge.org/ActiveRecord-JDBC
+signing_key: 
+name: jdbc-sqlite3
+rdoc_options: 
+- --main
+- README.txt
+autorequire: 
+rubyforge_project: jruby-extras
+executables: []
+
+description: Install this gem and require 'sqlite3' within JRuby to load the driver.
+specification_version: 2
+default_executable: 
+files: 
+- Manifest.txt
+- Rakefile
+- README.txt
+- LICENSE.txt
+- lib/jdbc
+- lib/jdbc/sqlite3.rb
+- lib/sqlite-3.5.8.jar
+required_rubygems_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - '>='
+    - !ruby/object:Gem::Version 
+      version: "0"
+  version: 
+extensions: []
+
+rubygems_version: 1.3.1
+requirements: []
+
+authors: 
+- Nick Sieger, Ola Bini and JRuby contributors
+date: 2008-06-03 00:00:00 Z
+platform: ruby
+test_files: []
+
+version: !ruby/object:Gem::Version 
+  version: 3.5.8
+require_paths: 
+- lib
+dependencies: []
+
+bindir: bin
+has_rdoc: true

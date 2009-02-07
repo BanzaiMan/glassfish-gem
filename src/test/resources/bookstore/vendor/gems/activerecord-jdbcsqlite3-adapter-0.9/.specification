@@ -1,0 +1,81 @@
+--- !ruby/object:Gem::Specification 
+required_ruby_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - '>='
+    - !ruby/object:Gem::Version 
+      version: "0"
+  version: 
+email: nick@nicksieger.com, ola.bini@gmail.com
+cert_chain: []
+
+summary: SQLite3 JDBC adapter for JRuby on Rails.
+post_install_message: 
+extra_rdoc_files: 
+- Manifest.txt
+- README.txt
+- LICENSE.txt
+homepage: http://jruby-extras.rubyforge.org/ActiveRecord-JDBC
+signing_key: 
+name: activerecord-jdbcsqlite3-adapter
+rdoc_options: 
+- --main
+- README.txt
+autorequire: 
+rubyforge_project: jruby-extras
+executables: []
+
+description: Install this gem to use SQLite3 with JRuby on Rails.
+specification_version: 2
+default_executable: 
+files: 
+- Manifest.txt
+- Rakefile
+- README.txt
+- LICENSE.txt
+- lib/active_record
+- lib/active_record/connection_adapters
+- lib/active_record/connection_adapters/jdbcsqlite3_adapter.rb
+required_rubygems_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - '>='
+    - !ruby/object:Gem::Version 
+      version: "0"
+  version: 
+extensions: []
+
+rubygems_version: 1.3.1
+requirements: []
+
+authors: 
+- Nick Sieger, Ola Bini and JRuby contributors
+date: 2008-11-26 00:00:00 Z
+platform: ruby
+test_files: []
+
+version: !ruby/object:Gem::Version 
+  version: "0.9"
+require_paths: 
+- lib
+dependencies: 
+- !ruby/object:Gem::Dependency 
+  version_requirements: !ruby/object:Gem::Requirement 
+    requirements: 
+    - - "="
+      - !ruby/object:Gem::Version 
+        version: "0.9"
+    version: 
+  type: :runtime
+  version_requirement: 
+  name: activerecord-jdbc-adapter
+- !ruby/object:Gem::Dependency 
+  version_requirements: !ruby/object:Gem::Requirement 
+    requirements: 
+    - - '>='
+      - !ruby/object:Gem::Version 
+        version: 3.5.8
+    version: 
+  type: :runtime
+  version_requirement: 
+  name: jdbc-sqlite3
+bindir: bin
+has_rdoc: true

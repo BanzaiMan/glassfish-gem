@@ -1,0 +1,29 @@
+  [4;36;1mSQL (17.3ms)[0m   [0;1mCREATE TABLE schema_migrations (version text(0) NOT NULL) [0m
+  [4;35;1mSQL (13.2ms)[0m   [0mCREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations (version)[0m
+  [4;36;1mSQL (3.2ms)[0m   [0;1mSELECT version FROM schema_migrations[0m
+Migrating to CreateBooks (20090123041916)
+  [4;35;1mSQL (30.1ms)[0m   [0mCREATE TABLE books (id INTEGER PRIMARY KEY AUTOINCREMENT, title text(0), author text(0), created_at INTEGER, updated_at INTEGER) [0m
+  [4;36;1mSQL (6.9ms)[0m   [0;1mINSERT INTO schema_migrations (version) VALUES ('20090123041916')[0m
+  [4;35;1mSQL (3.0ms)[0m   [0mSELECT SEQ FROM SQLITE_SEQUENCE WHERE NAME = 'schema_migrations'[0m
+  [4;36;1mSQL (2.8ms)[0m   [0;1mSELECT version FROM schema_migrations[0m
+  [4;35;1mSQL (4.9ms)[0m   [0mSELECT name, sql FROM sqlite_master WHERE tbl_name = 'books' AND type = 'index'[0m
+
+
+Processing BooksController#index (for 0:0:0:0:0:0:0:1%0 at 2009-01-22 20:20:08) [GET]
+  [4;36;1mBook Load (38.6ms)[0m   [0;1mSELECT * FROM books [0m
+Rendering template within layouts/books
+Rendering books/index
+Completed in 152ms (View: 40, DB: 39) | 200 OK [http://localhost/books]
+
+
+Processing BooksController#new (for 0:0:0:0:0:0:0:1%0 at 2009-01-22 20:20:13) [GET]
+Rendering template within layouts/books
+Rendering books/new
+Completed in 115ms (View: 34, DB: 0) | 200 OK [http://localhost/books/new]
+
+
+Processing BooksController#index (for 0:0:0:0:0:0:0:1%0 at 2009-01-22 20:20:33) [GET]
+  [4;35;1mBook Load (17.5ms)[0m   [0mSELECT * FROM books [0m
+Rendering template within layouts/books
+Rendering books/index
+Completed in 106ms (View: 37, DB: 18) | 200 OK [http://localhost/books]

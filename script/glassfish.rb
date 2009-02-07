@@ -33,7 +33,8 @@
 #only if the new code is made subject to such option by the copyright
 #holder.
 #++
-
+require 'java'
+require 'glassfish-gem.jar'
 require 'glassfish.jar'
 
 #
@@ -41,18 +42,18 @@ require 'glassfish.jar'
 #
 module GlassFish
   class Server
-    import com.sun.enterprise.glassfish.bootstrap.ASMain    
+    import "org.glassfish.scripting.gem.GlassFishMain"
+    import "org.glassfish.scripting.gem.Options"
     def startup(args)
-      #set jruby runtime property
-      java.lang.System.setProperty("jruby.runtime", args[:runtimes].to_s)
-      java.lang.System.setProperty("jruby.runtime.min", args[:runtimes_min].to_s)
-      java.lang.System.setProperty("jruby.runtime.max", args[:runtimes_max].to_s)
-      java.lang.System.setProperty("rails.env", args[:environment])
-      java.lang.System.setProperty("jruby.gem.port", args[:port].to_s)
-      java.lang.System.setProperty("GlassFish_Platform", "Static")
-      #java.lang.System.setProperty("glassfish.static.cache.dir", args[:app_dir]+"/tmp")
-
-      ASMain.main([args[:app_dir], "--contextroot", args[:contextroot]].to_java(:string))
+      opts = Options.new()
+      opts.runtimes = args[:runtimes];
+      opts.runtimes_min = args[:runtimes_min];
+      opts.runtimes_max = args[:runtimes_max];
+      opts.environment = args[:environment];
+      opts.port = args[:port]
+      opts.contextRoot = args[:contextroot]
+      opts.appDir = args[:app_dir];
+      gf = GlassFishMain.start opts
     end
   end
 end

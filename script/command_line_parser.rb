@@ -43,9 +43,9 @@ require 'getoptlong'
 class CommandLineParser
   def init_opts
     @@config ||= {
-            :runtimes     => '1',
-            :runtimes_min => '1',
-            :runtimes_max => '1',
+            :runtimes     => 1,
+            :runtimes_min => 1,
+            :runtimes_max => 1,
             :contextroot  => '/',
             :environment  => "development",
             :app_dir      => Dir.pwd,
@@ -81,11 +81,11 @@ class CommandLineParser
       when '--environment'
         config[:environment] = arg
       when '--runtimes'
-        config[:runtimes] = arg
+        config[:runtimes] = arg.to_i
       when '--runtimes-min'
-        config[:runtimes_min] = arg
+        config[:runtimes_min] = arg.to_i
       when '--runtimes-max'
-        config[:runtimes_max] = arg
+        config[:runtimes_max] = arg.to_i
       end
     end    
     config[:app_dir] = ARGV.shift unless ARGV.empty?
