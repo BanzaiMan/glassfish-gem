@@ -46,11 +46,13 @@ import java.net.MalformedURLException;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 
+import org.junit.Test;
+
 /**
  * @author Vivek Pandey
  */
 
-public class TestGlassFish extends TestCase {
+public class TestGlassFish{
 
     private final ClassLoader cl;
 
@@ -61,6 +63,7 @@ public class TestGlassFish extends TestCase {
         cl = new URLClassLoader(new URL[]{absolutize(gfloc+"glassfish.jar"), absolutize(gfloc+"glassfish-gem.jar")},ClassLoader.getSystemClassLoader().getParent());
     }
 
+    @Test
     public void testDefaultStartup() throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException, NoSuchFieldException, InterruptedException {
         Class optsc = cl.loadClass("org.glassfish.scripting.gem.Options");
         Object opts = optsc.getConstructor().newInstance();
