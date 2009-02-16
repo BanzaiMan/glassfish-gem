@@ -47,13 +47,14 @@ module GlassFish
     import "org.glassfish.scripting.gem.Options"
     def startup(args)
       opts = Options.new()
-      opts.runtimes = args[:runtimes];
-      opts.runtimes_min = args[:runtimes_min];
-      opts.runtimes_max = args[:runtimes_max];
-      opts.environment = args[:environment];
+      opts.runtimes = args[:runtimes]
+      opts.runtimes_min = args[:runtimes_min]
+      opts.runtimes_max = args[:runtimes_max]
+      opts.environment = args[:environment]
       opts.port = args[:port]
       opts.contextRoot = args[:contextroot]
-      opts.appDir = args[:app_dir];
+      opts.appDir = args[:app_dir]
+      opts.daemon = args[:daemon]
       gf = GlassFishMain.start opts
     end
   end
