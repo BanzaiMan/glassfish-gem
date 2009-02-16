@@ -36,6 +36,7 @@
 require 'java'
 require 'glassfish-gem.jar'
 require 'glassfish.jar'
+require 'akuma.jar'
 
 #
 #Invokes and runs GlassFish

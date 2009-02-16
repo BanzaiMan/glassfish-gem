@@ -45,8 +45,11 @@ import java.net.URLClassLoader;
 import java.net.MalformedURLException;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 
 /**
  * @author Vivek Pandey
@@ -54,9 +57,10 @@ import org.junit.Test;
 
 public class TestGlassFish{
 
-    private final ClassLoader cl;
+    private ClassLoader cl;
 
-    public TestGlassFish() throws MalformedURLException {
+    @BeforeClass
+    public void init() throws MalformedURLException {
         String gfloc = System.getProperty("glassfish.home") + "/modules/";
         System.out.println("GF home: "+gfloc);
         System.out.println("Test home: "+System.getProperty("test.home"));        
@@ -81,19 +85,11 @@ public class TestGlassFish{
         start.invoke(null, opts);
     }
 
+    @Ignore(value = "Still need works")
     public void testNonDefaultStartup() {
         // Add your code here
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    @Override
-    protected void setUp() throws Exception {
-        //cl = new URLClassLoader()
-    }
 
     private final URL absolutize(String path) throws MalformedURLException {
         File f = new File(path);

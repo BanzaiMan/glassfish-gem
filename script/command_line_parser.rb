@@ -49,7 +49,8 @@ class CommandLineParser
             :contextroot  => '/',
             :environment  => "development",
             :app_dir      => Dir.pwd,
-            :port         => 3000
+            :port         => 3000,
+            :daemon       => false
     }
   end
 
@@ -59,6 +60,7 @@ class CommandLineParser
             [ '--port', '-p', GetoptLong::REQUIRED_ARGUMENT ],
             [ '--environment', '-e', GetoptLong::REQUIRED_ARGUMENT ],
             [ '--contextroot', '-c', GetoptLong::REQUIRED_ARGUMENT ],
+            [ '--daemon', '-d', GetoptLong::NO_ARGUMENT ],
             [ '--runtimes', '-n', GetoptLong::REQUIRED_ARGUMENT ],
             [ '--runtimes-min', GetoptLong::REQUIRED_ARGUMENT ],
             [ '--runtimes-max', GetoptLong::REQUIRED_ARGUMENT ],
@@ -85,7 +87,9 @@ class CommandLineParser
       when '--runtimes-min'
         config[:runtimes_min] = arg.to_i
       when '--runtimes-max'
-        config[:runtimes_max] = arg.to_i
+        config[:runtimes_max] = arg.to_i      
+      when '--daemon'
+        config[:daemon] = true
       end
     end    
     config[:app_dir] = ARGV.shift unless ARGV.empty?

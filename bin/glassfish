@@ -29,6 +29,9 @@
 # --runtimes-max NUMBER::
 #    Maximum number of JRuby runtimes to crete
 #
+# -d, --daemon::
+#   Run GlassFish as daemon
+#
 # APPLICATION_PATH (optional):  Path to the application to be run (default: current).
 
 require "java"

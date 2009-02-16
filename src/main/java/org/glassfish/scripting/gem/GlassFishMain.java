@@ -48,7 +48,7 @@ import java.util.Arrays;
  * @author Vivek Pandey
  */
 public class GlassFishMain {
-    public static void start(Options options) {
+    private static void startGlassFish(Options options) {
       System.out.println(options);
       System.setProperty("jruby.runtime", String.valueOf(options.runtimes));
       System.setProperty("jruby.runtime.min", String.valueOf(options.runtimes_min));
@@ -60,30 +60,58 @@ public class GlassFishMain {
       ASMain.main(new String[]{options.appDir, "--contextroot", options.contextRoot});
     }
 
+    public static void start(Options options){
+        System.out.println("Arguments: "+options);
+
+        Daemon d = new Daemon();
+        if (d.isDaemonized()) {
+            System.out.println("Starting GlassFish server on port: " + System.getProperty(""));
+            try {
+                d.init();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            // if you are already daemonized, no point in daemonizing yourself again,
+            // so do this only when you aren't daemonizing.
+            if (options.daemon) {
+                try {
+
+                    //TODO: patch JVM args to suit GlassFish
+                    d.daemonize();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.exit(0);
+            }
+        }
+
+        startGlassFish(options);
+    }
 
     public static void main(String[] args) {
         System.out.println(" Arguments: "+ Arrays.toString(args));
-//
-//        Daemon d = new Daemon();
-//        if (d.isDaemonized()) {
-//            System.out.println("Starting GlassFish server on port: " + System.getProperty(""));
-//            try {
-//                d.init();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        } else {
-//            // if you are already daemonized, no point in daemonizing yourself again,
-//            // so do this only when you aren't daemonizing.
-//            if (true) {
-//                try {
-//                    d.daemonize();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//                System.exit(0);
-//            }
-//        }
+
+        Daemon d = new Daemon();
+        if (d.isDaemonized()) {
+            System.out.println("Starting GlassFish server on port: " + System.getProperty(""));
+            try {
+                d.init();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            // if you are already daemonized, no point in daemonizing yourself again,
+            // so do this only when you aren't daemonizing.
+            if (true) {
+                try {
+                    d.daemonize();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.exit(0);
+            }
+        }
         // your normal main code follows
         // this part can be executed in two ways
         // 1) the user runs your process in the foreground
