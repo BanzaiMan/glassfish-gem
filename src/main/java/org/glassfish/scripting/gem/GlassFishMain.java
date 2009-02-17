@@ -41,7 +41,10 @@ import com.sun.akuma.Daemon;
 import com.sun.enterprise.glassfish.bootstrap.ASMain;
 
 import java.io.IOException;
+import java.io.File;
 import java.util.Arrays;
+
+import org.glassfish.api.admin.ParameterNames;
 
 
 /**
@@ -49,19 +52,21 @@ import java.util.Arrays;
  */
 public class GlassFishMain {
     private static void startGlassFish(Options options) {
-      System.out.println(options);
-      System.setProperty("jruby.runtime", String.valueOf(options.runtimes));
-      System.setProperty("jruby.runtime.min", String.valueOf(options.runtimes_min));
-      System.setProperty("jruby.runtime.max", String.valueOf(options.runtimes_max));
-      System.setProperty("rails.env", options.environment);
-      System.setProperty("jruby.gem.port", String.valueOf(options.port));
-      System.setProperty("GlassFish_Platform", "Static");
-      //System.setProperty("glassfish.static.cache.dir", args[:app_dir]+"/tmp")
-      ASMain.main(new String[]{options.appDir, "--contextroot", options.contextRoot});
+        System.setProperty("jruby.runtime", String.valueOf(options.runtimes));
+        System.setProperty("jruby.runtime.min", String.valueOf(options.runtimes_min));
+        System.setProperty("jruby.runtime.max", String.valueOf(options.runtimes_max));
+        System.setProperty("rails.env", options.environment);
+        System.setProperty("jruby.gem.port", String.valueOf(options.port));
+        System.setProperty("GlassFish_Platform", "Static");
+        //System.setProperty("glassfish.static.cache.dir", args[:app_dir]+"/tmp")
+        String logFile = options.appDir + File.separator + "log" + File.separator + options.environment + ".log";
+        System.setProperty("jruby.log.location", logFile);
+        //System.out.println("Log file location: "+logFile);
+        ASMain.main(new String[]{options.appDir, ParameterNames.CONTEXT_ROOT, options.contextRoot});
     }
 
-    public static void start(Options options){
-        System.out.println("Arguments: "+options);
+    public static void start(Options options) {
+        System.out.println("Arguments: " + options);
 
         Daemon d = new Daemon();
         if (d.isDaemonized()) {
@@ -88,37 +93,4 @@ public class GlassFishMain {
 
         startGlassFish(options);
     }
-
-    public static void main(String[] args) {
-        System.out.println(" Arguments: "+ Arrays.toString(args));
-
-        Daemon d = new Daemon();
-        if (d.isDaemonized()) {
-            System.out.println("Starting GlassFish server on port: " + System.getProperty(""));
-            try {
-                d.init();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            // if you are already daemonized, no point in daemonizing yourself again,
-            // so do this only when you aren't daemonizing.
-            if (true) {
-                try {
-                    d.daemonize();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                System.exit(0);
-            }
-        }
-        // your normal main code follows
-        // this part can be executed in two ways
-        // 1) the user runs your process in the foreground
-        // 2) you decided to daemonize yourself, in which case the newly forked daemon will execute this code,
-        //    while the originally executed foreground Java process exits before it gets here.
-    }
-
-
-
 }
