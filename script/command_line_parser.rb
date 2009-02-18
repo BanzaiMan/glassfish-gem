@@ -41,6 +41,9 @@ require 'getoptlong'
 # Parses command line options
 #
 class CommandLineParser
+  LOGFILE_DIR = Dir.pwd+File::SEPARATOR+"tmp"+File::SEPARATOR+"log"+File::SEPARATOR
+  PID_FILE    = Dir.pwd+File::SEPARATOR+"tmp"+File::SEPARATOR+"pids"+File::SEPARATOR+"glassfish.pid"
+
   def init_opts
     @@config ||= {
             :runtimes     => 1,
@@ -50,6 +53,8 @@ class CommandLineParser
             :environment  => "development",
             :app_dir      => Dir.pwd,
             :port         => 3000,
+            :pid          => PID_FILE,
+            :log          => nil,
             :daemon       => false
     }
   end
@@ -61,6 +66,8 @@ class CommandLineParser
             [ '--environment', '-e', GetoptLong::REQUIRED_ARGUMENT ],
             [ '--contextroot', '-c', GetoptLong::REQUIRED_ARGUMENT ],
             [ '--daemon', '-d', GetoptLong::NO_ARGUMENT ],
+            [ '--pid', '-P', GetoptLong::REQUIRED_ARGUMENT ],
+            [ '--log', '-l', GetoptLong::REQUIRED_ARGUMENT ],
             [ '--runtimes', '-n', GetoptLong::REQUIRED_ARGUMENT ],
             [ '--runtimes-min', GetoptLong::REQUIRED_ARGUMENT ],
             [ '--runtimes-max', GetoptLong::REQUIRED_ARGUMENT ],
@@ -90,9 +97,32 @@ class CommandLineParser
         config[:runtimes_max] = arg.to_i      
       when '--daemon'
         config[:daemon] = true
+      when '--pid'
+        if not File.exists?(arg)
+          fail "PID file #{arg} does not exist!"
+          Kernel.exit -1
+        end
+        config[:pid] = arg
+      when '--log'
+      if not File.exists?(arg)
+          fail "Log file #{arg} does not exist!"
+          Kernel.exit -1
       end
-    end    
+      config[:log] = arg
+      end
+    end
+
+    if(config[:log] == nil)
+        config[:log] = LOGFILE_DIR + config[:environment]+".log"
+    end
+
     config[:app_dir] = ARGV.shift unless ARGV.empty?
+
     config
+  end
+
+  def fail(message)
+    STDERR.puts "#{message}"
+    STDERR.puts "Type 'glassfish -h' to get help"
   end
 end

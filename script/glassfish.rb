@@ -55,6 +55,8 @@ module GlassFish
       opts.contextRoot = args[:contextroot]
       opts.appDir = args[:app_dir]
       opts.daemon = args[:daemon]
+      opts.pid = args[:pid]
+      opts.log = args[:log]
       gf = GlassFishMain.start opts
     end
   end

@@ -48,6 +48,8 @@ public class Options{
     public String appDir;
     public int port;
     public boolean daemon;
+    public String pid;
+    public String log;
 
     @Override
     public String toString() {
@@ -58,6 +60,8 @@ public class Options{
                 "environment: " + environment+" "+
                 "appDir: " + appDir+" "+
                 "port: "+String.valueOf(port)+" "+
-                "Deamon: "+String.valueOf(daemon);
+                "Deamon: "+String.valueOf(daemon)+" "+
+                "pid: " + pid + " "+
+                "log: " + log;
     }
 }

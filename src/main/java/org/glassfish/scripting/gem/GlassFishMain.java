@@ -38,11 +38,15 @@
 package org.glassfish.scripting.gem;
 
 import com.sun.akuma.Daemon;
+import static com.sun.akuma.CLibrary.LIBC;
 import com.sun.enterprise.glassfish.bootstrap.ASMain;
 
 import java.io.IOException;
 import java.io.File;
+import java.io.FileWriter;
 import java.util.Arrays;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import org.glassfish.api.admin.ParameterNames;
 
@@ -59,18 +63,37 @@ public class GlassFishMain {
         System.setProperty("jruby.gem.port", String.valueOf(options.port));
         System.setProperty("GlassFish_Platform", "Static");
         //System.setProperty("glassfish.static.cache.dir", args[:app_dir]+"/tmp")
-        String logFile = options.appDir + File.separator + "log" + File.separator + options.environment + ".log";
-        System.setProperty("jruby.log.location", logFile);
-        //System.out.println("Log file location: "+logFile);
-        ASMain.main(new String[]{options.appDir, ParameterNames.CONTEXT_ROOT, options.contextRoot});
+        System.setProperty("jruby.log.location", options.log);
+        System.out.println("Logging messages to: "+options.log);
+        ASMain.main(new String[]{options.appDir, "--"+ParameterNames.CONTEXT_ROOT, options.contextRoot});
     }
 
-    public static void start(Options options) {
-        System.out.println("Arguments: " + options);
-
-        Daemon d = new Daemon();
+    public static void start(final Options options) {
+        Daemon d = new Daemon(){
+            @Override
+            protected void writePidFile() throws IOException {
+                try {
+                    System.out.println("PID file: "+options.pid);
+                    File pid = new File(options.pid);
+                    pid.deleteOnExit();
+                    FileWriter fw = new FileWriter(pid);
+                    fw.write(String.valueOf(LIBC.getpid()));
+                    fw.close();
+                } catch (IOException e) {
+                    // if failed to write, keep going because maybe we are run from non-root
+                }
+            }
+        };
         if (d.isDaemonized()) {
-            System.out.println("Starting GlassFish server on port: " + System.getProperty(""));
+            System.out.println("Arguments: " + options);
+            
+            String ip = "0.0.0.0";
+            try {
+                ip = InetAddress.getLocalHost().getHostAddress();
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+            System.out.println("Starting GlassFish server at " +ip+":" + options.port);
             try {
                 d.init();
             } catch (Exception e) {
@@ -81,7 +104,6 @@ public class GlassFishMain {
             // so do this only when you aren't daemonizing.
             if (options.daemon) {
                 try {
-
                     //TODO: patch JVM args to suit GlassFish
                     d.daemonize();
                 } catch (IOException e) {
