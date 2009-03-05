@@ -50,6 +50,7 @@ public class Options{
     public boolean daemon;
     public String pid;
     public String log;
+    public String domainDir;
 
     @Override
     public String toString() {
@@ -62,6 +63,7 @@ public class Options{
                 "port: "+String.valueOf(port)+" "+
                 "Deamon: "+String.valueOf(daemon)+" "+
                 "pid: " + pid + " "+
-                "log: " + log;
+                "log: " + log + " " +
+                "domain director: "+domainDir;
     }
 }

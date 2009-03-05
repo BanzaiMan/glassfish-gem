@@ -37,6 +37,7 @@ require 'java'
 require 'glassfish-gem.jar'
 require 'glassfish.jar'
 require 'akuma.jar'
+require 'FileUtils'
 
 #
 #Invokes and runs GlassFish
@@ -46,6 +47,11 @@ module GlassFish
     import "org.glassfish.scripting.gem.GlassFishMain"
     import "org.glassfish.scripting.gem.Options"
     def startup(args)
+      domaindir = File.dirname("#{File.expand_path(args[:app_dir]}/tmp/glassfish/config/domain.xml")
+      if !setupDomainDir? domaindir
+        puts "ERROR: Failed to create GlassFish domain directory: #{domaindir}"
+        exit -1
+      end
       opts = Options.new()
       opts.runtimes = args[:runtimes]
       opts.runtimes_min = args[:runtimes_min]
@@ -57,7 +63,26 @@ module GlassFish
       opts.daemon = args[:daemon]
       opts.pid = args[:pid]
       opts.log = args[:log]
+      opts.domainDir = domainDir
       gf = GlassFishMain.start opts
+    end
+
+    private
+
+    #Create a domain directory and copy the domain.xml and logging.properties there.
+    #This will take care of infamous bug that causes people to run glassfish gem as sudo
+    #if jruby is installed as root
+    
+    def setUpDomainDir?
+      if !File.exist? domaindir
+        FileUtils.mkdir_p domaindir
+      end
+      if !File.writable_real?domaindir
+        return false;
+      end
+      src = __File__+File::SEPARATOR+".."+File::SEPARATOR+"domains"+File::SEPARATOR+"domain1"+File::SEPARATOR+"config"
+      File.cp src+FILE::SEPARATOR+"domain.xml", domaindir
+      File.cp src+FILE::SEPARATOR+"logging.properties", domaindir
     end
   end
 end

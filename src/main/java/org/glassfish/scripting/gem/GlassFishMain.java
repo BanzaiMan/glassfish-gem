@@ -56,6 +56,16 @@ import org.glassfish.api.admin.ParameterNames;
  */
 public class GlassFishMain {
     private static void startGlassFish(Options options) {
+        File domain = new File(options.appDir + File.separator+"tmp"+File.separator+"glassfish"+File.separator+"config");
+        if(!domain.exists()){
+            try {
+                domain.createNewFile();
+            } catch (IOException e) {
+                System.err.println("ERROR: IOException, failed to create: "+domain.getAbsolutePath());
+                System.err.println(e.getMessage());
+                System.exit(-1);
+            }
+        }
         System.setProperty("jruby.runtime", String.valueOf(options.runtimes));
         System.setProperty("jruby.runtime.min", String.valueOf(options.runtimes_min));
         System.setProperty("jruby.runtime.max", String.valueOf(options.runtimes_max));
@@ -65,7 +75,7 @@ public class GlassFishMain {
         //System.setProperty("glassfish.static.cache.dir", args[:app_dir]+"/tmp")
         System.setProperty("jruby.log.location", options.log);
         System.out.println("Logging messages to: "+options.log);
-        ASMain.main(new String[]{options.appDir, "--"+ParameterNames.CONTEXT_ROOT, options.contextRoot});
+        ASMain.main(new String[]{options.appDir, "--"+ParameterNames.CONTEXT_ROOT, options.contextRoot, "--domaindir", options.domainDir});
     }
 
     public static void start(final Options options) {
