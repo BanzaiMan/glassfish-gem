@@ -33,8 +33,9 @@
 #only if the new code is made subject to such option by the copyright
 #holder.
 #++
-
 module GlassFish
-  VERSION = "@GLASSFISH_GEM_VERSION@"
-  FULLVERSION = "GlassFish gem version: #{VERSION}\nhttp://glassfishgem.rubyforge.org"
+  HOME = File.expand_path(File.dirname(__FILE__) + '/..') unless defined?(GLASSFISH_HOME)
+  class Config
+    FILE = "config/glassfish.yml"
+  end
 end

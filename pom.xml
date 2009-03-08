@@ -129,11 +129,16 @@
                             <tasks>
                                 <!--Remove everything from inside glassfish/bin, these are meaningless for gem-->
                                 <delete dir="target/dependency/glassfish/bin" includes="*"/>
+                                
+                                <!-- remove everything from lib -->
+                                <delete dir="target/dependency/glassfish/lib" includes="*"/>
+
                                 <copy file="bin/gfadmin" todir="target/dependency/glassfish/bin"/>
                                 <copy file="bin/glassfish" todir="target/dependency/glassfish/bin"/>
+                                <copy file="bin/gfrake" todir="target/dependency/glassfish/bin"/>
                                 <!--For backward compatibility-->
                                 <copy file="bin/glassfish" tofile="target/dependency/glassfish/bin/glassfish_rails"/>
-                                <copy todir="target/dependency/glassfish/modules" filtering="true">
+                                <copy todir="target/dependency/glassfish/lib" filtering="true">
                                     <fileset dir="script" includes="*.rb"/>
                                     <filterset>
                                         <filter token="GLASSFISH_GEM_VERSION" value="${gem.version}"/>
@@ -151,6 +156,8 @@
                                 </copy>
                                 <delete file="target/dependency/glassfish/modules/osgi-adapter.jar"/>
                                 <copy file="target/glassfish-gem.jar" todir="target/dependency/glassfish/modules/"/>
+                                <mkdir dir="target/dependency/glassfish/generators/gfrake/templates/"/>
+                                <copy file="config/glassfish.yml" todir="target/dependency/glassfish/generators/gfrake/templates/"/>
                             </tasks>
 
                         </configuration>
@@ -185,10 +192,10 @@
                                 s.summary = "GlassFish V3 Application Server for JRuby"
                                 s.description = "GlassFish gem is an embedded GlassFish V3 application server which
                                 would help run your Ruby on Rails application"
-                                s.files = FileList["{bin,lib,modules,config,domains}/**/*"].to_a
+                                s.files = FileList["{bin,lib,generators,modules,config,domains}/**/*"].to_a
                                 s.bindir = "bin"
-                                s.require_paths = ["modules"]
-                                s.executables = ["glassfish", "glassfish_rails", "gfadmin"]
+                                s.require_paths = ["lib"]
+                                s.executables = ["glassfish", "glassfish_rails", "gfadmin", "gfrake"]
                                 s.default_executable = "glassfish"
                                 s.test_files = FileList["{test}/**/*test.rb"].to_a
                                 s.has_rdoc = true

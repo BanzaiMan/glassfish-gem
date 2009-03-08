@@ -56,7 +56,7 @@ class CommandLineParser
             :pid          => PID_FILE,
             :log          => nil,
             :log_level    => 1,
-            :daemon       => false,            
+            :daemon       => false,
     }
   end
 
@@ -81,7 +81,7 @@ class CommandLineParser
       case opt
       when '--version'
         require 'version'
-        puts "GlassFish gem version: #{GlassFish::VERSION::STRING}\nhttp://glassfishgem.rubyforge.org"
+        puts "#{GlassFish::FULLVERSION}"
         exit(0)
       when '--help'
         RDoc::usage
@@ -143,7 +143,7 @@ class CommandLineParser
       puts "ERROR: Failed to create GlassFish domain directory: #{domaindir}"
       exit -1
     end
-    
+
 
     config[:app_dir] = ARGV.shift unless ARGV.empty?
 
@@ -196,7 +196,7 @@ class CommandLineParser
     if(version == nil)
       return false
     end
-    return version.eql?GlassFish::VERSION::STRING
+    return version.eql?GlassFish::VERSION
   end
 
   def fail(message)

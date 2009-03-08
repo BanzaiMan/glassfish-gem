@@ -1,54 +1,54 @@
-#!/usr/bin/env jruby
+ #!/usr/bin/env jruby
+ # == Synopsis
+ #
+ # glassfish: GlassFish v3 server for Rack based frameworks such as: Rails, Merb, Sinatra...
+ #
+ # == Usage:
+ #
+ # glassfish [OPTION] APPLICATION_PATH
+ #
+ # -h, --help::
+ #    show help
+ #
+ # -c, --contextroot PATH::
+ #    change the context root (default: '/')
+ #
+ # -p, --port PORT::
+ #    change server port (default: 3000)
+ #
+ # -e, --environment ENV::
+ #    change rails environment (default: development)
+ #
+ # -n --runtimes NUMBER::
+ #    Number of JRuby runtimes to crete initially
+ #
+ # --runtimes-min NUMBER::
+ #    Minimum JRuby runtimes to crete
+ #
+ # --runtimes-max NUMBER::
+ #    Maximum number of JRuby runtimes to crete
+ #
+ # -d, --daemon::
+ #   Run GlassFish as daemon
+ #
+ # -P, --pid FILE::
+ #   PID file where PID will be written. Applicable when used with -d option. The default pid file is tmp/pids/glassfish.pid
+ #
+ # -l, --log FILE::
+ #   Log file, where the server log messages will go. By default the server logs go to log/glassfish.log file.
+ #
+ # --log-level LEVEL::
+ #   Log level 0 to 7. 0:OFF, 1:INFO (default), 2:WARNING, 3:SEVERE, 4:FINE, 5:FINER, 6:FINEST, 7:ALL.
+ #
+ # APPLICATION_PATH (optional):  Path to the application to be run (default: current).
+ # For aditional configuration run 'gfrake -T'
 
-# == Synopsis
-#
-# glassfish: GlassFish v3 server for Rack based frameworks such as: Rails, Merb, Sinatra...
-#
-# == Usage:
-#
-# glassfish [OPTION] APPLICATION_PATH
-#
-# -h, --help::
-#    show help
-#
-# -c, --contextroot PATH::
-#    change the context root (default: '/')
-#
-# -p, --port PORT::
-#    change server port (default: 3000)
-#
-# -e, --environment ENV::
-#    change rails environment (default: development)
-#
-# -n --runtimes NUMBER::
-#    Number of JRuby runtimes to crete initially
-#
-# --runtimes-min NUMBER::
-#    Minimum JRuby runtimes to crete
-#
-# --runtimes-max NUMBER::
-#    Maximum number of JRuby runtimes to crete
-#
-# -d, --daemon::
-#   Run GlassFish as daemon
-#
-# -P, --pid FILE::
-#   PID file where PID will be written. Applicable when used with -d option. The default pid file is tmp/pids/glassfish.pid
-#
-# -l, --log FILE::
-#   Log file, where the server log messages will go. By default the server logs go to log/glassfish.log file.
-#
-# --log-level LEVEL::
-#   Log level 0 to 7. 0:OFF, 1:INFO (default), 2:WARNING, 3:SEVERE, 4:FINE, 5:FINER, 6:FINEST, 7:ALL.
-#
-# APPLICATION_PATH (optional):  Path to the application to be run (default: current).
+ require "java"
+ $LOAD_PATH << "#{File.dirname(__FILE__)}/../modules"
 
-require "java"
-$LOAD_PATH << "#{File.dirname(__FILE__)}/../modules"
+ require 'command_line_parser'
+ require 'glassfish'
 
-require 'command_line_parser'
-require 'glassfish'
-
-options = CommandLineParser.new.parse
-gf = GlassFish::Server.new
-gf.startup(options)
+ options = CommandLineParser.new.parse
+ gf = GlassFish::Server.new
+ gf.startup(options)
