@@ -1,0 +1,57 @@
+#
+# GlassFish configuration
+#
+
+# HTTP port
+port: 3000
+
+# context root
+contextroot: '/'
+
+# application development environment
+environment: development
+
+# Log file.
+log: ../log/development.log
+
+# Logging level. Log level 0 to 7. 0:OFF, 1:INFO (default), 2:WARNING,
+# 3:SEVERE, 4:FINE, 5:FINER, 6:FINEST, 7:ALL.
+log-level: 1
+
+
+# Runtime configuration
+#
+# Initial number of jruby runtimes that Glassfish starts with. It defaults
+# to one. It also represents the lowest value that Glassfish will use for
+# the maximum and the highest value that Glassfish will accept for the
+# minimum. As of this time, setting this number too high may cause
+# undesirable behavior.
+runtimes:
+    initial: 1
+
+    # minimum number of jruby runtimes that will be available in the pool.
+    # It defaults to one. The pool will always be at least this large, but
+    # may well be larger than this.
+    min: 1
+
+    # maximum number of jruby runtimes that may be available in the pool.
+    # It defaults to two. The pool will not neccessarily be this large.
+    # Values that are too high may result in OutOfMemory errors, either in
+    # the heap or in the PermGen.
+    max: 1
+
+daemon:
+    # Run GlassFish as a daemon. GlassFish may not run as a daemon process
+    # on all platforms.
+    enable: false
+
+    # File where the process id of GlassFish is saved when run as daemon.
+    pid: ../tmp/pids/glassfish.pid
+
+    # JVM properties. It can be used only in daemon mode. Uncomment the
+    # line below and make changes and necessary
+    # jvm-options: "-Xmx512m "
+
+
+
+    
