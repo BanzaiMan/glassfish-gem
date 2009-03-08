@@ -42,7 +42,7 @@
     <parent>
         <groupId>org.glassfish.scripting</groupId>
         <artifactId>rails</artifactId>
-        <version>0.7.7-SNAPSHOT</version>
+        <version>0.7.8-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -52,7 +52,7 @@
     <description>This module creates the jruby gem distribution image</description>
 
     <properties>
-        <nucleus.version>3.0-b36</nucleus.version>
+        <nucleus.version>3.0-SNAPSHOT</nucleus.version>
         <gem.version>0.9.3</gem.version>
     </properties>
     <build>
@@ -112,7 +112,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>gf-jruby-connector,grizzly-jruby-module,grizzly-jruby,akuma,jna
+                            <includeArtifactIds>gf-jruby-connector,grizzly-jruby-module,grizzly-jruby,akuma
                             </includeArtifactIds>
                             <stripVersion>true</stripVersion>
                             <outputDirectory>${project.build.directory}/dependency/glassfish/modules</outputDirectory>
@@ -141,6 +141,14 @@
                                 </copy>
                                 <copy file="config/domain.xml"
                                       todir="target/dependency/glassfish/domains/domain1/config" overwrite="true"/>
+                                <copy file="config/logging.properties"
+                                      todir="target/dependency/glassfish/domains/domain1/config" overwrite="true"/>
+                                <copy file="config/glassfish_gem_version.yml"
+                                      todir="target/dependency/glassfish/domains/domain1/config" overwrite="true">
+                                    <filterset>
+                                        <filter token="GLASSFISH_GEM_VERSION" value="${gem.version}"/>
+                                    </filterset>
+                                </copy>
                                 <delete file="target/dependency/glassfish/modules/osgi-adapter.jar"/>
                                 <copy file="target/glassfish-gem.jar" todir="target/dependency/glassfish/modules/"/>
                             </tasks>
@@ -266,6 +274,7 @@
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
             <version>3.0.9</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jruby</groupId>

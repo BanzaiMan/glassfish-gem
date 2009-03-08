@@ -37,8 +37,9 @@ require 'java'
 require 'glassfish-gem.jar'
 require 'glassfish.jar'
 require 'akuma.jar'
-require 'FileUtils'
 require 'yaml'
+require 'ftools'
+require 'version'
 
 
 #
@@ -48,14 +49,8 @@ module GlassFish
   class Server
     import "org.glassfish.scripting.gem.GlassFishMain"
     import "org.glassfish.scripting.gem.Options"
-    def startup(args)
-      domaindir = File.dirname("#{File.expand_path(args[:app_dir]}/tmp/.glassfish/config/domain.xml")
 
-      setup_temp_domain domaindir
-      if !setup_domain_dir? domaindir
-        puts "ERROR: Failed to create GlassFish domain directory: #{domaindir}"
-        exit -1
-      end
+    def startup(args)
       opts = Options.new()
       opts.runtimes = args[:runtimes]
       opts.runtimes_min = args[:runtimes_min]
@@ -67,58 +62,9 @@ module GlassFish
       opts.daemon = args[:daemon]
       opts.pid = args[:pid]
       opts.log = args[:log]
-      opts.domainDir = domainDir
+      opts.domainDir = args[:domain_dir]
+      opts.log_level = args[:log_level]
       gf = GlassFishMain.start opts
-    end
-
-    private
-
-
-    def setup_temp_domain domaindir
-      if !File.exist? domaindir
-        FileUtils.mkdir_p domaindir
-      end
-      if !same_version?
-        return check_domain_dir? domaindir
-      end
-      true
-    end
-
-    #
-    #Create a domain directory and copy the domain.xml and logging.properties there.
-    #This will take care of infamous bug that causes people to run glassfish gem as sudo
-    #if jruby is installed as root
-    #
-    def check_domain_dir?(domaindir)
-      if !File.writable_real?domaindir
-        return false;
-      end
-      src = __File__+File::SEPARATOR+".."+File::SEPARATOR+"domains"+File::SEPARATOR+"domain1"+File::SEPARATOR+"config"
-      File.cp src+FILE::SEPARATOR+"domain.xml", domaindir
-      File.cp src+FILE::SEPARATOR+"logging.properties", domaindir
-    end
-
-    #
-    #Returns true if there is glasfish_gem_version.yml file and has the same version as the glassfish gem. Otherwise
-    #creates a new file and returns false so that rest of the stuff can be created
-    #
-    def same_version?(domaindir)
-       f = File.join(domaindir, 'glasfish_gem_version.yml')
-       if !File.exist? f
-         yml = File.new(f, "w+")
-         src = File.join __File__, "..", "domains", "domain1", "config", "glasfish_gem_version.yml"
-         File.cp src, domaindir
-         return false
-       end
-       data = YAML::load(File.open(f))
-       if data.key?'glassfish'
-         return false; #this is probably corrupted, return false so that a new one can be placed
-       end
-       version = data['glassfish'].fetch('version', null)
-       if(version == null)
-         return false
-       end
-       return version.eql?GlassFish::VERSION::STRING
     end
   end
 end

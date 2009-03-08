@@ -41,10 +41,11 @@ import com.sun.akuma.Daemon;
 import static com.sun.akuma.CLibrary.LIBC;
 import com.sun.enterprise.glassfish.bootstrap.ASMain;
 
-import java.io.IOException;
-import java.io.File;
-import java.io.FileWriter;
+import java.io.*;
 import java.util.Arrays;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -56,26 +57,90 @@ import org.glassfish.api.admin.ParameterNames;
  */
 public class GlassFishMain {
     private static void startGlassFish(Options options) {
-        File domain = new File(options.appDir + File.separator+"tmp"+File.separator+"glassfish"+File.separator+"config");
-        if(!domain.exists()){
-            try {
-                domain.createNewFile();
-            } catch (IOException e) {
-                System.err.println("ERROR: IOException, failed to create: "+domain.getAbsolutePath());
-                System.err.println(e.getMessage());
-                System.exit(-1);
-            }
-        }
         System.setProperty("jruby.runtime", String.valueOf(options.runtimes));
         System.setProperty("jruby.runtime.min", String.valueOf(options.runtimes_min));
         System.setProperty("jruby.runtime.max", String.valueOf(options.runtimes_max));
         System.setProperty("rails.env", options.environment);
         System.setProperty("jruby.gem.port", String.valueOf(options.port));
         System.setProperty("GlassFish_Platform", "Static");
-        //System.setProperty("glassfish.static.cache.dir", args[:app_dir]+"/tmp")
+        System.setProperty("glassfish.static.cache.dir", options.domainDir);
         System.setProperty("jruby.log.location", options.log);
-        System.out.println("Logging messages to: "+options.log);
+
+        String logLevel = "INFO";
+        switch(options.log_level){
+            case 0:
+                logLevel = "OFF";
+                break;
+            case 1:
+                logLevel = "INFO";
+                break;
+            case 2:
+                logLevel = "WARNING";
+                break;
+            case 3:
+                logLevel = "SEVERE";
+                break;
+            case 4:
+                logLevel = "FINE";
+                break;
+            case 5:
+                logLevel = "FINER";
+                break;
+            case 6:
+                logLevel = "FINEST";
+                break;
+            case 7:
+                logLevel = "ALL";
+                break;
+            default:
+                System.err.println("Invalid log level: "+options.log_level+". Default log level 0:INFO will be used.");
+
+        }
+
+        Properties props = new Properties();
+        try {
+            String logFile = options.domainDir+File.separator+"config"+File.separator+"logging.properties";
+            InputStream fis = new FileInputStream(logFile);
+            props.load(fis);
+            fis.close();
+            String value = (String) props.get("java.util.logging.ConsoleHandler.level");
+            if(value != null && !value.equals(logLevel)){
+                props.put("java.util.logging.ConsoleHandler.level", logLevel);
+            }
+            for(Object key : props.keySet()){
+
+                if(((String)key).endsWith(".level") && (props.get(key) == null || !props.get(key).equals(logLevel))){
+                    props.put(key, logLevel);
+                }
+            }
+            OutputStream fos = new FileOutputStream(logFile);
+            props.store(fos, "Updated Glassfish gem level to: "+logLevel);
+            fos.close();
+        } catch (FileNotFoundException e) {
+            //skip
+        } catch (IOException e) {
+            //skip
+        }
+
+        //We disable al messages shown by anonymous loggers. This will filter lot of junk!
+        LogManager.getLogManager().getLogger("").setLevel(Level.OFF);
+        String host;
+        try {
+            host = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            host = "0.0.0.0";
+        }
+        System.out.println("Starting GlassFish server at: "+host+":"+options.port);
+        System.out.println("Logging messages to: "+options.log +", using log Level: "+logLevel);
+
         ASMain.main(new String[]{options.appDir, "--"+ParameterNames.CONTEXT_ROOT, options.contextRoot, "--domaindir", options.domainDir});
+    }
+
+    private static boolean isAnyKownLogLevel(String level){
+        return level.equals(Level.INFO.getName()) || level.equals(Level.WARNING.getName()) ||
+                level.equals(Level.SEVERE.getName()) || level.equals(Level.FINE.getName()) ||
+                level.equals(Level.FINER.getName()) || level.equals(Level.FINEST.getName()) ||
+                level.equals(Level.ALL.getName()) || level.equals(Level.OFF.getName());
     }
 
     public static void start(final Options options) {

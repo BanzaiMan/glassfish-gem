@@ -50,13 +50,14 @@ public class Options{
     public boolean daemon;
     public String pid;
     public String log;
+    public int log_level;
     public String domainDir;
 
     @Override
     public String toString() {
         return "runtimes: " + String.valueOf(runtimes)+" "+
-                "runtimes_min: " + String.valueOf(runtimes_min)+" "+
-                "runtimes_max: " + String.valueOf(runtimes_max)+" "+
+                "runtimes-min: " + String.valueOf(runtimes_min)+" "+
+                "runtimes-max: " + String.valueOf(runtimes_max)+" "+
                 "contextroot: " + contextRoot+" "+
                 "environment: " + environment+" "+
                 "appDir: " + appDir+" "+
@@ -64,6 +65,7 @@ public class Options{
                 "Deamon: "+String.valueOf(daemon)+" "+
                 "pid: " + pid + " "+
                 "log: " + log + " " +
+                "log-level: " + log_level +
                 "domain director: "+domainDir;
     }
 }
