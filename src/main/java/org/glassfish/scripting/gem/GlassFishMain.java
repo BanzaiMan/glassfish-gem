@@ -37,19 +37,17 @@
 
 package org.glassfish.scripting.gem;
 
-import com.sun.akuma.Daemon;
 import static com.sun.akuma.CLibrary.LIBC;
+import com.sun.akuma.Daemon;
 import com.sun.enterprise.glassfish.bootstrap.ASMain;
+import org.glassfish.api.admin.ParameterNames;
 
-import java.io.*;
-import java.util.Arrays;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
-import org.glassfish.api.admin.ParameterNames;
+import java.io.*;
 
 
 /**
@@ -66,8 +64,98 @@ public class GlassFishMain {
         System.setProperty("glassfish.static.cache.dir", options.domainDir);
         System.setProperty("jruby.log.location", options.log);
 
+        String logLevel = getLogLevel(options.log_level);
+
+        Properties props = new Properties();
+        try {
+            String logFile = options.domainDir+ File.separator+"config"+File.separator+"logging.properties";
+            InputStream fis = new FileInputStream(logFile);
+            props.load(fis);
+            fis.close();
+            for(Object key : props.keySet()){
+
+                if(((String)key).endsWith(".level") && (props.get(key) == null || !props.get(key).equals(logLevel))){
+                    props.put(key, logLevel);
+                }
+            }
+            OutputStream fos = new FileOutputStream(logFile);
+            props.store(fos, "Updated Glassfish gem level to: "+logLevel);
+            fos.close();
+        } catch (FileNotFoundException e) {
+            //skip
+        } catch (IOException e) {
+            //skip
+        }
+
+        //We disable al messages shown by anonymous loggers. This will filter lot of junk!
+        LogManager.getLogManager().getLogger("").setLevel(Level.OFF);
+        printStatusMessage(options);
+        ASMain.main(new String[]{options.appDir, "--"+ParameterNames.CONTEXT_ROOT, options.contextRoot, "--domaindir", options.domainDir});
+    }
+
+    public static void start(final Options options) {
+        Daemon d = new Daemon(){
+            @Override
+            protected void writePidFile() throws IOException {
+                try {
+                    //there should be better way to do such things
+                    String suffix="";
+                    if(options.pid.endsWith("glassfish"))
+                        suffix = "-"+LIBC.getpid()+".pid";
+                    
+                    File pid = new File(options.pid+suffix);
+                    pid.deleteOnExit();
+                    FileWriter fw = new FileWriter(pid);
+                    fw.write(String.valueOf(LIBC.getpid()));
+                    fw.close();
+                } catch (IOException e) {
+                    // if failed to write, keep going because maybe we are run from non-root
+                }
+            }
+        };
+        if (d.isDaemonized()) {
+            printStatusMessage(options);
+            try {
+                d.init();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            // if you are already daemonized, no point in daemonizing yourself again,
+            // so do this only when you aren't daemonizing.
+            if (options.daemon) {
+                try {
+                    //TODO: patch JVM args to suit GlassFish
+                    d.daemonize();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.exit(0);
+            }
+        }
+
+        startGlassFish(options);
+    }
+
+    private static void printStatusMessage(Options options) {
+        String host;
+        try {
+            host = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            host = "0.0.0.0";
+        }
+
+        System.out.println("Starting GlassFish server at: " + host + ":" + options.port);
+
+        //Show this message only if logging is turned ON
+        if (options.log_level > 0)
+            System.out.println("Logging messages to: " + options.log + ", using log Level: " + getLogLevel(options.log_level));
+        System.out.println("Process Id: " + LIBC.getpid());
+    }
+
+    private static String getLogLevel(int level){
         String logLevel = "INFO";
-        switch(options.log_level){
+        switch(level){
             case 0:
                 logLevel = "OFF";
                 break;
@@ -93,101 +181,8 @@ public class GlassFishMain {
                 logLevel = "ALL";
                 break;
             default:
-                System.err.println("Invalid log level: "+options.log_level+". Default log level 0:INFO will be used.");
-
+                System.err.println("Invalid log level: "+level+". Default log level 1:INFO will be used.");
         }
-
-        Properties props = new Properties();
-        try {
-            String logFile = options.domainDir+File.separator+"config"+File.separator+"logging.properties";
-            InputStream fis = new FileInputStream(logFile);
-            props.load(fis);
-            fis.close();
-            String value = (String) props.get("java.util.logging.ConsoleHandler.level");
-            if(value != null && !value.equals(logLevel)){
-                props.put("java.util.logging.ConsoleHandler.level", logLevel);
-            }
-            for(Object key : props.keySet()){
-
-                if(((String)key).endsWith(".level") && (props.get(key) == null || !props.get(key).equals(logLevel))){
-                    props.put(key, logLevel);
-                }
-            }
-            OutputStream fos = new FileOutputStream(logFile);
-            props.store(fos, "Updated Glassfish gem level to: "+logLevel);
-            fos.close();
-        } catch (FileNotFoundException e) {
-            //skip
-        } catch (IOException e) {
-            //skip
-        }
-
-        //We disable al messages shown by anonymous loggers. This will filter lot of junk!
-        LogManager.getLogManager().getLogger("").setLevel(Level.OFF);
-        String host;
-        try {
-            host = InetAddress.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
-            host = "0.0.0.0";
-        }
-        System.out.println("Starting GlassFish server at: "+host+":"+options.port);
-        System.out.println("Logging messages to: "+options.log +", using log Level: "+logLevel);
-
-        ASMain.main(new String[]{options.appDir, "--"+ParameterNames.CONTEXT_ROOT, options.contextRoot, "--domaindir", options.domainDir});
-    }
-
-    private static boolean isAnyKownLogLevel(String level){
-        return level.equals(Level.INFO.getName()) || level.equals(Level.WARNING.getName()) ||
-                level.equals(Level.SEVERE.getName()) || level.equals(Level.FINE.getName()) ||
-                level.equals(Level.FINER.getName()) || level.equals(Level.FINEST.getName()) ||
-                level.equals(Level.ALL.getName()) || level.equals(Level.OFF.getName());
-    }
-
-    public static void start(final Options options) {
-        Daemon d = new Daemon(){
-            @Override
-            protected void writePidFile() throws IOException {
-                try {
-                    System.out.println("PID file: "+options.pid);
-                    File pid = new File(options.pid);
-                    pid.deleteOnExit();
-                    FileWriter fw = new FileWriter(pid);
-                    fw.write(String.valueOf(LIBC.getpid()));
-                    fw.close();
-                } catch (IOException e) {
-                    // if failed to write, keep going because maybe we are run from non-root
-                }
-            }
-        };
-        if (d.isDaemonized()) {
-            System.out.println("Arguments: " + options);
-            
-            String ip = "0.0.0.0";
-            try {
-                ip = InetAddress.getLocalHost().getHostAddress();
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            }
-            System.out.println("Starting GlassFish server at " +ip+":" + options.port);
-            try {
-                d.init();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            // if you are already daemonized, no point in daemonizing yourself again,
-            // so do this only when you aren't daemonizing.
-            if (options.daemon) {
-                try {
-                    //TODO: patch JVM args to suit GlassFish
-                    d.daemonize();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                System.exit(0);
-            }
-        }
-
-        startGlassFish(options);
+        return logLevel;
     }
 }

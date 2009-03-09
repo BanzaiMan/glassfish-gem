@@ -1,4 +1,3 @@
-#!/usr/bin/env jruby
 # == Synopsis
 #
 # glassfish: GlassFish v3 server for Rack based frameworks such as: Rails, Merb, Sinatra...
@@ -32,7 +31,7 @@
 #   Run GlassFish as daemon
 #
 # -P, --pid FILE::
-#   PID file where PID will be written. Applicable when used with -d option. The default pid file is tmp/pids/glassfish.pid
+#   PID file where PID will be written. Applicable when used with -d option. The default pid file is tmp/pids/glassfish-<PID>.pid
 #
 # -l, --log FILE::
 #   Log file, where the server log messages will go. By default the server logs go to log/glassfish.log file.

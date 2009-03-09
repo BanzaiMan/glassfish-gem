@@ -46,7 +46,7 @@ daemon:
     enable: false
 
     # File where the process id of GlassFish is saved when run as daemon.
-    pid: ../tmp/pids/glassfish.pid
+    pid: ../tmp/pids/glassfish-<PID>.pid
 
     # Pass the JVM properties to GlassFish. It can be used only in daemon mode.     
     # Uncomment the line below and make changes and necessary. Please note the

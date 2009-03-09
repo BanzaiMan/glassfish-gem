@@ -42,7 +42,7 @@ require 'java'
 # Parses command line options
 #
 class CommandLineParser
-  PID_FILE    = Dir.pwd+File::SEPARATOR+"tmp"+File::SEPARATOR+"pids"+File::SEPARATOR+"glassfish.pid"
+  PID_FILE    = Dir.pwd+File::SEPARATOR+"tmp"+File::SEPARATOR+"pids"+File::SEPARATOR+"glassfish"
 
   def init_opts
     @@config ||= {
