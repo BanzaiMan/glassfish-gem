@@ -48,9 +48,13 @@ daemon:
     # File where the process id of GlassFish is saved when run as daemon.
     pid: ../tmp/pids/glassfish.pid
 
-    # JVM properties. It can be used only in daemon mode. Uncomment the
-    # line below and make changes and necessary
-    # jvm-options: "-Xmx512m "
+    # Pass the JVM properties to GlassFish. It can be used only in daemon mode.     
+    # Uncomment the line below and make changes and necessary. Please note the
+    # values below are given for a Quad Core Intel with 6GB RAM machine. You may
+    # like to changes these values according to the hardware you plan to run your
+    # application on. For details see
+    # http://java.sun.com/javase/6/docs/technotes/guides/vm/gc-ergonomics.html
+    #jvm-options: "-server -Xmx3g -Xms64m -XX:PermSize=64M -XX:MaxPermSize=256M -XX:+CMSClassUnloadingEnabled
 
 
 
