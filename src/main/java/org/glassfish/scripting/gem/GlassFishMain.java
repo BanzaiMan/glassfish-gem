@@ -42,12 +42,12 @@ import com.sun.akuma.Daemon;
 import com.sun.enterprise.glassfish.bootstrap.ASMain;
 import org.glassfish.api.admin.ParameterNames;
 
+import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
-import java.io.*;
 
 
 /**
@@ -68,18 +68,18 @@ public class GlassFishMain {
 
         Properties props = new Properties();
         try {
-            String logFile = options.domainDir+ File.separator+"config"+File.separator+"logging.properties";
+            String logFile = options.domainDir + File.separator + "config" + File.separator + "logging.properties";
             InputStream fis = new FileInputStream(logFile);
             props.load(fis);
             fis.close();
-            for(Object key : props.keySet()){
+            for (Object key : props.keySet()) {
 
-                if(((String)key).endsWith(".level") && (props.get(key) == null || !props.get(key).equals(logLevel))){
+                if (((String) key).endsWith(".level") && (props.get(key) == null || !props.get(key).equals(logLevel))) {
                     props.put(key, logLevel);
                 }
             }
             OutputStream fos = new FileOutputStream(logFile);
-            props.store(fos, "Updated Glassfish gem level to: "+logLevel);
+            props.store(fos, "Updated Glassfish gem level to: " + logLevel);
             fos.close();
         } catch (FileNotFoundException e) {
             //skip
@@ -90,26 +90,36 @@ public class GlassFishMain {
         //We disable al messages shown by anonymous loggers. This will filter lot of junk!
         LogManager.getLogManager().getLogger("").setLevel(Level.OFF);
         printStatusMessage(options);
-        ASMain.main(new String[]{options.appDir, "--"+ParameterNames.CONTEXT_ROOT, options.contextRoot, "--domaindir", options.domainDir});
+        ASMain.main(new String[]{options.appDir, "--" + ParameterNames.CONTEXT_ROOT, options.contextRoot, "--domaindir", options.domainDir});
     }
 
     public static void start(final Options options) {
-        Daemon d = new Daemon(){
+        String suffix = "";
+        if (options.pid.endsWith("glassfish")){
+            suffix = "-" + LIBC.getpid() + ".pid";
+            options.pid = options.pid + suffix;
+        }
+
+        final File pid = new File(options.pid);
+        pid.deleteOnExit();
+
+        Daemon d = new Daemon() {
             @Override
             protected void writePidFile() throws IOException {
+                FileWriter fw = null;
                 try {
                     //there should be better way to do such things
-                    String suffix="";
-                    if(options.pid.endsWith("glassfish"))
-                        suffix = "-"+LIBC.getpid()+".pid";
-                    
-                    File pid = new File(options.pid+suffix);
-                    pid.deleteOnExit();
-                    FileWriter fw = new FileWriter(pid);
+                    fw = new FileWriter(pid);
                     fw.write(String.valueOf(LIBC.getpid()));
                     fw.close();
                 } catch (IOException e) {
-                    // if failed to write, keep going because maybe we are run from non-root
+                    System.err.println("Error writing pid file: "+pid.getAbsolutePath());
+                    logException(e, options);
+                    System.exit(1);
+                }finally{
+                    if(fw != null){
+                        fw.close();
+                    }
                 }
             }
         };
@@ -128,7 +138,9 @@ public class GlassFishMain {
                     //TODO: patch JVM args to suit GlassFish
                     d.daemonize();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.err.println("Error daemonizing");
+                    logException(e, options);
+                    System.exit(1);
                 }
                 System.exit(0);
             }
@@ -145,17 +157,68 @@ public class GlassFishMain {
             host = "0.0.0.0";
         }
 
-        System.out.println("Starting GlassFish server at: " + host + ":" + options.port);
+        if (options.daemon) {
+            String logfilename = options.appDir + File.separator + "log" + File.separator + "glassfish.log";
 
-        //Show this message only if logging is turned ON
-        if (options.log_level > 0)
-            System.out.println("Logging messages to: " + options.log + ", using log Level: " + getLogLevel(options.log_level));
-        System.out.println("Process Id: " + LIBC.getpid());
+            File log = new File(logfilename);
+            if (!log.exists()) {
+                try {
+                    log.createNewFile();
+                } catch (IOException e) {
+                    System.err.println("Error creating " + logfilename);
+                    logException(e, options);
+                    System.exit(1);
+                }
+            }
+            FileWriter fw = null;
+            try {
+                fw = new FileWriter(log);
+                String msg1 = "Starting GlassFish as daemon at: " + host + ":" + options.port + " in " + options.environment + " environment...";
+                String msg2 = "Writing log messages to: "+options.log+".";
+                String msg3 = "To stop, kill -s SIGINT " + LIBC.getpid();
+
+                fw.write(msg1+"\n");
+
+                fw.write(msg2+"\n");
+                fw.write("Writing pid file to: "+options.pid+"\n");
+                fw.write(msg3+"\n");
+
+                System.out.println(msg1);
+                System.out.println("Server startup messages are written in: "+log.getAbsolutePath());
+                System.out.println(msg3);
+            } catch (FileNotFoundException e) {
+                logException(e, options);
+            }catch (IOException e) {
+                logException(e, options);
+            }finally {
+                if(fw != null){
+                    try {
+                        fw.close();
+                    } catch (IOException e) {
+                        logException(e, options);
+                    }
+                }
+            }
+        }else{
+            System.out.println("Starting GlassFish server at: " + host + ":" + options.port+ " in " + options.environment + " environment...");
+            System.out.println("Writing log messages to: "+options.log+".");
+            System.out.println("Press Ctrl+C to stop.");
+
+        }
     }
 
-    private static String getLogLevel(int level){
+    private static void logException(Exception e, Options opts) {
+        //if the log level is more than INFO, then
+        if (opts.log_level > 3) {
+            e.printStackTrace();
+        } else {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    private static String getLogLevel(int level) {
         String logLevel = "INFO";
-        switch(level){
+        switch (level) {
             case 0:
                 logLevel = "OFF";
                 break;
@@ -181,7 +244,7 @@ public class GlassFishMain {
                 logLevel = "ALL";
                 break;
             default:
-                System.err.println("Invalid log level: "+level+". Default log level 1:INFO will be used.");
+                System.err.println("Invalid log level: " + level + ". Default log level 1:INFO will be used.");
         }
         return logLevel;
     }

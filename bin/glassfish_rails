@@ -40,7 +40,7 @@
 #   Log level 0 to 7. 0:OFF, 1:INFO (default), 2:WARNING, 3:SEVERE, 4:FINE, 5:FINER, 6:FINEST, 7:ALL.
 #
 # APPLICATION_PATH (optional):  Path to the application to be run (default: current).
-# For aditional configuration run 'gfrake -T'
+# For further configuration, run GlassFish rake command 'gfrake -T'
 
 require "java"
 $LOAD_PATH << "#{File.dirname(__FILE__)}/../modules"

@@ -133,7 +133,7 @@
                                 <!-- remove everything from lib -->
                                 <delete dir="target/dependency/glassfish/lib" includes="*"/>
 
-                                <copy file="bin/gfadmin" todir="target/dependency/glassfish/bin"/>
+                                <!--<copy file="bin/gfadmin" todir="target/dependency/glassfish/bin"/>-->
                                 <copy file="bin/glassfish" todir="target/dependency/glassfish/bin"/>
                                 <copy file="bin/gfrake" todir="target/dependency/glassfish/bin"/>
                                 <!--For backward compatibility-->
@@ -187,7 +187,7 @@
                                 s.version = "${gem.version}"
                                 s.author = "Vivek Pandey, Jerome Dochez"
                                 s.email = "vivek.pandey@sun.com, jerome.dochez@sun.com"
-                                s.homepage = "http://wiki.glassfish.java.net/Wiki.jsp?page=JRuby"
+                                s.homepage = "http://glassfishgem.rubyforge.org/"
                                 s.platform = "universal-java"
                                 s.summary = "GlassFish V3 Application Server for JRuby"
                                 s.description = "GlassFish gem is an embedded GlassFish V3 application server which
@@ -195,7 +195,7 @@
                                 s.files = FileList["{bin,lib,generators,modules,config,domains}/**/*"].to_a
                                 s.bindir = "bin"
                                 s.require_paths = ["lib"]
-                                s.executables = ["glassfish", "glassfish_rails", "gfadmin", "gfrake"]
+                                s.executables = ["glassfish", "glassfish_rails", "gfrake"]
                                 s.default_executable = "glassfish"
                                 s.test_files = FileList["{test}/**/*test.rb"].to_a
                                 s.has_rdoc = true
