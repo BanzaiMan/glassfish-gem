@@ -223,13 +223,13 @@ public class GlassFishMain {
                 logLevel = "OFF";
                 break;
             case 1:
-                logLevel = "INFO";
+                logLevel = "SEVERE";
                 break;
             case 2:
                 logLevel = "WARNING";
                 break;
             case 3:
-                logLevel = "SEVERE";
+                logLevel = "INFO"; //default
                 break;
             case 4:
                 logLevel = "FINE";

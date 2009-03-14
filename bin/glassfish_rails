@@ -28,7 +28,7 @@
 #    Maximum number of JRuby runtimes to crete
 #
 # -d, --daemon::
-#   Run GlassFish as daemon
+#   Run GlassFish as daemon. Currently works with Linux and Solaris OS.
 #
 # -P, --pid FILE::
 #   PID file where PID will be written. Applicable when used with -d option. The default pid file is tmp/pids/glassfish-<PID>.pid

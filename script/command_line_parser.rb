@@ -57,6 +57,7 @@ class CommandLineParser
             :log          => nil,
             :log_level    => 1,
             :daemon       => false,
+            :jvm-options  => nil
     }
   end
 
@@ -126,9 +127,8 @@ class CommandLineParser
           config[:log_level] = arg.to_i
         else
           STDERR.puts "Invalid --log-level #{arg}. Chose a number between 0 to 7."
-          fail "\t0 OFF\n\t1 INFO (default)\n\t2 WARNING\n\t3 SEVERE\n\t4 FINE\n\t5 FINER\n\t6 FINEST\n\t7 ALL\n"
+          fail "\t0 OFF\n\t1 SEVERE \n\t2 WARNING\n\t3 INFO(default)\n\t4 FINE\n\t5 FINER\n\t6 FINEST\n\t7 ALL\n"
         end
-
       end
     end
 
@@ -147,11 +147,63 @@ class CommandLineParser
 
     config[:app_dir] = ARGV.shift unless ARGV.empty?
 
+    #Read the config file from config/glasfish.yml
+    read_glassfish_config(File.join(config[:app_dir], "config", "glassfish.yml"))
+    end
+
     config
   end
 
   private
 
+  # Read glassfish config file from config/glassfish.yml. CLI options will override the glassfish.yml configurations
+  def read_glassfish_config?cfile
+    #If there is no config file we return
+    if(!File:exist?cfile)
+      return
+
+    data = YAML::load(cfile)
+
+    data.each do|opt, arg|
+      case opt
+        when 'http'
+          val = arg['port']
+          if(val != nil and val != 3000 and config[:port] != 3000)
+            config[:port] = val.to_i
+          end
+
+          val = arg['contextroot']
+          if(val != nil and val != '/' and config[:contextroot] != '/')
+            config[:contextroot] = val
+          end
+
+          
+        when 'log'
+        when 'jruby-runtime-pool'
+        when 'daemon'
+        when 'environment'
+        end
+      end
+    end
+
+    if(data['http']!=nil)
+        value = data['http']['port']
+        if(port != nil and port != 3000" config['port']==3000)
+          config['port'] = port
+        end
+        value = data['http']['contextroot']
+        if(value != nil and config[]=='/')
+    end
+
+
+    
+  end
+
+  #
+  #Create a domain directory and copy the domain.xml and logging.properties there.
+  #This will take care of infamous bug that causes people to run glassfish gem as sudo
+  #if jruby is installed as root
+  #
   def setup_temp_domain? config_dir
     if !File.exist? config_dir
       FileUtils.mkdir_p config_dir
@@ -162,11 +214,6 @@ class CommandLineParser
     true
   end
 
-  #
-  #Create a domain directory and copy the domain.xml and logging.properties there.
-  #This will take care of infamous bug that causes people to run glassfish gem as sudo
-  #if jruby is installed as root
-  #
   def check_domain_dir?(config_dir)
     if !File.writable_real?config_dir
       return false;
@@ -204,31 +251,5 @@ class CommandLineParser
     STDERR.puts "Type 'glassfish -h' to get help"
     Kernel.exit -1
   end
-
-  class OS
-
-    # universal-darwin9.0 shows up for RUBY_PLATFORM on os X leopard with the bundled ruby.
-    # Installing ruby in different manners may give a different result, so beware.
-    # Examine the ruby platform yourself. If you see other values please comment
-    # in the snippet on dzone and I will add them.
-
-    def is_mac?
-      RUBY_PLATFORM.downcase.include?("darwin")
-    end
-
-    def is_windows?
-       RUBY_PLATFORM.downcase.include?("mswin")
-    end
-
-    def is_linux?
-       RUBY_PLATFORM.downcase.include?("linux")
-    end
-
-    def is_solaris?
-       RUBY_PLATFORM.downcase.include?("solaris")
-    end
-
-  end
-
 
 end

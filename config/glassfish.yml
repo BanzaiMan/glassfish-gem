@@ -1,60 +1,89 @@
 #
-# GlassFish configuration
+# GlassFish configuration.
+#
+# Please read the comments for each configuration settings before modifying.
 #
 
-# HTTP port
-port: 3000
-
-# context root
-contextroot: '/'
-
-# application development environment
+# application environment. Default value development
 environment: development
 
-# Log file.
-log: ../log/development.log
 
-# Logging level. Log level 0 to 7. 0:OFF, 1:INFO (default), 2:WARNING,
-# 3:SEVERE, 4:FINE, 5:FINER, 6:FINEST, 7:ALL.
-log-level: 1
+# HTTP configuration
+http:
+
+    # port
+    port: 3000
+
+    # context root. The default value is '/'
+    contextroot: /
 
 
-# Runtime configuration
+#Logging configuration
+log:
+
+    # Log file location. Default log file is log/<environment>.log. For example,
+    # if you are running in development environment, then the log file would be
+    # log/development.log.
+    #
+    # The location must be either an absolute path or relative to your application
+    # directory.
+    #log-file:
+
+    # Logging level. Log level 0 to 7. 0:OFF, 1:SEVERE, 2:WARNING,
+    # 3:INFO (default), 4:FINE, 5:FINER, 6:FINEST, 7:ALL.
+    log-level: 3
+
 #
-# Initial number of jruby runtimes that Glassfish starts with. It defaults
-# to one. It also represents the lowest value that Glassfish will use for
-# the maximum and the highest value that Glassfish will accept for the
-# minimum. As of this time, setting this number too high may cause
-# undesirable behavior.
-runtimes:
+# Runtime configuration
+# If you are using Rails ver < 2.1.x, you should configure the JRuby runtime pool for increased
+# scalability.
+jruby-runtime-pool:
+
+    # Initial number of jruby runtimes that Glassfish starts with. It defaults
+    # to one. It also represents the lowest value that Glassfish will use for
+    # the maximum and the highest value that Glassfish will accept for the
+    # minimum. As of this time, setting this number too high may cause
+    # undesirable behavior. Default value is .
     initial: 1
 
-    # minimum number of jruby runtimes that will be available in the pool.
+    # Minimum number of jruby runtimes that will be available in the pool.
     # It defaults to one. The pool will always be at least this large, but
-    # may well be larger than this.
+    # may well be larger than this. Default value is 1.
     min: 1
 
-    # maximum number of jruby runtimes that may be available in the pool.
+
+    # Maximum number of jruby runtimes that may be available in the pool.
     # It defaults to two. The pool will not neccessarily be this large.
     # Values that are too high may result in OutOfMemory errors, either in
-    # the heap or in the PermGen.
+    # the heap or in the PermGen. Default value is 1.
     max: 1
 
 daemon:
     # Run GlassFish as a daemon. GlassFish may not run as a daemon process
-    # on all platforms.
+    # on all platforms. Default value is false.
     enable: false
 
     # File where the process id of GlassFish is saved when run as daemon.
-    pid: ../tmp/pids/glassfish-<PID>.pid
+    # The location must be either an absolute path or relative to your application
+    # directory.
+    # default PID file is tmp/pids/glassfish-<PID>.pid
+    #pid:
 
-    # Pass the JVM properties to GlassFish. It can be used only in daemon mode.     
-    # Uncomment the line below and make changes and necessary. Please note the
-    # values below are given for a Quad Core Intel with 6GB RAM machine. You may
-    # like to changes these values according to the hardware you plan to run your
-    # application on. For details see
-    # http://java.sun.com/javase/6/docs/technotes/guides/vm/gc-ergonomics.html
-    #jvm-options: "-server -Xmx3g -Xms64m -XX:PermSize=64M -XX:MaxPermSize=256M -XX:+CMSClassUnloadingEnabled
+    # Pass the JVM properties to GlassFish. It can be used only in daemon mode.
+    # The numbers below are to give an ideas. The numbers in your case would vary
+    # based on the hardware capabilities of machine you are running. See what is a
+    # server class machine http://java.sun.com/javase/6/docs/technotes/guides/vm/server-class.html
+
+    # GlassFish gem runs with these default options
+    #
+    jvm-options: -server -Xmx512 -XX:MaxPermSize=192M -XX:NewRatio=2 -XX:+DisableExplicitGC -Dhk2.file.directory.changeIntervalTimer=6000
+
+    # Values below are given for a Sun Fire x4100, 4x Dual Core Opteron, 8G mem
+    # machine. You may like to changes these values according to the hardware
+    # you plan to run your application on. For details see
+    # JVM egonomics document, http://java.sun.com/javase/6/docs/technotes/guides/vm/gc-ergonomics.html
+    #
+    #jvm-options: -server -Xmx3g -Xms64m -XX:PermSize=256M -XX:MaxPermSize=256M -XX:NewRatio=2 -XX:+DisableExplicitGC -Dhk2.file.directory.changeIntervalTimer=6000
 
 
 
