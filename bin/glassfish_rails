@@ -19,13 +19,13 @@
 #    change rails environment (default: development)
 #
 # -n --runtimes NUMBER::
-#    Number of JRuby runtimes to crete initially
+#    Number of JRuby runtimes to create initially
 #
 # --runtimes-min NUMBER::
-#    Minimum JRuby runtimes to crete
+#    Minimum JRuby runtimes to create
 #
 # --runtimes-max NUMBER::
-#    Maximum number of JRuby runtimes to crete
+#    Maximum number of JRuby runtimes to create
 #
 # -d, --daemon::
 #   Run GlassFish as daemon. Currently works with Linux and Solaris OS.
@@ -37,7 +37,9 @@
 #   Log file, where the server log messages will go. By default the server logs go to log/glassfish.log file.
 #
 # --log-level LEVEL::
-#   Log level 0 to 7. 0:OFF, 1:INFO (default), 2:WARNING, 3:SEVERE, 4:FINE, 5:FINER, 6:FINEST, 7:ALL.
+#   Log level 0 to 7. 0:OFF, 1:SEVERE, 2:WARNING, 3:INFO (default), 4:FINE, 5:FINER, 6:FINEST, 7:ALL.
+# --config FILE::
+#   Configuration file location. Use glassfish.yml as template. Generate it using 'gfrake config' command.
 #
 # APPLICATION_PATH (optional):  Path to the application to be run (default: current).
 # For further configuration, run GlassFish rake command 'gfrake -T'

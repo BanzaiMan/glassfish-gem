@@ -36,220 +36,191 @@
 
 require 'rdoc_usage'
 require 'getoptlong'
+require 'pathname'
+require 'config'
 require 'java'
 
 #
 # Parses command line options
 #
-class CommandLineParser
-  PID_FILE    = Dir.pwd+File::SEPARATOR+"tmp"+File::SEPARATOR+"pids"+File::SEPARATOR+"glassfish"
+module GlassFish
+  class CommandLineParser
 
-  def init_opts
-    @@config ||= {
-            :runtimes     => 1,
-            :runtimes_min => 1,
-            :runtimes_max => 1,
-            :contextroot  => '/',
-            :environment  => "development",
-            :app_dir      => Dir.pwd,
-            :port         => 3000,
-            :pid          => PID_FILE,
-            :log          => nil,
-            :log_level    => 1,
-            :daemon       => false,
-            :jvm-options  => nil
-    }
-  end
+    def init_opts    
+      @@config ||= {
+        :runtimes     => 1,
+        :runtimes_min => 1,
+        :runtimes_max => 1,
+        :contextroot  => '/',
+        :environment  => "development",
+        :app_dir      => Dir.pwd,
+        :port         => 3000,
+        :pid          => Config::PID_FILE,
+        :log          => nil,
+        :log_level    => 1,
+        :daemon       => false,
+        :jvm_options  => nil
+      }
+    end
 
-  def parse
-    config = init_opts
-    opts = GetoptLong.new(
-            [ '--port', '-p', GetoptLong::REQUIRED_ARGUMENT ],
-            [ '--environment', '-e', GetoptLong::REQUIRED_ARGUMENT ],
-            [ '--contextroot', '-c', GetoptLong::REQUIRED_ARGUMENT ],
-            [ '--daemon', '-d', GetoptLong::NO_ARGUMENT ],
-            [ '--pid', '-P', GetoptLong::REQUIRED_ARGUMENT ],
-            [ '--log', '-l', GetoptLong::REQUIRED_ARGUMENT ],
-            [ '--log-level', GetoptLong::REQUIRED_ARGUMENT ],
-            [ '--runtimes', '-n', GetoptLong::REQUIRED_ARGUMENT ],
-            [ '--runtimes-min', GetoptLong::REQUIRED_ARGUMENT ],
-            [ '--runtimes-max', GetoptLong::REQUIRED_ARGUMENT ],
-            [ '--version', '-v', GetoptLong::NO_ARGUMENT ],
-            [ '--help', '-h', GetoptLong::NO_ARGUMENT ]
-    )
+    def parse
+      
+      check_java
 
-    opts.each do |opt, arg|
-      case opt
-      when '--version'
-        require 'version'
-        puts "#{GlassFish::FULLVERSION}"
-        exit(0)
-      when '--help'
-        RDoc::usage
-      when '--contextroot'
-        config[:contextroot] = arg
-      when '--port'
-        config[:port] = arg.to_i
-      when '--environment'
-        config[:environment] = arg
-      when '--runtimes'
-        config[:runtimes] = arg.to_i
-      when '--runtimes-min'
-        config[:runtimes_min] = arg.to_i
-      when '--runtimes-max'
-        config[:runtimes_max] = arg.to_i
-      when '--daemon'
-        os = java.lang.System.getProperty("os.name").downcase
-        version = java.lang.System.getProperty("os.version")
-        #check the platform, Currently daemon mode works only on linux and solaris
-        if(os.include?("linux") or os.include?("solaris"))
+      config = init_opts            
+      
+      opts = GetoptLong.new(
+      [ '--port', '-p', GetoptLong::REQUIRED_ARGUMENT ],
+      [ '--environment', '-e', GetoptLong::REQUIRED_ARGUMENT ],
+      [ '--contextroot', '-c', GetoptLong::REQUIRED_ARGUMENT ],
+      [ '--config', GetoptLong::REQUIRED_ARGUMENT ],
+      [ '--daemon', '-d', GetoptLong::NO_ARGUMENT ],
+      [ '--pid', '-P', GetoptLong::REQUIRED_ARGUMENT ],
+      [ '--log', '-l', GetoptLong::REQUIRED_ARGUMENT ],
+      [ '--log-level', GetoptLong::REQUIRED_ARGUMENT ],
+      [ '--runtimes', '-n', GetoptLong::REQUIRED_ARGUMENT ],
+      [ '--runtimes-min', GetoptLong::REQUIRED_ARGUMENT ],
+      [ '--runtimes-max', GetoptLong::REQUIRED_ARGUMENT ],
+      [ '--version', '-v', GetoptLong::NO_ARGUMENT ],
+      [ '--help', '-h', GetoptLong::NO_ARGUMENT ]
+      )
+
+      config_file = File.join(config[:app_dir], "config", "glassfish.yml") 
+      opts.each do |opt, arg|
+        case opt
+        when '--version'
+          require 'version'
+          puts "#{GlassFish::FULLVERSION}"
+          exit(0)
+        when '--help'
+          RDoc::usage
+        when '--contextroot'
+          config[:contextroot] = arg
+        when '--port'
+          config[:port] = arg.to_i
+        when '--environment'
+          config[:environment] = arg
+        when '--runtimes'
+          config[:runtimes] = arg.to_i
+        when '--runtimes-min'
+          config[:runtimes_min] = arg.to_i
+        when '--runtimes-max'
+          config[:runtimes_max] = arg.to_i
+        when '--daemon'
           config[:daemon] = true
-        else
-          fail "You are running on #{java.lang.System.getProperty("os.name")} #{version}. Currently daemon mode only works on Linux or Solaris platforms!"
-        end
-      when '--pid'
-        if(!ARGV.include?'-d' and !ARGV.include?'--daemon')
-          fail("--pid option can only be used with --daemon.")
-        end
-        if not File.exists?(arg)
-          puts "PID file #{arg} does not exist. Creating a new one..."
-          f = FileUtils.touch arg
-        end
-        config[:pid] = File.expand_path arg
-      when '--log'
-        if not File.exists?(arg)
-          puts "Log file #{arg} does not exist. Creating a new one..."
-          FileUtils.touch arg
-        end
-        config[:log] = File.expand_path arg
-      when '--log-level'
-        if (arg.eql?"0" or arg.eql?"1" or arg.eql?"2" or arg.eql?"3" or arg.eql?"4" or arg.eql?"5" or arg.eql?"6" or arg.eql?"7")
+        when '--pid'
+          if(!ARGV.include?'-d' and !ARGV.include?'--daemon')
+            GlassFish::Config::fail("--pid option can only be used with --daemon.")
+          end
+          config[:pid] = arg
+        when '--log'
+          config[:log] = arg
+        when '--log-level'
           config[:log_level] = arg.to_i
-        else
-          STDERR.puts "Invalid --log-level #{arg}. Chose a number between 0 to 7."
-          fail "\t0 OFF\n\t1 SEVERE \n\t2 WARNING\n\t3 INFO(default)\n\t4 FINE\n\t5 FINER\n\t6 FINEST\n\t7 ALL\n"
+        when '--config'
+          config_file = arg
         end
       end
+
+
+      config[:app_dir] = ARGV.shift unless ARGV.empty?
+
+      config[:log] = absolutize config[:app_dir], config[:log]
+      config[:pid] = absolutize config[:app_dir], config[:pid]
+      #Validate the command line options
+      Config.new.validate config
+      
+      #Read the config file from config/glasfish.yml
+      config_file = absolutize config[:app_dir],config_file
+      read_glassfish_config(config_file, config)
+            
+      config
+
     end
 
-    if(config[:log] == nil)
-        config[:log] = File.join(config[:app_dir], "log", config[:environment]+".log")
-    end
+    private
 
-    domaindir = File.join(config[:app_dir], "tmp", ".glassfish")
-    config[:domain_dir] = File.expand_path(domaindir)
+    # Read glassfish config file from config/glassfish.yml. CLI options will 
+    # override the glassfish.yml configurations
+    def read_glassfish_config(cfile, config)
 
-    if !setup_temp_domain?File.join(domaindir, "config")
-      puts "ERROR: Failed to create GlassFish domain directory: #{domaindir}"
-      exit -1
-    end
+      #If there is no config file we return
+      if(!File::exists?(cfile))
+        return config
+      end
 
+      puts "Parsing config file: #{cfile}"
+      data = YAML::load(File::open(cfile))
 
-    config[:app_dir] = ARGV.shift unless ARGV.empty?
-
-    #Read the config file from config/glasfish.yml
-    read_glassfish_config(File.join(config[:app_dir], "config", "glassfish.yml"))
-    end
-
-    config
-  end
-
-  private
-
-  # Read glassfish config file from config/glassfish.yml. CLI options will override the glassfish.yml configurations
-  def read_glassfish_config?cfile
-    #If there is no config file we return
-    if(!File:exist?cfile)
-      return
-
-    data = YAML::load(cfile)
-
-    data.each do|opt, arg|
-      case opt
+      data.each do |opt, arg|
+        case opt
         when 'http'
           val = arg['port']
-          if(val != nil and val != 3000 and config[:port] != 3000)
+          if(!val.nil?)
             config[:port] = val.to_i
           end
 
           val = arg['contextroot']
-          if(val != nil and val != '/' and config[:contextroot] != '/')
-            config[:contextroot] = val
+          config[:contextroot] = val unless val.nil?
+        when 'log'          
+          val = arg['log-file']
+          if(!val.nil?)
+            config[:log] = absolutize config[:app_dir], val
           end
 
-          
-        when 'log'
+          val = arg['log-level']
+          config[:log_level] = val.to_i unless val.nil?
         when 'jruby-runtime-pool'
-        when 'daemon'
+          config[:runtimes] = arg['initial'] unless arg['initial'].nil?
+          config[:runtimes_min] = arg['min'] unless arg['min'].nil?
+          config[:runtimes_max] = arg['max'] unless arg['max'].nil?
+        when 'daemon'          
+          config[:daemon] = arg['enable'] unless arg['enable'].nil?
+          if(!arg['pid'].nil?)
+            if(!config[:daemon])
+              Config::fail("glassfish.yml has\n daemon:\n\tpid: #{arg['pid']}\nThe pid option can only be used when daemon is set enable: true.")
+            end
+            config[:pid] = absolutize config[:app_dir], arg['pid']          
+          end
+          
+          #CLI option are overriden by glassfish.yml settings
+          if(!data['daemon'].nil? and (data['daemon'] or config[:daemon]))
+            config[:jvm_options] = arg['jvm-options'] unless  arg['jvm-options'].nil?         
+          else
+            STDERR.puts "Ignoring JVM options #{arg}. JVM options can only be passed in daemon mode. To use these, enable daemon mode"
+          end          
         when 'environment'
-        end
+          config[:environment] = arg unless arg.nil?
+        end      
+      end 
+
+      #validate the options read from the config file
+      puts "Validating configuration read from glassfish.yml"
+      Config.new.validate config
+    end  
+
+    def absolutize(base, path)
+      if path.nil?
+        return nil
+      end
+      p = Pathname.new path
+      if(!p.absolute?)
+        path = File.join(base, path)
+      end
+      path
+    end
+    
+    def check_java
+      begin 
+          java.lang.Class.forName("javax.xml.ws.Service")
+      rescue 
+          #It is not Java6, fail
+          STDERR.puts "ERROR: You are running, Java version: "+java.lang.System.getProperty("java.version")+"."
+          STDERR.puts "ERROR: GlassFish gem needs Java ver. 6.0 or higher!"
+          puts "Please install JDK 6 from: http://java.sun.com/javase/downloads/index.jsp"
+          exit(1);
       end
     end
 
-    if(data['http']!=nil)
-        value = data['http']['port']
-        if(port != nil and port != 3000" config['port']==3000)
-          config['port'] = port
-        end
-        value = data['http']['contextroot']
-        if(value != nil and config[]=='/')
-    end
-
-
-    
   end
-
-  #
-  #Create a domain directory and copy the domain.xml and logging.properties there.
-  #This will take care of infamous bug that causes people to run glassfish gem as sudo
-  #if jruby is installed as root
-  #
-  def setup_temp_domain? config_dir
-    if !File.exist? config_dir
-      FileUtils.mkdir_p config_dir
-    end
-    if !same_version?config_dir
-      return check_domain_dir? config_dir
-    end
-    true
-  end
-
-  def check_domain_dir?(config_dir)
-    if !File.writable_real?config_dir
-      return false;
-    end
-    src = File.dirname(__FILE__)+File::SEPARATOR+".."+File::SEPARATOR+"domains"+File::SEPARATOR+"domain1"+File::SEPARATOR+"config"
-    File.cp(File.join(src,"domain.xml"), config_dir)
-    File.cp(File.join(src,"logging.properties"), config_dir)
-  end
-
-  #
-  #Returns true if there is glasfish_gem_version.yml file and has the same version as the glassfish gem. Otherwise
-  #creates a new file and returns false so that rest of the stuff can be created
-  #
-  def same_version?(config_dir)
-    f = File.join(config_dir, 'glassfish_gem_version.yml')
-    if !File.exist? f
-      src = File.join(File.dirname(__FILE__), "..", "domains", "domain1", "config", "glassfish_gem_version.yml")
-      File.cp src, config_dir
-      return false
-    end
-    file = File.open(f)
-    data = YAML::load(file)
-    if not data.key?'glassfish'
-      return false; #this is probably corrupted, return false so that a new one can be placed
-    end
-    version = data['glassfish'].fetch('version', nil)
-    if(version == nil)
-      return false
-    end
-    return version.eql?GlassFish::VERSION
-  end
-
-  def fail(message)
-    STDERR.puts "ERROR: #{message}"
-    STDERR.puts "Type 'glassfish -h' to get help"
-    Kernel.exit -1
-  end
-
 end

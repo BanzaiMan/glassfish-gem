@@ -39,12 +39,16 @@ package org.glassfish.scripting.gem;
 
 import static com.sun.akuma.CLibrary.LIBC;
 import com.sun.akuma.Daemon;
+import com.sun.akuma.JavaVMArguments;
 import com.sun.enterprise.glassfish.bootstrap.ASMain;
 import org.glassfish.api.admin.ParameterNames;
 
 import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -55,6 +59,7 @@ import java.util.logging.LogManager;
  */
 public class GlassFishMain {
     private static void startGlassFish(Options options) {
+
         System.setProperty("jruby.runtime", String.valueOf(options.runtimes));
         System.setProperty("jruby.runtime.min", String.valueOf(options.runtimes_min));
         System.setProperty("jruby.runtime.max", String.valueOf(options.runtimes_max));
@@ -135,9 +140,32 @@ public class GlassFishMain {
             // so do this only when you aren't daemonizing.
             if (options.daemon) {
                 try {
-                    //TODO: patch JVM args to suit GlassFish
-                    d.daemonize();
-                } catch (IOException e) {
+                    String[] array = options.jvm_opts.split(" ");
+
+                    //we first compute the new JVM opts and append the old ones
+                    JavaVMArguments newargs = new JavaVMArguments();
+                    for(String str : array){
+                        newargs.add(str.trim());
+                    }
+
+                    JavaVMArguments jvmargs = JavaVMArguments.current();                    
+                    for(String arg:jvmargs){
+                        //There will be others, for now exluce JRuby -Xmx setting
+                        if(!arg.startsWith("-Xmx") && !arg.endsWith("java")){
+                            newargs.add(arg);
+                        }
+                    }
+                    if(options.log_level > 4){
+                        StringBuffer buff = new StringBuffer();
+                        System.out.println("Starting GlassFish with JVM options: ");
+                        for(String arg: newargs){                            
+                            buff.append(arg).append(File.pathSeparator);
+                        }
+                        System.out.println(buff);
+                    }
+                    
+                    d.daemonize(newargs);
+                } catch (IOException e) {                    
                     System.err.println("Error daemonizing");
                     logException(e, options);
                     System.exit(1);
@@ -158,7 +186,7 @@ public class GlassFishMain {
         }
 
         if (options.daemon) {
-            String logfilename = options.appDir + File.separator + "log" + File.separator + "glassfish.log";
+            String logfilename = options.appDir + File.separator + "log" + File.separator + "glassfish-daemon.log";
 
             File log = new File(logfilename);
             if (!log.exists()) {
@@ -172,16 +200,20 @@ public class GlassFishMain {
             }
             FileWriter fw = null;
             try {
-                fw = new FileWriter(log);
+                fw = new FileWriter(log, true);
                 String msg1 = "Starting GlassFish as daemon at: " + host + ":" + options.port + " in " + options.environment + " environment...";
                 String msg2 = "Writing log messages to: "+options.log+".";
                 String msg3 = "To stop, kill -s SIGINT " + LIBC.getpid();
 
-                fw.write(msg1+"\n");
+                DateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss a Z");
+                Date date = new Date();
+                fw.append(dateFormat.format(date)+"\n");
 
-                fw.write(msg2+"\n");
-                fw.write("Writing pid file to: "+options.pid+"\n");
-                fw.write(msg3+"\n");
+                fw.append(msg1+"\n");
+
+                fw.append(msg2+"\n");
+                fw.append("Writing pid file to: "+options.pid+"\n");
+                fw.append(msg3+"\n\n");
 
                 System.out.println(msg1);
                 System.out.println("Server startup messages are written in: "+log.getAbsolutePath());

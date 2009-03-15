@@ -21,12 +21,13 @@ http:
 #Logging configuration
 log:
 
-    # Log file location. Default log file is log/<environment>.log. For example,
-    # if you are running in development environment, then the log file would be
-    # log/development.log.
+    # Log file location. Default log file is log/<environment>.log. For 
+    # example, if you are running in development environment, then the log 
+    # file would be log/development.log.
     #
-    # The location must be either an absolute path or relative to your application
-    # directory.
+    # The log-file value must be either an absolute path or relative to your 
+    # application directory.
+    
     #log-file:
 
     # Logging level. Log level 0 to 7. 0:OFF, 1:SEVERE, 2:WARNING,
@@ -35,8 +36,8 @@ log:
 
 #
 # Runtime configuration
-# If you are using Rails ver < 2.1.x, you should configure the JRuby runtime pool for increased
-# scalability.
+# If you are using Rails ver < 2.1.x, you should configure the JRuby runtime 
+# pool for increased scalability.
 jruby-runtime-pool:
 
     # Initial number of jruby runtimes that Glassfish starts with. It defaults
@@ -64,26 +65,32 @@ daemon:
     enable: false
 
     # File where the process id of GlassFish is saved when run as daemon.
-    # The location must be either an absolute path or relative to your application
-    # directory.
+    # The location must be either an absolute path or relative to your 
+    # application directory.
     # default PID file is tmp/pids/glassfish-<PID>.pid
+    
     #pid:
 
-    # Pass the JVM properties to GlassFish. It can be used only in daemon mode.
-    # The numbers below are to give an ideas. The numbers in your case would vary
-    # based on the hardware capabilities of machine you are running. See what is a
-    # server class machine http://java.sun.com/javase/6/docs/technotes/guides/vm/server-class.html
+    # Like JRuby GlassFish gem runs on Java Virtual Machine. You can pass
+    # JVM properties using 'jvm-options' property. The JVM options must be
+    # SPACE seprated.
+    # 'jvm-options. property can ONLY be used only in daemon 
+    # mode. The numbers below are to give an ideas. The numbers in your case 
+    # would vary based on the hardware capabilities of machine you are 
+    # running. See what is a server class machine 
+    # http://java.sun.com/javase/6/docs/technotes/guides/vm/server-class.html
 
     # GlassFish gem runs with these default options
     #
-    jvm-options: -server -Xmx512 -XX:MaxPermSize=192M -XX:NewRatio=2 -XX:+DisableExplicitGC -Dhk2.file.directory.changeIntervalTimer=6000
+    #jvm-options: -server -Xmx512m -XX:MaxPermSize=192m -XX:NewRatio=2 -XX:+DisableExplicitGC -Dhk2.file.directory.changeIntervalTimer=6000
 
-    # Values below are given for a Sun Fire x4100, 4x Dual Core Opteron, 8G mem
-    # machine. You may like to changes these values according to the hardware
-    # you plan to run your application on. For details see
-    # JVM egonomics document, http://java.sun.com/javase/6/docs/technotes/guides/vm/gc-ergonomics.html
+    # Values below are given for a Sun Fire x4100, 4x Dual Core Opteron, 8G 
+    # mem machine. You may like to changes these values according to the 
+    # hardware you plan to run your application on. For details see
+    # JVM ergonomics document, 
+    # http://java.sun.com/javase/6/docs/technotes/guides/vm/gc-ergonomics.html
     #
-    #jvm-options: -server -Xmx3g -Xms64m -XX:PermSize=256M -XX:MaxPermSize=256M -XX:NewRatio=2 -XX:+DisableExplicitGC -Dhk2.file.directory.changeIntervalTimer=6000
+    #jvm-options: -server -Xmx2500m -Xms64m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:NewRatio=2 -XX:+DisableExplicitGC -Dhk2.file.directory.changeIntervalTimer=6000
 
 
 

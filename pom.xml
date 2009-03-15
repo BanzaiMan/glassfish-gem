@@ -52,7 +52,7 @@
     <description>This module creates the jruby gem distribution image</description>
 
     <properties>
-        <nucleus.version>3.0-SNAPSHOT</nucleus.version>
+        <nucleus.version>3.0-b40</nucleus.version>
         <gem.version>0.9.3</gem.version>
     </properties>
     <build>
@@ -60,8 +60,8 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.5</source>
+                    <target>1.5</target>
                 </configuration>
             </plugin>
             <plugin>

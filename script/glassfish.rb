@@ -51,6 +51,13 @@ module GlassFish
     import "org.glassfish.scripting.gem.Options"
 
     def startup(args)
+      if args[:log_level] > 4
+        puts "Arguments: "
+        args.each do |k, v| 
+          puts "\t#{k}=>#{v}"
+        end
+      end
+
       opts = Options.new()
       opts.runtimes = args[:runtimes]
       opts.runtimes_min = args[:runtimes_min]
@@ -64,6 +71,7 @@ module GlassFish
       opts.log = args[:log]
       opts.domainDir = args[:domain_dir]
       opts.log_level = args[:log_level]
+      opts.jvm_opts = args[:jvm_options]
       gf = GlassFishMain.start opts
     end
   end

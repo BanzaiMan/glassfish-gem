@@ -48,9 +48,14 @@ application.standard_exception_handling do
       puts "(file #{GlassFish::Config::FILE} already exists. Pass argument FORCE=1 to override)"
     elsif !File.directory?("config")
       puts "(directory 'config' is missing)"
-    else
+    else	
       cp "#{GlassFish::HOME}/generators/gfrake/templates/glassfish.yml", GlassFish::Config::FILE
     end
+  end
+
+  desc "Clean GlassFish generated temporary files (tmp/.glassfish)"
+  task :clean do
+    rm_rf "tmp/.glassfish" 
   end
 
   desc "Display version of warbler"

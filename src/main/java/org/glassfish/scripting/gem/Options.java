@@ -52,6 +52,7 @@ public class Options{
     public String log;
     public int log_level;
     public String domainDir;
+	public String jvm_opts;
 
     @Override
     public String toString() {
@@ -66,6 +67,7 @@ public class Options{
                 "pid: " + pid + " "+
                 "log: " + log + " " +
                 "log-level: " + log_level +
+				"jvm_opts: "+ jvm_opts +
                 "domain director: "+domainDir;
     }
 }
