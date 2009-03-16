@@ -59,25 +59,25 @@ module GlassFish
       end
       server.close
 
-      # contextroot
-      # There is not much to validate here. For now we leave it as it is
-
-      # log configuration
+      # daemon
+      if(config[:daemon])
+        os = java.lang.System.getProperty("os.name").downcase
+        version = java.lang.System.getProperty("os.version")
+        #check the platform, Currently daemon mode works only on linux and 
+        #solaris
+        if(!os.include?("linux") and !os.include?("sunos"))
+          Config.fail "You are running on #{java.lang.System.getProperty("os.name")}  #{version}. Currently daemon mode only works on Linux or Solaris platforms!"
+        end
+        
+        if(config[:jvm_options].nil?)
+          config[:jvm_options] = DEFAULT_JVM_OPTS
+        end
+      end
 
       # log_level
       if not (0..7).include?(config[:log_level])
         STDERR.puts "Invalid log level #{config[:log_level]}. Chose a number between 0 to 7."
         Config.fail "\t0 OFF\n\t1 SEVERE \n\t2 WARNING\n\t3 INFO(default)\n\t4 FINE\n\t5 FINER\n\t6 FINEST\n\t7 ALL\n"
-      end
-
-      # log-file
-      if(config[:log] == nil)
-        config[:log] = File.join(config[:app_dir], "log", config[:environment]+".log")
-      end
-
-      if not File.exists?(config[:log])
-        puts "Log file #{config[:log]} does not exist. Creating a new one..."
-        FileUtils.touch config[:log]
       end
 
       # JRuby runtime
@@ -98,20 +98,29 @@ module GlassFish
       if(err)
         Config.fail runtimes_err
       end
-      # daemon
-      if(config[:daemon])
-        os = java.lang.System.getProperty("os.name").downcase
-        version = java.lang.System.getProperty("os.version")
-        #check the platform, Currently daemon mode works only on linux and 
-        #solaris
-        if(!os.include?("linux") and !os.include?("solaris"))
-          Config.fail "You are running on #{java.lang.System.getProperty("os.name")}  #{version}. Currently daemon mode only works on Linux or Solaris platforms!"
-        end
-        
-        if(config[:jvm_options].nil?)
-          config[:jvm_options] = DEFAULT_JVM_OPTS
-        end
+
+
+      # contextroot
+      # There is not much to validate here. For now we leave it as it is
+
+      # log configuration
+
+
+      # log-file
+      if(config[:log] == nil)
+        config[:log] = File.join(config[:app_dir], "log", config[:environment]+".log")
       end
+
+      if not File.exists?(config[:log])
+        puts "Log file #{config[:log]} does not exist. Creating a new one..."
+        parent = File.dirname(config[:log])
+        if(!File.exists?parent)
+          FileUtils.mkdir_p parent
+        end
+        file = File.new(config[:log], "w")
+        file.close
+      end
+
 
       # pid file validation is done latter on
 

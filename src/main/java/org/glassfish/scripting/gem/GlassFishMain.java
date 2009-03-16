@@ -93,80 +93,82 @@ public class GlassFishMain {
         }
 
         //We disable al messages shown by anonymous loggers. This will filter lot of junk!
-        LogManager.getLogManager().getLogger("").setLevel(Level.OFF);
+        LogManager.getLogManager().getLogger("").setLevel(Level.OFF);        
         printStatusMessage(options);
         ASMain.main(new String[]{options.appDir, "--" + ParameterNames.CONTEXT_ROOT, options.contextRoot, "--domaindir", options.domainDir});
     }
 
     public static void start(final Options options) {
-        String suffix = "";
-        if (options.pid.endsWith("glassfish")){
-            suffix = "-" + LIBC.getpid() + ".pid";
-            options.pid = options.pid + suffix;
-        }
+        if (options.daemon) {
+            String suffix = "";
+            if (options.pid.endsWith("glassfish")) {
+                suffix = "-" + LIBC.getpid() + ".pid";
+                options.pid = options.pid + suffix;
+            }
 
-        final File pid = new File(options.pid);
-        pid.deleteOnExit();
+            final File pid = new File(options.pid);
+            pid.deleteOnExit();
 
-        Daemon d = new Daemon() {
-            @Override
-            protected void writePidFile() throws IOException {
-                FileWriter fw = null;
-                try {
-                    //there should be better way to do such things
-                    fw = new FileWriter(pid);
-                    fw.write(String.valueOf(LIBC.getpid()));
-                    fw.close();
-                } catch (IOException e) {
-                    System.err.println("Error writing pid file: "+pid.getAbsolutePath());
-                    logException(e, options);
-                    System.exit(1);
-                }finally{
-                    if(fw != null){
+            Daemon d = new Daemon() {
+                @Override
+                protected void writePidFile() throws IOException {
+                    FileWriter fw = null;
+                    try {
+                        //there should be better way to do such things
+                        fw = new FileWriter(pid);
+                        fw.write(String.valueOf(LIBC.getpid()));
                         fw.close();
+                    } catch (IOException e) {
+                        System.err.println("Error writing pid file: " + pid.getAbsolutePath());
+                        logException(e, options);
+                        System.exit(1);
+                    } finally {
+                        if (fw != null) {
+                            fw.close();
+                        }
                     }
                 }
-            }
-        };
-        if (d.isDaemonized()) {
-            printStatusMessage(options);
-            try {
-                d.init();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            // if you are already daemonized, no point in daemonizing yourself again,
-            // so do this only when you aren't daemonizing.
-            if (options.daemon) {
+            };
+            if (d.isDaemonized()) {
+                printDaemonMessage(options);
+                try {
+                    d.init();
+                } catch (Exception e) {
+                    System.err.println("Error daemonizing.");
+                    logException(e, options);
+                    System.exit(1);
+                }
+            } else {
+                // if you are already daemonized, no point in daemonizing yourself again,
+                // so do this only when you aren't daemonizing.
                 try {
                     String[] array = options.jvm_opts.split(" ");
 
                     //we first compute the new JVM opts and append the old ones
                     JavaVMArguments newargs = new JavaVMArguments();
-                    for(String str : array){
+                    for (String str : array) {
                         newargs.add(str.trim());
                     }
 
-                    JavaVMArguments jvmargs = JavaVMArguments.current();                    
-                    for(String arg:jvmargs){
+                    JavaVMArguments jvmargs = JavaVMArguments.current();
+                    for (String arg : jvmargs) {
                         //There will be others, for now exluce JRuby -Xmx setting
-                        if(!arg.startsWith("-Xmx") && !arg.endsWith("java")){
+                        if (!arg.startsWith("-Xmx") && !arg.endsWith("java")) {
                             newargs.add(arg);
                         }
                     }
-                    if(options.log_level > 4){
+                    if (options.log_level > 4) {
                         StringBuffer buff = new StringBuffer();
                         System.out.println("Starting GlassFish with JVM options: ");
-                        for(String arg: newargs){                            
+                        for (String arg : newargs) {
                             buff.append(arg).append(File.pathSeparator);
                         }
                         System.out.println(buff);
                     }
-                    
+
                     d.daemonize(newargs);
-                } catch (IOException e) {                    
-                    System.err.println("Error daemonizing");
+                } catch (IOException e) {
+                    System.err.println("Error forking");
                     logException(e, options);
                     System.exit(1);
                 }
@@ -177,6 +179,61 @@ public class GlassFishMain {
         startGlassFish(options);
     }
 
+    private static void printDaemonMessage(Options options) {
+        String host;
+        try {
+            host = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            host = "0.0.0.0";
+        }
+        String logfilename = options.appDir + File.separator + "log" + File.separator + "glassfish-daemon.log";
+
+        File log = new File(logfilename);
+        if (!log.exists()) {
+            try {
+                log.createNewFile();
+            } catch (IOException e) {
+                System.err.println("Error creating " + logfilename);
+                logException(e, options);
+                System.exit(1);
+            }
+        }
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter(log, true);
+            String msg1 = "Starting GlassFish as daemon at: " + host + ":" + options.port + " in " + options.environment + " environment...";
+            String msg2 = "Writing log messages to: " + options.log + ".";
+            String msg3 = "To stop, kill -s SIGINT " + LIBC.getpid();
+
+            DateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss a Z");
+            Date date = new Date();
+            fw.append(dateFormat.format(date) + "\n");
+
+            fw.append(msg1 + "\n");
+
+            fw.append(msg2 + "\n");
+            fw.append("Writing pid file to: " + options.pid + "\n");
+            fw.append(msg3 + "\n\n");
+
+            System.out.println(msg1);
+            System.out.println("Server startup messages are written in: " + log.getAbsolutePath());
+            System.out.println(msg3);
+        } catch (FileNotFoundException e) {
+            logException(e, options);
+        } catch (IOException e) {
+            logException(e, options);
+        } finally {
+            if (fw != null) {
+                try {
+                    fw.close();
+                } catch (IOException e) {
+                    logException(e, options);
+                }
+            }
+        }
+
+    }
+
     private static void printStatusMessage(Options options) {
         String host;
         try {
@@ -185,57 +242,10 @@ public class GlassFishMain {
             host = "0.0.0.0";
         }
 
-        if (options.daemon) {
-            String logfilename = options.appDir + File.separator + "log" + File.separator + "glassfish-daemon.log";
-
-            File log = new File(logfilename);
-            if (!log.exists()) {
-                try {
-                    log.createNewFile();
-                } catch (IOException e) {
-                    System.err.println("Error creating " + logfilename);
-                    logException(e, options);
-                    System.exit(1);
-                }
-            }
-            FileWriter fw = null;
-            try {
-                fw = new FileWriter(log, true);
-                String msg1 = "Starting GlassFish as daemon at: " + host + ":" + options.port + " in " + options.environment + " environment...";
-                String msg2 = "Writing log messages to: "+options.log+".";
-                String msg3 = "To stop, kill -s SIGINT " + LIBC.getpid();
-
-                DateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss a Z");
-                Date date = new Date();
-                fw.append(dateFormat.format(date)+"\n");
-
-                fw.append(msg1+"\n");
-
-                fw.append(msg2+"\n");
-                fw.append("Writing pid file to: "+options.pid+"\n");
-                fw.append(msg3+"\n\n");
-
-                System.out.println(msg1);
-                System.out.println("Server startup messages are written in: "+log.getAbsolutePath());
-                System.out.println(msg3);
-            } catch (FileNotFoundException e) {
-                logException(e, options);
-            }catch (IOException e) {
-                logException(e, options);
-            }finally {
-                if(fw != null){
-                    try {
-                        fw.close();
-                    } catch (IOException e) {
-                        logException(e, options);
-                    }
-                }
-            }
-        }else{
+        if (!options.daemon) {
             System.out.println("Starting GlassFish server at: " + host + ":" + options.port+ " in " + options.environment + " environment...");
             System.out.println("Writing log messages to: "+options.log+".");
             System.out.println("Press Ctrl+C to stop.");
-
         }
     }
 

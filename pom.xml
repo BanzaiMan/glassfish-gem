@@ -42,7 +42,7 @@
     <parent>
         <groupId>org.glassfish.scripting</groupId>
         <artifactId>rails</artifactId>
-        <version>0.7.8-SNAPSHOT</version>
+        <version>0.7.8</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -312,6 +312,18 @@
             <version>${project.version}</version>            
         </dependency>
     </dependencies>
+
+	<scm>
+        <connection>scm:svn:https://svn.dev.java.net/svn/glassfish-scripting/trunk/rails/v3/gem</connection>
+        <developerConnection>scm:svn:https://svn.dev.java.net/svn/glassfish-scripting/trunk/rails/v3/gem</developerConnection>
+    </scm>
+    <distributionManagement>
+        <repository>
+            <uniqueVersion>false</uniqueVersion>
+			<id>java.net-maven2-repository</id>
+			<url>java-net:/maven2-repository/trunk/repository/</url>
+        </repository>
+    </distributionManagement>
 
     <repositories>
         <repository>
