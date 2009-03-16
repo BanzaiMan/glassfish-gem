@@ -1,47 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- 
-/* 
-* DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER. 
-* 
-* Copyright 1997-2007 Sun Microsystems, Inc. All rights reserved. 
-* 
-* The contents of this file are subject to the terms of either the GNU 
-* General Public License Version 2 only ("GPL") or the Common Development 
-* and Distribution License("CDDL") (collectively, the "License").  You 
-* may not use this file except in compliance with the License. You can obtain 
-* a copy of the License at https://glassfish.dev.java.net/public/CDDL+GPL.html 
-* or glassfish/bootstrap/legal/LICENSE.txt.  See the License for the specific 
-* language governing permissions and limitations under the License. 
-* 
-* When distributing the software, include this License Header Notice in each 
-* file and include the License file at glassfish/bootstrap/legal/LICENSE.txt. 
-* Sun designates this particular file as subject to the "Classpath" exception 
-* as provided by Sun in the GPL Version 2 section of the License file that 
-* accompanied this code.  If applicable, add the following below the License 
-* Header, with the fields enclosed by brackets [] replaced by your own 
-* identifying information: "Portions Copyrighted [year] 
-* [name of copyright owner]" 
-* 
-* Contributor(s): 
-* 
-* If you wish your version of this file to be governed by only the CDDL or 
-* only the GPL Version 2, indicate your decision by adding "[Contributor] 
-* elects to include this software in this distribution under the [CDDL or GPL 
-* Version 2] license."  If you don't indicate a single choice of license, a 
-* recipient has the option to distribute your version of this file under 
-* either the CDDL, the GPL Version 2 or to extend the choice of license to 
-* its licensees as provided above.  However, if you add GPL Version 2 code 
-* and therefore, elected the GPL Version 2 license, then the option applies 
-* only if the new code is made subject to such option by the copyright 
-* holder. 
-*/ 
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.glassfish.scripting</groupId>
     <artifactId>glassfish-gem</artifactId>
-    <version>0.9.3-SNAPSHOT</version>
+    <version>0.9.3</version>
     <packaging>jar</packaging>
     <name>Glassfish JRuby Gem distribution</name>
     <description>This module creates the jruby gem distribution image</description>
@@ -124,36 +85,33 @@
                         <configuration>
                             <tasks>
                                 <!--Remove everything from inside glassfish/bin, these are meaningless for gem-->
-                                <delete dir="target/dependency/glassfish/bin" includes="*"/>
+                                <delete dir="target/dependency/glassfish/bin" includes="*" />
                                 
                                 <!-- remove everything from lib -->
-                                <delete dir="target/dependency/glassfish/lib" includes="*"/>
+                                <delete dir="target/dependency/glassfish/lib" includes="*" />
 
-                                <!--<copy file="bin/gfadmin" todir="target/dependency/glassfish/bin"/>-->
-                                <copy file="bin/glassfish" todir="target/dependency/glassfish/bin"/>
-                                <copy file="bin/gfrake" todir="target/dependency/glassfish/bin"/>
+                                <!--<copy file="bin/gfadmin" todir="target/dependency/glassfish/bin" />-->
+                                <copy file="bin/glassfish" todir="target/dependency/glassfish/bin" />
+                                <copy file="bin/gfrake" todir="target/dependency/glassfish/bin" />
                                 <!--For backward compatibility-->
-                                <copy file="bin/glassfish" tofile="target/dependency/glassfish/bin/glassfish_rails"/>
+                                <copy file="bin/glassfish" tofile="target/dependency/glassfish/bin/glassfish_rails" />
                                 <copy todir="target/dependency/glassfish/lib" filtering="true">
-                                    <fileset dir="script" includes="*.rb"/>
+                                    <fileset dir="script" includes="*.rb" />
                                     <filterset>
-                                        <filter token="GLASSFISH_GEM_VERSION" value="${gem.version}"/>
+                                        <filter token="GLASSFISH_GEM_VERSION" value="${gem.version}" />
                                     </filterset>
                                 </copy>
-                                <copy file="config/domain.xml"
-                                      todir="target/dependency/glassfish/domains/domain1/config" overwrite="true"/>
-                                <copy file="config/logging.properties"
-                                      todir="target/dependency/glassfish/domains/domain1/config" overwrite="true"/>
-                                <copy file="config/glassfish_gem_version.yml"
-                                      todir="target/dependency/glassfish/domains/domain1/config" overwrite="true">
+                                <copy file="config/domain.xml" todir="target/dependency/glassfish/domains/domain1/config" overwrite="true" />
+                                <copy file="config/logging.properties" todir="target/dependency/glassfish/domains/domain1/config" overwrite="true" />
+                                <copy file="config/glassfish_gem_version.yml" todir="target/dependency/glassfish/domains/domain1/config" overwrite="true">
                                     <filterset>
-                                        <filter token="GLASSFISH_GEM_VERSION" value="${gem.version}"/>
+                                        <filter token="GLASSFISH_GEM_VERSION" value="${gem.version}" />
                                     </filterset>
                                 </copy>
-                                <delete file="target/dependency/glassfish/modules/osgi-adapter.jar"/>
-                                <copy file="target/glassfish-gem.jar" todir="target/dependency/glassfish/modules/"/>
-                                <mkdir dir="target/dependency/glassfish/generators/gfrake/templates/"/>
-                                <copy file="config/glassfish.yml" todir="target/dependency/glassfish/generators/gfrake/templates/"/>
+                                <delete file="target/dependency/glassfish/modules/osgi-adapter.jar" />
+                                <copy file="target/glassfish-gem.jar" todir="target/dependency/glassfish/modules/" />
+                                <mkdir dir="target/dependency/glassfish/generators/gfrake/templates/" />
+                                <copy file="config/glassfish.yml" todir="target/dependency/glassfish/generators/gfrake/templates/" />
                             </tasks>
 
                         </configuration>
@@ -197,7 +155,7 @@
                                 s.has_rdoc = true
                                 s.extra_rdoc_files = ["LICENSE.txt","COPYRIGHT"]
                                 s.rubyforge_project = "glassfishgem"
-                                s.add_dependency('rack', '>= 0.4.0')
+                                s.add_dependency('rack', '&gt;= 0.4.0')
 
                                 end
 
@@ -207,7 +165,7 @@
                                 pkg.need_tar = true
                                 end
 
-                                task :default => :gem do
+                                task :default =&gt; :gem do
                                 end
                             </script>
                             <launchDirectory>target/dependency/glassfish</launchDirectory>
@@ -310,8 +268,8 @@
     </dependencies>
 
 	<scm>
-        <connection>scm:svn:https://svn.dev.java.net/svn/glassfish-scripting/trunk/rails/v3/gem</connection>
-        <developerConnection>scm:svn:https://svn.dev.java.net/svn/glassfish-scripting/trunk/rails/v3/gem</developerConnection>
+        <connection>scm:svn:https://svn.dev.java.net/svn/glassfish-scripting/tags/glassfish-gem-0.9.3</connection>
+        <developerConnection>scm:svn:https://svn.dev.java.net/svn/glassfish-scripting/tags/glassfish-gem-0.9.3</developerConnection>
     </scm>
     <distributionManagement>
         <repository>
