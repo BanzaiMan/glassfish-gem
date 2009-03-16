@@ -39,13 +39,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.glassfish.scripting</groupId>
-        <artifactId>rails</artifactId>
-        <version>0.7.8</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
-
+    <groupId>org.glassfish.scripting</groupId>
     <artifactId>glassfish-gem</artifactId>
     <version>0.9.3-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -55,6 +49,7 @@
     <properties>
         <nucleus.version>3.0-b40</nucleus.version>
         <gem.version>0.9.3</gem.version>
+        <jruby-container.version>0.7.8</jruby-container.version>
     </properties>
     <build>
         <plugins>
@@ -305,12 +300,12 @@
         <dependency>
             <groupId>org.glassfish.scripting</groupId>
             <artifactId>grizzly-jruby-module</artifactId>
-            <version>${project.version}</version>
+            <version>${jruby-container.version}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.scripting</groupId>
             <artifactId>gf-jruby-connector</artifactId>
-            <version>${project.version}</version>            
+            <version>${jruby-container.version}</version>
         </dependency>
     </dependencies>
 

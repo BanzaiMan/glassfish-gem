@@ -1,3 +1,27 @@
+== 0.9.3
+
+===New features in this release
+
+* Support for daemon mode (only linux and Solaris)
+* Logging improvements. Direct the log to a file using -P option. Controle log 
+  level using <tt>--log-level</tt> option
+* Support for config file, glassfish.yml. Try gfrake config and use it as 
+  template. Also see <tt>--config</tt> option. Now you can provide the JVM 
+  properties for GlassFish in daemon mode inside glassfish.yml.
+* GlassFish Rake command: gfrake. Create a config file and do the cleanup 
+  of temporary files created by GlassFish. See, 
+
+  	<tt>$gfrake -T</tt>
+
+====Bugs fixed in this release
+
+=====RubyForge
+23719[http://rubyforge.org/tracker/index.php?func=detail&aid=23719&group_id=5450&atid=21080]	When starting app, gf shows the index.html page which it shouldn't	 
+
+23721[http://rubyforge.org/tracker/index.php?func=detail&aid=23721&group_id=5450&atid=21080]	starting gf requires sudo
+
+23723[http://rubyforge.org/tracker/index.php?func=detail&aid=23723&group_id=5450&atid=21080]	Support Daemon mode
+
 == 0.9.2
 
 ====Bugs fixed in this release

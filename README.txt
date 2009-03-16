@@ -21,15 +21,16 @@ Get JDK 6 from here[http://java.sun.com/javase/downloads/index.jsp]
 
 * Rails
 * Merb
-* Sinatra (coming up...)
+* Sinatra
 
-== Getting Started
+=== Getting Started
 
 1. Install the gem: <tt>gem install glassfish</tt>.
 2. Run glassfish in the top directory of your Rails or Merb application: 
-<tt>glassfish</tt>.
+	
+	$glassfish
 
-== Usage
+=== Usage
 
 GlassFish gem's +glassfish+ command autodetects the application you trying to 
 run on it. Internally it uses Grizzly handler to plugin to Rack interface of 
@@ -41,37 +42,68 @@ That's all you need to run your application.
 
     $glassfish -h
 
-    Synopsis
-    --------
-    glassfish: GlassFish v3 server for rails, merb, sintra applications
+===Synopsis
+	
+	glassfish: GlassFish v3 server for Rack based frameworks such as: Rails,
+	Merb, Sinatra...
 
+===Usage:
+	
+	glassfish [OPTION] APPLICATION_PATH
 
-    Usage:
-    ------
-    glassfish [OPTION] APPLICATION_PATH
+	-h, --help:             show help
 
-    -h, --help:             show help
+	-c, --contextroot PATH: change the context root (default: '/')
 
-    -c, --contextroot PATH: change the context root (default: '/')
+	-p, --port PORT:        change server port (default: 3000)
 
-    -p, --port PORT:        change server port (default: 3000)
+	-e, --environment ENV:  change rails environment (default: development)
 
-    -e, --environment ENV:  change rails environment (default: development)
+	-n --runtimes NUMBER:   Number of JRuby runtimes to create initially
 
-    -n --runtimes NUMBER:   Number of JRuby runtimes to crete initially
+	--runtimes-min NUMBER:  Minimum JRuby runtimes to create
 
-    --runtimes-min NUMBER:  Minimum JRuby runtimes to crete
+	--runtimes-max NUMBER:  Maximum number of JRuby runtimes to create
 
-    --runtimes-max NUMBER:  Maximum number of JRuby runtimes to crete
+	-d, --daemon:           Run GlassFish as daemon. Currently works with
+	                        Linux and Solaris OS.
 
-    APPLICATION_PATH (optional): Path to the application to be run (default:
-    current).
+	-P, --pid FILE:         PID file where PID will be written. Applicable
+	                        when used with -d option. The default pid file
+	                        is tmp/pids/glassfish-<PID>.pid
 
-== Configuration
+	-l, --log FILE:         Log file, where the server log messages will go.
+	                        By default the server logs go to
+	                        log/glassfish.log file.
 
-=== Rails applications
+	--log-level LEVEL:      Log level 0 to 7. 0:OFF, 1:SEVERE, 2:WARNING,
+	                        3:INFO (default), 4:FINE, 5:FINER, 6:FINEST,
+	                        7:ALL.
 
-Rails applications are detected automatically and configured appropriately.
+	--config FILE:          Configuration file location. Use glassfish.yml
+	                        as template. Generate it using 'gfrake config'
+	                        command.
+
+	APPLICATION_PATH (optional): Path to the application to be run (default:
+	current). For further configuration, run GlassFish rake command 'gfrake
+	-T'
+	
+
+===Configuration
+
+	$gfrake -T
+	
+	rake clean    # Clean GlassFish generated temporary files (tmp/.glassfish)
+	rake config   # Generate a configuration file to customize GlassFish gem
+	rake version  # Display version of warbler
+	
+<b>Note:</b> Although help screen shows rake command. You need to use gfrake instead.
+
+* <tt>gfrake config</tt> will place <b>glassfish.yml</b> in the application's config directory. <b>glassfish.yml</b> contains default options. Use it as template. You can also use <tt>--config</tt> option with the <tt>glassfish</tt> command	
+
+=== Application auto-detection
+
+Rails, Merb and Sinatra applications are detected automatically and configured appropriately. You can provide a rack-up script <tt>*.ru</tt> in to the application directory to plugin any other framework.
 
 Some key points:
 
@@ -79,34 +111,31 @@ Some key points:
   configure the JRuby runtime pool using <tt>--runtimes, --runtimes-min or 
   --runtimes-max</tt> options.
 * Multi-thread-safe execution (as introduced in Rails 2.2 or for Merb) is 
-  detected and runtime pooling is disabled.
+  detected and runtime pooling is disabled. You would still need to tell Rails 
+  to enable multi-threading by commenting out the following line from 
+  <tt>config/environments/production.rb</tt>.
+  
+  <tt>#config.threadsafe!</tt>
 
-=== Merb applications
-
-Merb applications are detected automatically.
-
-=== Other Rack-based applications
-
-TBD
 
 === Configuration TODOs
 
 * Document how to create JDBC resources and conection pools
 
-== Known Issues
+=== Known Issues
 
 * Running <tt>glassfish</tt> in a directory that is neither a Rails or Merb
   application does not report a meaningful error.
   See this issue[https://glassfish.dev.java.net/issues/show_bug.cgi?id=6744]
 
 
-== Source
+=== Source
 
 You can get the GlassFish source using svn, in any of the following ways:
 
-svn co https://svn.dev.java.net/svn/glassfish-scripting/trunk/rails/v3/gem
+<tt>svn co https://svn.dev.java.net/svn/glassfish-scripting/trunk/rails/v3/gem</tt>
 
-== License
+=== License
 
 GlassFish v3 gem is provided with CDDL 1.0 and GPL 2.0 dual license. For 
 details see https://glassfish.dev.java.net/public/CDDL+GPL.html.
