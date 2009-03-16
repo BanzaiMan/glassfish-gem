@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.glassfish.scripting</groupId>
     <artifactId>glassfish-gem</artifactId>
-    <version>0.9.3</version>
+    <version>0.9.4-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Glassfish JRuby Gem distribution</name>
     <description>This module creates the jruby gem distribution image</description>
@@ -268,8 +268,8 @@
     </dependencies>
 
 	<scm>
-        <connection>scm:svn:https://svn.dev.java.net/svn/glassfish-scripting/tags/glassfish-gem-0.9.3</connection>
-        <developerConnection>scm:svn:https://svn.dev.java.net/svn/glassfish-scripting/tags/glassfish-gem-0.9.3</developerConnection>
+        <connection>scm:svn:https://svn.dev.java.net/svn/glassfish-scripting/trunk/rails/v3/gem</connection>
+        <developerConnection>scm:svn:https://svn.dev.java.net/svn/glassfish-scripting/trunk/rails/v3/gem</developerConnection>
     </scm>
     <distributionManagement>
         <repository>
