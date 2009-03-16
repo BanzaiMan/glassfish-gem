@@ -12,6 +12,9 @@
   of temporary files created by GlassFish. See, 
 
   	<tt>$gfrake -T</tt>
+* Support for Sinatra and framework auto-detection
+* Improved server busy handling. During app load new requests give 503 along 
+  with "Server busy loading...." page instead of 404.
 
 ====Bugs fixed in this release
 
