@@ -41,14 +41,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.glassfish.scripting</groupId>
     <artifactId>glassfish-gem</artifactId>
-    <version>0.9.3-SNAPSHOT</version>
+    <version>0.9.4-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Glassfish JRuby Gem distribution</name>
     <description>This module creates the jruby gem distribution image</description>
 
     <properties>
         <nucleus.version>3.0-b40</nucleus.version>
-        <gem.version>0.9.3</gem.version>
+        <gem.version>0.9.4</gem.version>
         <jruby-container.version>0.7.8</jruby-container.version>
     </properties>
     <build>
