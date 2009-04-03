@@ -72,6 +72,10 @@ module GlassFish
         if(config[:jvm_options].nil?)
           config[:jvm_options] = DEFAULT_JVM_OPTS
         end
+        if(config[:pid].nil?)
+          config[:pid] = PID_FILE
+	end
+        absolutize config[:app_dir], config[:pid]
       end
 
       # log_level

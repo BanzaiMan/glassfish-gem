@@ -123,7 +123,7 @@ module GlassFish
       config[:app_dir] = ARGV.shift unless ARGV.empty?
 
       config[:log] = absolutize config[:app_dir], config[:log]
-      config[:pid] = absolutize config[:app_dir], config[:pid] unless config[:pid].nil?
+      
       #Validate the command line options
       Config.new.validate config
       
@@ -180,7 +180,6 @@ module GlassFish
             if(!config[:daemon])
               Config::fail("glassfish.yml has\n daemon:\n\tpid: #{arg['pid']}\nThe pid option can only be used when daemon is set enable: true.")
             end
-            config[:pid] = absolutize config[:app_dir], arg['pid']          
           end
           
           #CLI option are overriden by glassfish.yml settings
