@@ -55,7 +55,7 @@ module GlassFish
         :environment  => "development",
         :app_dir      => Dir.pwd,
         :port         => 3000,
-        :pid          => Config::PID_FILE,
+        :pid          => nil
         :log          => nil,
         :log_level    => 1,
         :daemon       => false,
@@ -109,9 +109,6 @@ module GlassFish
         when '--daemon'
           config[:daemon] = true
         when '--pid'
-          if(!ARGV.include?'-d' and !ARGV.include?'--daemon')
-            GlassFish::Config::fail("--pid option can only be used with --daemon.")
-          end
           config[:pid] = arg
         when '--log'
           config[:log] = arg
@@ -126,13 +123,16 @@ module GlassFish
       config[:app_dir] = ARGV.shift unless ARGV.empty?
 
       config[:log] = absolutize config[:app_dir], config[:log]
-      config[:pid] = absolutize config[:app_dir], config[:pid]
+      config[:pid] = absolutize config[:app_dir], config[:pid] unless config[:pid].nil?
       #Validate the command line options
       Config.new.validate config
       
       #Read the config file from config/glasfish.yml
       config_file = absolutize config[:app_dir],config_file
       read_glassfish_config(config_file, config)
+
+      #Validate the command line options
+      Config.new.validate config
             
       config
 
@@ -193,10 +193,6 @@ module GlassFish
           config[:environment] = arg unless arg.nil?
         end      
       end 
-
-      #validate the options read from the config file
-      puts "Validating configuration read from glassfish.yml"
-      Config.new.validate config
     end  
 
     def absolutize(base, path)

@@ -122,7 +122,11 @@ module GlassFish
       end
 
 
-      # pid file validation is done latter on
+      # pid file 
+      #
+      if(!config[:pid].nil? and !config[:daemon])
+            GlassFish::Config::fail("--pid option can only be used with --daemon.")
+      end
 
       #TODO: validate JVM options?
 
