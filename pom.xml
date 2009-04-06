@@ -47,7 +47,7 @@
     <description>This module creates the jruby gem distribution image</description>
 
     <properties>
-        <nucleus.version>3.0-b40</nucleus.version>
+        <nucleus.version>3.0-b43</nucleus.version>
         <gem.version>0.9.4</gem.version>
         <jruby-container.version>0.7.8</jruby-container.version>
     </properties>
