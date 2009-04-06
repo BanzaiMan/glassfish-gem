@@ -58,7 +58,7 @@ application.standard_exception_handling do
     rm_rf "tmp/.glassfish" 
   end
 
-  desc "Display version of warbler"
+  desc "Display version of GlassFish gem"
   task :version do
     require 'version'
     puts "#{GlassFish::FULLVERSION}"
