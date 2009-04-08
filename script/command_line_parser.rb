@@ -55,7 +55,7 @@ module GlassFish
         :environment  => "development",
         :app_dir      => Dir.pwd,
         :port         => 3000,
-        :pid          => nil
+        :pid          => nil,
         :log          => nil,
         :log_level    => 1,
         :daemon       => false,
