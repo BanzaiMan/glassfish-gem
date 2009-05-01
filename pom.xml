@@ -49,7 +49,7 @@
     <properties>
         <nucleus.version>3.0-b43</nucleus.version>
         <gem.version>0.9.4</gem.version>
-        <jruby-container.version>0.7.8</jruby-container.version>
+        <jruby-container.version>0.7.10</jruby-container.version>
     </properties>
     <build>
         <plugins>
