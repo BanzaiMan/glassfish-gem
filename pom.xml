@@ -47,7 +47,7 @@
     <description>This module creates the jruby gem distribution image</description>
 
     <properties>
-        <nucleus.version>3.0-b43</nucleus.version>
+        <nucleus.version>3.0-b47</nucleus.version>
         <gem.version>0.9.4</gem.version>
         <jruby-container.version>0.7.10</jruby-container.version>
     </properties>
@@ -123,6 +123,9 @@
                         <phase>pre-integration-test</phase>
                         <configuration>
                             <tasks>
+                                <move file="target/dependency/glassfishv3/glassfish"
+                                      todir="target/dependency/"/>
+                                
                                 <!--Remove everything from inside glassfish/bin, these are meaningless for gem-->
                                 <delete dir="target/dependency/glassfish/bin" includes="*"/>
                                 
@@ -154,6 +157,9 @@
                                 <copy file="target/glassfish-gem.jar" todir="target/dependency/glassfish/modules/"/>
                                 <mkdir dir="target/dependency/glassfish/generators/gfrake/templates/"/>
                                 <copy file="config/glassfish.yml" todir="target/dependency/glassfish/generators/gfrake/templates/"/>
+                                <copy todir="target/dependency/glassfish/">
+                                    <fileset dir="." includes="README.txt History.txt LICENSE.txt"/>
+                                </copy>
                             </tasks>
 
                         </configuration>
@@ -166,7 +172,7 @@
             <plugin>
                 <groupId>org.jruby.plugins</groupId>
                 <artifactId>jruby-rake-plugin</artifactId>
-                <version>1.1.4</version>
+                <version>1.2.0</version>
                 <executions>
                     <execution>
                         <id>download-actionwebservice</id>
@@ -195,7 +201,8 @@
                                 s.default_executable = "glassfish"
                                 s.test_files = FileList["{test}/**/*test.rb"].to_a
                                 s.has_rdoc = true
-                                s.extra_rdoc_files = ["LICENSE.txt","COPYRIGHT"]
+                                s.rdoc_options = "--title 'GlassFish gem ${gem.version} Documentation' --main 'README.txt' --line-numbers"
+                                s.extra_rdoc_files = ["README.txt","History.txt", "LICENSE.txt"]
                                 s.rubyforge_project = "glassfishgem"
                                 s.add_dependency('rack', '>= 0.4.0')
 
