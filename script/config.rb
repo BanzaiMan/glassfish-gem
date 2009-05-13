@@ -175,6 +175,9 @@ module GlassFish
       src = File.dirname(__FILE__)+File::SEPARATOR+".."+File::SEPARATOR+"domains"+File::SEPARATOR+"domain1"+File::SEPARATOR+"config"
       File.cp(File.join(src,"domain.xml"), config_dir)
       File.cp(File.join(src,"logging.properties"), config_dir)
+      #make sure both these files are writable
+      FileUtils.chmod(0755, File.join(config_dir,"domain.xml"))
+      FileUtils.chmod(0755, File.join(config_dir,"logging.properties"))
     end
 
     #
