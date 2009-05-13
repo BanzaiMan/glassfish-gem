@@ -83,6 +83,16 @@ public class GlassFishMain {
                     props.put(key, logLevel);
                 }
             }
+
+            //if the gem is started with just -l option then we enable console logging else should be
+            // always disabled
+            if(options.log_console){
+                props.put("handlers", "java.util.logging.ConsoleHandler");
+                props.put("java.util.logging.ConsoleHandler.level",logLevel);
+            }else{
+                props.put("handlers", "");
+                props.put("java.util.logging.ConsoleHandler.level","OFF");
+            }
             OutputStream fos = new FileOutputStream(logFile);
             props.store(fos, "Updated Glassfish gem level to: " + logLevel);
             fos.close();

@@ -57,6 +57,7 @@ module GlassFish
         :port         => 3000,
         :pid          => nil,
         :log          => nil,
+        :log_console  => false,
         :log_level    => 1,
         :daemon       => false,
         :jvm_options  => nil
@@ -76,7 +77,7 @@ module GlassFish
       [ '--config', GetoptLong::REQUIRED_ARGUMENT ],
       [ '--daemon', '-d', GetoptLong::NO_ARGUMENT ],
       [ '--pid', '-P', GetoptLong::REQUIRED_ARGUMENT ],
-      [ '--log', '-l', GetoptLong::REQUIRED_ARGUMENT ],
+      [ '--log', '-l', GetoptLong::OPTIONAL_ARGUMENT ],
       [ '--log-level', GetoptLong::REQUIRED_ARGUMENT ],
       [ '--runtimes', '-n', GetoptLong::REQUIRED_ARGUMENT ],
       [ '--runtimes-min', GetoptLong::REQUIRED_ARGUMENT ],
@@ -111,6 +112,12 @@ module GlassFish
         when '--pid'
           config[:pid] = arg
         when '--log'
+          #if user just mentioned 'glassfish -l', it means he wants to log the messages on console
+          if(arg.nil? or arg.empty?)
+            puts "Log arg: "+arg
+            config[:log_console] = true
+          end
+          
           config[:log] = arg
         when '--log-level'
           config[:log_level] = arg.to_i
@@ -121,12 +128,7 @@ module GlassFish
 
 
       config[:app_dir] = ARGV.shift unless ARGV.empty?
-
-      config[:log] = absolutize config[:app_dir], config[:log]
-      
-      #Validate the command line options
-      Config.new.validate config
-      
+            
       #Read the config file from config/glasfish.yml
       config_file = absolutize config[:app_dir],config_file
       read_glassfish_config(config_file, config)

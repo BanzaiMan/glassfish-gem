@@ -50,6 +50,7 @@ public class Options{
     public boolean daemon;
     public String pid;
     public String log;
+    public boolean log_console;
     public int log_level;
     public String domainDir;
 	public String jvm_opts;
@@ -66,6 +67,7 @@ public class Options{
                 "Deamon: "+String.valueOf(daemon)+" "+
                 "pid: " + pid + " "+
                 "log: " + log + " " +
+                "log_console: " + log_console + " "+
                 "log-level: " + log_level +
 				"jvm_opts: "+ jvm_opts +
                 "domain director: "+domainDir;

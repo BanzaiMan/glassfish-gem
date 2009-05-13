@@ -69,6 +69,7 @@ module GlassFish
       opts.daemon = args[:daemon]
       opts.pid = args[:pid]
       opts.log = args[:log]
+      opts.log_console = args[:log_console]
       opts.domainDir = args[:domain_dir]
       opts.log_level = args[:log_level]
       opts.jvm_opts = args[:jvm_options]

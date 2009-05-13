@@ -111,11 +111,11 @@ module GlassFish
 
 
       # log-file
-      if(config[:log] == nil)
+      if(config[:log].nil? or config[:log].empty?)
         config[:log] = File.join(config[:app_dir], "log", config[:environment]+".log")
       end
 
-      if not File.exists?(config[:log])
+      if !File.exists?(config[:log]) and !config[:log_console]
         puts "Log file #{config[:log]} does not exist. Creating a new one..."
         parent = File.dirname(config[:log])
         if(!File.exists?parent)
