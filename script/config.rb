@@ -69,12 +69,19 @@ module GlassFish
           Config.fail "You are running on #{java.lang.System.getProperty("os.name")}  #{version}. Currently daemon mode only works on Linux or Solaris platforms!"
         end
         
+        # In daemon mode you can't log to console. Let's fail and let user spcifiy the log file explicitly
+	      if(config[:log_console])
+	        Config.fail "Daemon mode detected, console logging is disabled in daemon mode. You must provide path to log file with --log|-l option in daemon mode."
+        end
+	      
+        
         if(config[:jvm_options].nil?)
           config[:jvm_options] = DEFAULT_JVM_OPTS
         end
         if(config[:pid].nil?)
           config[:pid] = PID_FILE
-	end
+	      end
+	      
         absolutize config[:app_dir], config[:pid]
       end
 
