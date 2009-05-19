@@ -114,7 +114,6 @@ module GlassFish
         when '--log'
           #if user just mentioned 'glassfish -l', it means he wants to log the messages on console
           if(arg.nil? or arg.empty?)
-            puts "Log arg: "+arg
             config[:log_console] = true
           end
           
