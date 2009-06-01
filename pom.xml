@@ -327,15 +327,15 @@
         <connection>scm:svn:https://svn.dev.java.net/svn/glassfish-scripting/trunk/rails/v3/gem</connection>
         <developerConnection>scm:svn:https://svn.dev.java.net/svn/glassfish-scripting/trunk/rails/v3/gem</developerConnection>
     </scm>
-    <distributionManagement>
+	<repositories>
         <repository>
-            <uniqueVersion>false</uniqueVersion>
-			<id>java.net-maven2-repository</id>
-			<url>java-net:/maven2-repository/trunk/repository/</url>
+            <id>glassfish-repository</id>
+            <name>Java.net Repository for Glassfish</name>
+            <url>http://download.java.net/maven/glassfish</url>
+            <snapshots>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
         </repository>
-    </distributionManagement>
-
-    <repositories>
         <repository>
             <!-- back up glassfish maven repository in case the 'glassfish-repository' goes down -->
             <id>glassfish-repository-wsinterop</id>
@@ -345,15 +345,21 @@
                 <updatePolicy>never</updatePolicy>
             </snapshots>
         </repository>
+
         <repository>
-            <id>glassfish-repository</id>
-            <name>Java.net Repository for Glassfish</name>
-            <url>http://download.java.net/maven/glassfish</url>
-            <snapshots>
-                <updatePolicy>never</updatePolicy>
-            </snapshots>
+            <id>java.net2</id>
+            <name>Java.net Maven2 Repository</name>
+            <url>http://download.java.net/maven/2</url>
         </repository>
-        <!-- all the other repositories are inherited -->
+
     </repositories>
+    <distributionManagement>
+        <repository>
+            <uniqueVersion>false</uniqueVersion>
+            <!-- the ID maps to ~/.m2/settings.xml, so don't change the ID -->
+            <id>rator.sfbay</id>
+            <url>dav:http://rator.sfbay/maven/repositories/glassfish/</url>
+        </repository>
+    </distributionManagement>
 
 </project>
