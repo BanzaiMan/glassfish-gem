@@ -49,7 +49,7 @@
     <properties>
         <nucleus.version>3.0-Preview-b47c</nucleus.version>
         <gem.version>0.9.4</gem.version>
-        <jruby-container.version>0.7.11-SNAPSHOT</jruby-container.version>
+        <jruby-container.version>0.7.11</jruby-container.version>
     </properties>
     <build>
         <plugins>
@@ -136,7 +136,7 @@
                                 <copy file="bin/glassfish" todir="target/dependency/glassfish/bin"/>
                                 <copy file="bin/gfrake" todir="target/dependency/glassfish/bin"/>
                                 <!--For backward compatibility-->
-                                <copy file="bin/glassfish" tofile="target/dependency/glassfish/bin/glassfish_rails"/>
+                                <copy file="bin/glassfish_rails" tofile="target/dependency/glassfish/bin/glassfish_rails"/>
                                 <copy todir="target/dependency/glassfish/lib" filtering="true">
                                     <fileset dir="lib" includes="*.rb"/>
                                     <filterset>

@@ -1,3 +1,36 @@
+== 0.9.4
+
+====Bugs fixed in this release
+
+23754[http://rubyforge.org/tracker/index.php?func=detail&aid=23754&group_id=5450&atid=21080]	glassfish gem rails dependencies defect
+
+24633[http://rubyforge.org/tracker/index.php?func=detail&aid=24633&group_id=5450&atid=21080]	Better checking for arguments
+
+24787[http://rubyforge.org/tracker/index.php?func=detail&aid=24787&group_id=5450&atid=21080]	Problem with config.load_paths
+
+24828[http://rubyforge.org/tracker/index.php?func=detail&aid=24828&group_id=5450&atid=21080]	deadlock in GFFileHandler
+
+25068[http://rubyforge.org/tracker/index.php?func=detail&aid=25068&group_id=5450&atid=21080]	--pid option never works
+
+25169[http://rubyforge.org/tracker/index.php?func=detail&aid=25169&group_id=5450&atid=21080]	Add support for logging message on console
+
+25252[http://rubyforge.org/tracker/index.php?func=detail&aid=25252&group_id=5450&atid=21080]	cannot start if glassfish gem file is readonly: \domains\domain1\config\logging.properties
+	
+25253[http://rubyforge.org/tracker/index.php?func=detail&aid=25253&group_id=5450&atid=21080]	extra initialization of Rails inside grizzly-jruby.jar causes problems
+
+25254[http://rubyforge.org/tracker/index.php?func=detail&aid=25254&group_id=5450&atid=21080]	grizzly helper in grizzly-jruby.jar doesn't handle numeric headers
+
+25424[http://rubyforge.org/tracker/index.php?func=detail&aid=25424&group_id=5450&atid=21080]	can't find header dir for ruby
+
+25560[http://rubyforge.org/tracker/index.php?func=detail&aid=25560&group_id=5450&atid=21080]	Starting multiple glassfish instances seems to have logging problems
+
+25970[http://rubyforge.org/tracker/index.php?func=detail&aid=25970&group_id=5450&atid=21080]	Debugging via NetBeans: setting breakpoints fails with error message on server console.
+
+5404[https://glassfish.dev.java.net/issues/show_bug.cgi?id=5404]    SQLite3 with v3 Gem requires additional database configuration
+
+7380[https://glassfish.dev.java.net/issues/show_bug.cgi?id=7380]    Duplicate glassfish scripts in JRUBY_HOME/bin
+        
+
 == 0.9.3
 
 ===New features in this release

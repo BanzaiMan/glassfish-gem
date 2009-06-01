@@ -74,7 +74,8 @@ That's all you need to run your application.
 
 	-l, --log FILE:         Log file, where the server log messages will go.
 	                        By default the server logs go to
-	                        log/glassfish.log file.
+	                        log/development.log file. To see the logs on
+	                        console run with -l option without any argument.
 
 	--log-level LEVEL:      Log level 0 to 7. 0:OFF, 1:SEVERE, 2:WARNING,
 	                        3:INFO (default), 4:FINE, 5:FINER, 6:FINEST,
@@ -85,17 +86,17 @@ That's all you need to run your application.
 	                        command.
 
 	APPLICATION_PATH (optional): Path to the application to be run (default:
-	current). For further configuration, run GlassFish rake command 'gfrake
-	-T'
-	
+	current).
 
+	For further configuration, run GlassFish rake command 'gfrake -T'
+	
 ===Configuration
 
 	$gfrake -T
 	
 	rake clean    # Clean GlassFish generated temporary files (tmp/.glassfish)
 	rake config   # Generate a configuration file to customize GlassFish gem
-	rake version  # Display version of warbler
+	rake version  # Display version of GlassFish gem
 	
 <b>Note:</b> Although help screen shows rake command. You need to use gfrake instead.
 

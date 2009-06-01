@@ -169,10 +169,11 @@ module GlassFish
       if !File.exist? config_dir
         FileUtils.mkdir_p config_dir
       end
-      if !same_version?config_dir
-        return check_domain_dir? config_dir
-      end
-      true
+
+      #glassfish v3 preview release writes down the exact port number in domain.xml. to make
+      #it work, we need to update domain.xml and logging.properties everytime the app is run
+      same_version?config_dir
+      return check_domain_dir? config_dir
     end
 
     def check_domain_dir?(config_dir)
@@ -183,9 +184,6 @@ module GlassFish
       File.cp(File.join(src,"domain.xml"), config_dir)
       File.cp(File.join(src,"logging.properties"), config_dir)
       
-      #update the version
-      File.cp(File.join(src,"glassfish_gem_version.yml"), config_dir)
-
       #make sure both these files are writable
       FileUtils.chmod(0755, File.join(config_dir,"domain.xml"))
       FileUtils.chmod(0755, File.join(config_dir,"logging.properties"))

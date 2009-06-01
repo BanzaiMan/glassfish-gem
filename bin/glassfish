@@ -34,7 +34,7 @@
  #   PID file where PID will be written. Applicable when used with -d option. The default pid file is tmp/pids/glassfish-<PID>.pid
  #
  # -l, --log FILE::
- #   Log file, where the server log messages will go. By default the server logs go to log/glassfish.log file.
+ #   Log file, where the server log messages will go. By default the server logs go to log/development.log file. To see the logs on console run with -l option without any argument.
  #
  # --log-level LEVEL::
  #   Log level 0 to 7. 0:OFF, 1:SEVERE, 2:WARNING, 3:INFO (default), 4:FINE, 5:FINER, 6:FINEST, 7:ALL.
@@ -43,6 +43,7 @@
  #   Configuration file location. Use glassfish.yml as template. Generate it using 'gfrake config' command.
  #
  # APPLICATION_PATH (optional):  Path to the application to be run (default: current).
+ #
  # For further configuration, run GlassFish rake command 'gfrake -T'
 
  require "java"
