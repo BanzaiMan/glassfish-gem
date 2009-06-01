@@ -82,7 +82,7 @@ module GlassFish
           config[:pid] = PID_FILE
 	      end
 	      
-        absolutize config[:app_dir], config[:pid]
+        Config.absolutize config[:app_dir], config[:pid]
       end
 
       # log_level
@@ -155,6 +155,17 @@ module GlassFish
       STDERR.puts "ERROR: #{message}"
       STDERR.puts "Type 'glassfish -h' to get help"
       Kernel.exit -1
+    end
+
+    def self.absolutize(base, path)
+      if path.nil?
+        return nil
+      end
+      p = Pathname.new path
+      if(!p.absolute?)
+        path = File.join(base, path)
+      end
+      path
     end
     
 

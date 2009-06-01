@@ -110,7 +110,7 @@ module GlassFish
         when '--daemon'
           config[:daemon] = true
         when '--pid'
-          config[:pid] = arg
+          config[:pid] = File.expand_path arg
         when '--log'
           #if user just mentioned 'glassfish -l', it means he wants to log the messages on console
           if(arg.nil? or arg.empty?)
@@ -129,7 +129,7 @@ module GlassFish
       config[:app_dir] = ARGV.shift unless ARGV.empty?
             
       #Read the config file from config/glasfish.yml
-      config_file = absolutize config[:app_dir],config_file
+      config_file = Config::absolutize config[:app_dir],config_file
       read_glassfish_config(config_file, config)
 
       #Validate the command line options
@@ -166,7 +166,7 @@ module GlassFish
         when 'log'          
           val = arg['log-file']
           if(!val.nil?)
-            config[:log] = absolutize config[:app_dir], val
+            config[:log] = Config::absolutize config[:app_dir], val
           end
 
           val = arg['log-level']
@@ -180,6 +180,8 @@ module GlassFish
           if(!arg['pid'].nil?)
             if(!config[:daemon])
               Config::fail("glassfish.yml has\n daemon:\n\tpid: #{arg['pid']}\nThe pid option can only be used when daemon is set enable: true.")
+            else
+              config[:pid] = File.expand_path arg['pid']
             end
           end
           
@@ -193,19 +195,8 @@ module GlassFish
           config[:environment] = arg unless arg.nil?
         end      
       end 
-    end  
+    end      
 
-    def absolutize(base, path)
-      if path.nil?
-        return nil
-      end
-      p = Pathname.new path
-      if(!p.absolute?)
-        path = File.join(base, path)
-      end
-      path
-    end
-    
     def check_java
       begin 
           java.lang.Class.forName("javax.xml.ws.Service")
