@@ -58,7 +58,7 @@ module GlassFish
         :pid          => nil,
         :log          => nil,
         :log_console  => false,
-        :log_level    => 1,
+        :log_level    => 3,
         :daemon       => false,
         :jvm_options  => nil
       }
@@ -115,9 +115,9 @@ module GlassFish
           #if user just mentioned 'glassfish -l', it means he wants to log the messages on console
           if(arg.nil? or arg.empty?)
             config[:log_console] = true
+          else
+            config[:log] = File.expand_path arg
           end
-          
-          config[:log] = arg
         when '--log-level'
           config[:log_level] = arg.to_i
         when '--config'

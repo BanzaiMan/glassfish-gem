@@ -67,7 +67,9 @@ public class GlassFishMain {
         System.setProperty("jruby.gem.port", String.valueOf(options.port));
         System.setProperty("GlassFish_Platform", "Static");
         System.setProperty("glassfish.static.cache.dir", options.domainDir);
-        System.setProperty("jruby.log.location", options.log);
+        System.setProperty("jruby.log.file", options.log);
+        System.setProperty("jruby.log.location", options.appDir+File.separator+"log");
+
 
         String logLevel = getLogLevel(options.log_level);
 
@@ -93,6 +95,8 @@ public class GlassFishMain {
                 props.put("handlers", "");
                 props.put("java.util.logging.ConsoleHandler.level","OFF");
             }
+            props.put("com.sun.enterprise.server.logging.GFFileHandler.file", options.log);
+            props.put("com.sun.enterprise.server.logging.GFFileHandler.formatter", "java.util.logging.SimpleFormatter");
             OutputStream fos = new FileOutputStream(logFile);
             props.store(fos, "Updated Glassfish gem level to: " + logLevel);
             fos.close();

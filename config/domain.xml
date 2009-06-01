@@ -6,7 +6,7 @@
 <!-- Generated from default-domain.xml.template -->
 <!-- Avoid manual edits of this file. Run "gfadmin verify-domain-xml" otherwise.-->
 
-<domain application-root="${com.sun.aas.instanceRoot}/applications" log-root="${com.sun.aas.instanceRoot}/logs">
+<domain application-root="${com.sun.aas.instanceRoot}/applications" log-root="${jruby.log.location}">
     <applications/>
     <resources>
         <jdbc-resource pool-name="__TimerPool" jndi-name="jdbc/__TimerPool" object-type="system-admin"/>
@@ -76,7 +76,7 @@
                 <jms-host host="laturbie.sfbay.sun.com" name="default_JMS_host"/>
             </jms-service>
 
-            <log-service file="${jruby.log.location}" log-rotation-limit-in-bytes="2000000">
+            <log-service file="${jruby.log.file}" log-rotation-limit-in-bytes="2000000">
                 <module-log-levels/>
             </log-service>
 
@@ -180,7 +180,8 @@
 
 
             <thread-pools>
-                <thread-pool thread-pool-id="thread-pool-1"/>
+                <thread-pool name="http-thread-pool" max-queue-size="4096" />
+                <thread-pool name="thread-pool-1" max-thread-pool-size="200" />
             </thread-pools>
             <management-rules enabled="true"/>
         </config>
