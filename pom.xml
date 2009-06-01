@@ -138,7 +138,7 @@
                                 <!--For backward compatibility-->
                                 <copy file="bin/glassfish" tofile="target/dependency/glassfish/bin/glassfish_rails"/>
                                 <copy todir="target/dependency/glassfish/lib" filtering="true">
-                                    <fileset dir="script" includes="*.rb"/>
+                                    <fileset dir="lib" includes="*.rb"/>
                                     <filterset>
                                         <filter token="GLASSFISH_GEM_VERSION" value="${gem.version}"/>
                                     </filterset>
@@ -201,8 +201,8 @@
                                 s.default_executable = "glassfish"
                                 s.test_files = FileList["{test}/**/*test.rb"].to_a
                                 s.has_rdoc = true
-                                s.rdoc_options = "--title 'GlassFish gem ${gem.version} Documentation' --main 'README.txt' --line-numbers"
-                                s.extra_rdoc_files = ["README.txt","History.txt", "LICENSE.txt"]
+                                #s.rdoc_options = "-SN -t 'GlassFish gem ${gem.version} Documentation' --main README.txt"
+                                #s.extra_rdoc_files = ["README.txt","History.txt", "LICENSE.txt"]
                                 s.rubyforge_project = "glassfishgem"
                                 s.add_dependency('rack', '>= 0.4.0')
 
