@@ -1,3 +1,12 @@
+== 0.9.5
+
+This is a quick update to 0.9.4. 
+
+Main difference between 0.9.4 and 0.9.5 is that glassfish_rails exits in 0.9.4 where as in 0.9.5 it prints deprecation message and runs the application. This is so that NetBean 6.7 RC1 can still run glassfish gem.
+
+7380[https://glassfish.dev.java.net/issues/show_bug.cgi?id=7380]    Duplicate glassfish scripts in JRUBY_HOME/bin
+
+
 == 0.9.4
 
 ====Bugs fixed in this release
