@@ -1,2 +1,61 @@
-puts "\n'glassfish_rails' is discontinued, use 'glassfish' command instead.\n\nThis script will be removed in the next release.
+# == Synopsis
+#
+# glassfish: GlassFish v3 server for Rack based frameworks such as: Rails, Merb, Sinatra...
+#
+# == Usage:
+#
+# glassfish [OPTION] APPLICATION_PATH
+#
+# -h, --help::
+#    show help
+#
+# -c, --contextroot PATH::
+#    change the context root (default: '/')
+#
+# -p, --port PORT::
+#    change server port (default: 3000)
+#
+# -e, --environment ENV::
+#    change rails environment (default: development)
+#
+# -n --runtimes NUMBER::
+#    Number of JRuby runtimes to create initially
+#
+# --runtimes-min NUMBER::
+#    Minimum JRuby runtimes to create
+#
+# --runtimes-max NUMBER::
+#    Maximum number of JRuby runtimes to create
+#
+# -d, --daemon::
+#   Run GlassFish as daemon. Currently works with Linux and Solaris OS.
+#
+# -P, --pid FILE::
+#   PID file where PID will be written. Applicable when used with -d option. The default pid file is tmp/pids/glassfish-<PID>.pid
+#
+# -l, --log FILE::
+#   Log file, where the server log messages will go. By default the server logs go to log/development.log file. To see the logs on console run with -l option without any argument.
+#
+# --log-level LEVEL::
+#   Log level 0 to 7. 0:OFF, 1:SEVERE, 2:WARNING, 3:INFO (default), 4:FINE, 5:FINER, 6:FINEST, 7:ALL.
+#
+# --config FILE::
+#   Configuration file location. Use glassfish.yml as template. Generate it using 'gfrake config' command.
+#
+# APPLICATION_PATH (optional):  Path to the application to be run (default: current).
+#
+# For further configuration, run GlassFish rake command 'gfrake -T'
+
+ require "java"
+ $LOAD_PATH << "#{File.dirname(__FILE__)}/../modules"
+ $LOAD_PATH << "#{File.dirname(__FILE__)}/../lib"
+
+ require 'command_line_parser'
+ require 'glassfish'
+
+ puts "\n'glassfish_rails' is deprecated, use 'glassfish' command instead.\nThis script will be removed in the next release.
 \n\n"
+
+ options = GlassFish::CommandLineParser.new.parse
+ gf = GlassFish::Server.new
+ gf.startup(options)
