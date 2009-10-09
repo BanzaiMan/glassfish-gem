@@ -41,7 +41,6 @@ import static com.sun.akuma.CLibrary.LIBC;
 import com.sun.akuma.Daemon;
 import com.sun.akuma.JavaVMArguments;
 import com.sun.enterprise.glassfish.bootstrap.ASMain;
-import org.glassfish.api.admin.ParameterNames;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -109,7 +108,7 @@ public class GlassFishMain {
         //We disable al messages shown by anonymous loggers. This will filter lot of junk!
         LogManager.getLogManager().getLogger("").setLevel(Level.OFF);        
         printStatusMessage(options);
-        ASMain.main(new String[]{options.appDir, "--" + ParameterNames.CONTEXT_ROOT, options.contextRoot, "--domaindir", options.domainDir});
+        ASMain.main(new String[]{options.appDir, "--" + "contextroot", options.contextRoot, "--domaindir", options.domainDir});
     }
 
     public static void start(final Options options) {
