@@ -173,13 +173,13 @@ module GlassFish
     def check_domain_dir?(domain_dir)
       #create Glassfish domain directory if it does not exist
       unless File.exist? domain_dir
-        Dir.mkdir(domain_dir)
+        File.makedirs(domain_dir)
         return true
       end
       
       config_dir = File.join(domain_dir, "config")
       unless File.exist? config_dir
-        Dir.mkdir(config_dir)
+        File.makedirs(config_dir)
         return true
       end
       
