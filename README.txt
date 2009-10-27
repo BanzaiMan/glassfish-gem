@@ -134,7 +134,7 @@ Some key points:
 
 You can get the GlassFish source using svn, in any of the following ways:
 
-<tt>svn co https://svn.dev.java.net/svn/glassfish-scripting/trunk/rails/v3/gem</tt>
+<tt>svn co https://svn.dev.java.net/svn/glassfish-scripting/trunk/rails/gem</tt>
 
 === License
 

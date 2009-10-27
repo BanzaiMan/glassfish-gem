@@ -35,7 +35,6 @@
 #++
 require 'java'
 require 'glassfish-gem.jar'
-require 'glassfish.jar'
 require 'akuma.jar'
 require 'yaml'
 require 'ftools'

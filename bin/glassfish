@@ -47,9 +47,9 @@
  # For further configuration, run GlassFish rake command 'gfrake -T'
 
  require "java"
- $LOAD_PATH << "#{File.dirname(__FILE__)}/../modules"
+ $LOAD_PATH << "#{File.dirname(__FILE__)}/../lib/java"
  $LOAD_PATH << "#{File.dirname(__FILE__)}/../lib"
-
+ 
  require 'command_line_parser'
  require 'glassfish'
 

@@ -40,23 +40,186 @@ package org.glassfish.scripting.gem;
 import static com.sun.akuma.CLibrary.LIBC;
 import com.sun.akuma.Daemon;
 import com.sun.akuma.JavaVMArguments;
+import com.sun.common.util.logging.LoggingConfig;
+import com.sun.enterprise.config.serverbeans.LogService;
 import com.sun.enterprise.glassfish.bootstrap.ASMain;
+import com.sun.enterprise.module.bootstrap.Which;
+import org.glassfish.api.deployment.DeployCommandParameters;
+import org.glassfish.api.embedded.EmbeddedDeployer;
+import org.glassfish.api.embedded.EmbeddedFileSystem;
+import org.glassfish.api.embedded.LifecycleException;
+import org.glassfish.api.embedded.Server;
+import org.jvnet.hk2.config.ConfigSupport;
+import org.jvnet.hk2.config.SingleConfigCode;
+import org.jvnet.hk2.config.TransactionFailure;
 
-import java.io.*;
+import java.beans.PropertyVetoException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.Properties;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 
 /**
  * @author Vivek Pandey
  */
 public class GlassFishMain {
+
+    private static void startGlassFishEmbedded(Options options){
+
+        Logger root = Logger.getLogger("");
+        String logLevel = getLogLevel(options.log_level);
+        root.setLevel(Level.parse(logLevel));
+
+        for(Handler handler : root.getHandlers()){
+            if(handler instanceof ConsoleHandler){
+                root.removeHandler(handler);
+            }
+        }
+
+        try {
+            FileHandler fh = new FileHandler(options.log);
+            fh.setFormatter(new SimpleFormatter());
+            root.addHandler(fh);
+        } catch (IOException e) {
+            System.err.println("[ERROR] Error setting up log file: "+options.log+".");
+            e.printStackTrace();
+        }
+
+        if(options.log_console){
+            GlassFishConsoleHandler gfh = new GlassFishConsoleHandler();
+            gfh.setFormatter(new GlassFishLogFormatter());
+            root.addHandler(gfh);
+        }
+        
+
+        EmbeddedFileSystem.Builder  fsBuilder = new EmbeddedFileSystem.Builder();
+
+        EmbeddedFileSystem fs = fsBuilder.instanceRoot(new File(options.domainDir)).build();
+
+        printStatusMessage(options);
+        
+        
+        Server.Builder  builder = new Server.Builder("jruby");
+
+        builder.embeddedFileSystem(fs).logger(false).logFile(new File(options.log));
+
+
+        Server server = builder.build();
+        server.addContainer(new JRubyContainerBuilder());
+
+
+
+
+//        configureLogService(server, options);
+
+        try {
+            server.createPort(options.port);
+            server.start();
+        } catch (LifecycleException e) {
+            System.err.println("[ERROR] Error starting GlassFish");
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.err.println("[ERROR] Error starting GlassFish");
+            e.printStackTrace();
+        }
+        DeployCommandParameters params = new DeployCommandParameters();
+        params.contextroot = options.contextRoot;
+        params.name = new File(options.appDir).getName();
+
+        Properties props = new Properties();
+        props.setProperty("jruby.runtime", String.valueOf(options.runtimes));
+        props.setProperty("jruby.runtime.min", String.valueOf(options.runtimes_min));
+        props.setProperty("jruby.runtime.max", String.valueOf(options.runtimes_max));
+        props.setProperty("jruby.rackEnv", options.environment);
+        params.property = props;
+
+        File url = null;
+        try {
+            url = Which.jarFile(GlassFishMain.class);
+        } catch (IOException e) {
+            System.err.println("[ERROR] Error starting GlassFish");
+            e.printStackTrace();
+        }
+        params.libraries = url.getParentFile().getAbsolutePath() + File.separator + "grizzly"+File.separator +"grizzly-jruby.jar";
+
+
+        EmbeddedDeployer dep = server.getDeployer();
+        dep.deploy(new File(options.appDir), params);
+
+
+    }
+
+    private static void configureLogService(Server server, final Options options){
+
+        String logLevel = getLogLevel(options.log_level);
+        LoggingConfig logConfig = server.getHabitat().getComponent(LoggingConfig.class);
+        try {
+            Map<String, String> props = logConfig.getLoggingProperties();
+            for (String key : props.keySet()) {
+
+                if (key.endsWith(".level") && (props.get(key) == null || !props.get(key).equals(logLevel))) {
+                    props.put(key, logLevel);
+                }
+            }
+
+            //if the gem is started with just -l option then we enable console logging else should be
+            // always disabled
+            if(options.log_console){
+                props.put("handlers", "java.util.logging.ConsoleHandler");
+                props.put("java.util.logging.ConsoleHandler.level",logLevel);
+            }else{
+                props.put("handlers", "");
+                props.put("java.util.logging.ConsoleHandler.level","OFF");
+            }
+            props.put("com.sun.enterprise.server.logging.GFFileHandler.file", options.log);
+            props.put("com.sun.enterprise.server.logging.GFFileHandler.formatter", "java.util.logging.SimpleFormatter");    
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        LogService logService = server.getHabitat().getByContract(LogService.class);
+        Map<String, String> levels = logService.getModuleLogLevels().getAllLogLevels();
+
+        try {
+            ConfigSupport.apply(new SingleConfigCode<LogService>() {
+                @Override
+                public Object run(LogService param) throws PropertyVetoException, TransactionFailure {
+                    param.setFile(options.log);
+                    //if the gem is started with just -l option then we enable console logging else should be
+                    // always disabled
+                    if(options.log_console){
+                        param.setLogToConsole("true");
+                    }else{
+                        param.setLogToConsole("false");
+                    }
+                    return null;
+                }
+            }, logService);
+        } catch (TransactionFailure transactionFailure) {
+            System.err.println("[ERROR] There was error configuring the logger.");
+        }
+    }
+
+
     private static void startGlassFish(Options options) {
 
         System.setProperty("jruby.runtime", String.valueOf(options.runtimes));
@@ -189,7 +352,7 @@ public class GlassFishMain {
             }
         }
 
-        startGlassFish(options);
+        startGlassFishEmbedded(options);
     }
 
     private static void printDaemonMessage(Options options) {

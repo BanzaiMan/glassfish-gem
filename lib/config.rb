@@ -145,8 +145,7 @@ module GlassFish
       domaindir = File.join(config[:app_dir], "tmp", ".glassfish")
       config[:domain_dir] = File.expand_path(domaindir)
 
-      if !setup_temp_domain?File.join(domaindir, "config")
-        puts "ERROR: Failed to create GlassFish domain directory: #{domaindir}"
+      if !check_domain_dir?domaindir
         exit -1
       end
     end
@@ -171,60 +170,30 @@ module GlassFish
 
     private
 
-    #
-    #Create a domain directory and copy the domain.xml and logging.properties 
-    #there. This will take care of infamous bug that causes people to run 
-    # glassfish gem as sudo if jruby is installed as root
-    #
-    def setup_temp_domain? config_dir
-      if !File.exist? config_dir
-        FileUtils.mkdir_p config_dir
+    def check_domain_dir?(domain_dir)
+      #create Glassfish domain directory if it does not exist
+      unless File.exist? domain_dir
+        Dir.mkdir(domain_dir)
+        return true
       end
-
-      #glassfish v3 preview release writes down the exact port number in domain.xml. to make
-      #it work, we need to update domain.xml and logging.properties everytime the app is run
-      same_version?config_dir
-      return check_domain_dir? config_dir
-    end
-
-    def check_domain_dir?(config_dir)
-      if !File.writable_real?config_dir
-        return false
-      end
-      src = File.dirname(__FILE__)+File::SEPARATOR+".."+File::SEPARATOR+"domains"+File::SEPARATOR+"domain1"+File::SEPARATOR+"config"
-      File.cp(File.join(src,"domain.xml"), config_dir)
-      File.cp(File.join(src,"logging.properties"), config_dir)
       
-      #make sure both these files are writable
-      FileUtils.chmod(0755, File.join(config_dir,"domain.xml"))
-      FileUtils.chmod(0755, File.join(config_dir,"logging.properties"))
-
-    end
-
-    #
-    #Returns true if there is glasfish_gem_version.yml file and has the same 
-    #version as the glassfish gem. Otherwise creates a new file and returns 
-    #false so that rest of the stuff can be created
-    #
-    def same_version?(config_dir)
-      f = File.join(config_dir, 'glassfish_gem_version.yml')
-      if !File.exist? f
-        src = File.join(File.dirname(__FILE__), "..", "domains", "domain1", "config", "glassfish_gem_version.yml")
-        File.cp src, config_dir
+      config_dir = File.join(domain_dir, "config")
+      unless File.exist? config_dir
+        Dir.mkdir(config_dir)
+        return true
+      end
+      
+      if !File.writable_real?config_dir
+        puts "ERROR: GlassFish temporary directory: #{config_dir} not writable. Please give write permission to proceed."
         return false
       end
-      file = File.open(f)
-      data = YAML::load(file)
-
-      #this is probably corrupted, return false so that a new one can be placed
-      if not data.key?'glassfish'
-        return false; 
+      
+      #glassfish gem <=0.9.5 created domain.xml, this causes latter version 
+      #to fail so removing this as no more needed
+      if(File.exist?(config_dir) and File.exist?(File.join(config_dir, "domain.xml")))
+        FileUtils.rmtree config_dir        
       end
-      version = data['glassfish'].fetch('version', nil)
-      if(version.nil?)
-        return false
-      end
-      version.eql?GlassFish::VERSION
+      true
     end
   end
 end
