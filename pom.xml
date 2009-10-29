@@ -9,11 +9,11 @@
     <description>This module creates the jruby gem distribution image</description>
 
     <properties>
-        <glassfish.version>3.0-b69</glassfish.version>
+        <glassfish.version>3.0-b70</glassfish.version>
         <gem.version>0.9.6</gem.version>
         <jruby-container.version>1.0-SNAPSHOT</jruby-container.version>
-        <hk2.version>0.4.4</hk2.version>
-        <grizzly-jruby.version>1.8.23-SNAPSHOT</grizzly-jruby.version>
+        <hk2.version>0.4.5</hk2.version>
+        <grizzly-jruby.version>1.8.24-SNAPSHOT</grizzly-jruby.version>
     </properties>
     <build>
         <plugins>
