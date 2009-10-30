@@ -201,6 +201,11 @@
         </plugins>
         <extensions>
             <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav</artifactId>
+                <version>1.0-beta-2</version>
+            </extension>
+            <extension>
                 <groupId>org.glassfish.build</groupId>
                 <artifactId>maven-glassfishbuild-extension</artifactId>
                 <version>${glassfish.version}</version>

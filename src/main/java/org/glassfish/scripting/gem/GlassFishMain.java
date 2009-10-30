@@ -42,6 +42,7 @@ import com.sun.akuma.Daemon;
 import com.sun.akuma.JavaVMArguments;
 import com.sun.common.util.logging.LoggingConfig;
 import com.sun.enterprise.config.serverbeans.LogService;
+import com.sun.enterprise.config.serverbeans.MonitoringService;
 import com.sun.enterprise.glassfish.bootstrap.ASMain;
 import com.sun.enterprise.module.bootstrap.Which;
 import org.glassfish.api.deployment.DeployCommandParameters;
@@ -49,6 +50,7 @@ import org.glassfish.api.embedded.EmbeddedDeployer;
 import org.glassfish.api.embedded.EmbeddedFileSystem;
 import org.glassfish.api.embedded.LifecycleException;
 import org.glassfish.api.embedded.Server;
+import org.glassfish.api.monitoring.ContainerMonitoring;
 import org.jvnet.hk2.config.ConfigSupport;
 import org.jvnet.hk2.config.SingleConfigCode;
 import org.jvnet.hk2.config.TransactionFailure;
@@ -83,14 +85,14 @@ import java.util.logging.SimpleFormatter;
  */
 public class GlassFishMain {
 
-    private static void startGlassFishEmbedded(Options options){
+    private static void startGlassFishEmbedded(Options options) {
 
         Logger root = Logger.getLogger("");
         String logLevel = getLogLevel(options.log_level);
         root.setLevel(Level.parse(logLevel));
 
-        for(Handler handler : root.getHandlers()){
-            if(handler instanceof ConsoleHandler){
+        for (Handler handler : root.getHandlers()) {
+            if (handler instanceof ConsoleHandler) {
                 root.removeHandler(handler);
             }
         }
@@ -100,25 +102,25 @@ public class GlassFishMain {
             fh.setFormatter(new SimpleFormatter());
             root.addHandler(fh);
         } catch (IOException e) {
-            System.err.println("[ERROR] Error setting up log file: "+options.log+".");
+            System.err.println("[ERROR] Error setting up log file: " + options.log + ".");
             e.printStackTrace();
         }
 
-        if(options.log_console){
+        if (options.log_console) {
             GlassFishConsoleHandler gfh = new GlassFishConsoleHandler();
             gfh.setFormatter(new GlassFishLogFormatter());
             root.addHandler(gfh);
         }
-        
 
-        EmbeddedFileSystem.Builder  fsBuilder = new EmbeddedFileSystem.Builder();
+
+        EmbeddedFileSystem.Builder fsBuilder = new EmbeddedFileSystem.Builder();
 
         EmbeddedFileSystem fs = fsBuilder.instanceRoot(new File(options.domainDir)).build();
 
         printStatusMessage(options);
-        
-        
-        Server.Builder  builder = new Server.Builder("jruby");
+
+
+        Server.Builder builder = new Server.Builder("jruby");
 
         builder.embeddedFileSystem(fs).logger(false).logFile(new File(options.log));
 
@@ -126,152 +128,71 @@ public class GlassFishMain {
         Server server = builder.build();
         server.addContainer(new JRubyContainerBuilder());
 
-
-
-
-//        configureLogService(server, options);
-
         try {
             server.createPort(options.port);
             server.start();
-        } catch (LifecycleException e) {
-            System.err.println("[ERROR] Error starting GlassFish");
-            e.printStackTrace();
-        } catch (IOException e) {
-            System.err.println("[ERROR] Error starting GlassFish");
-            e.printStackTrace();
+            DeployCommandParameters params = new DeployCommandParameters();
+            params.contextroot = options.contextRoot;
+            params.name = new File(options.appDir).getName();
+
+            Properties props = new Properties();
+            props.setProperty("jruby.runtime", String.valueOf(options.runtimes));
+            props.setProperty("jruby.runtime.min", String.valueOf(options.runtimes_min));
+            props.setProperty("jruby.runtime.max", String.valueOf(options.runtimes_max));
+            props.setProperty("jruby.rackEnv", options.environment);
+            params.property = props;
+
+            File url = Which.jarFile(GlassFishMain.class);
+            params.libraries = url.getParentFile().getAbsolutePath() + File.separator + "grizzly" + File.separator + "grizzly-jruby.jar";
+            enableMonitoring(server);
+
+            EmbeddedDeployer dep = server.getDeployer();
+            dep.deploy(new File(options.appDir), params);
+        } catch (Exception e) {
+            System.err.println("[ERROR] Error starting GlassFish: "+e.getMessage());
+            try {
+                System.err.println("Stopping GlassFish!");
+                server.stop();
+            } catch (Exception e1) {
+                System.exit(-1);
+            }
         }
-        DeployCommandParameters params = new DeployCommandParameters();
-        params.contextroot = options.contextRoot;
-        params.name = new File(options.appDir).getName();
-
-        Properties props = new Properties();
-        props.setProperty("jruby.runtime", String.valueOf(options.runtimes));
-        props.setProperty("jruby.runtime.min", String.valueOf(options.runtimes_min));
-        props.setProperty("jruby.runtime.max", String.valueOf(options.runtimes_max));
-        props.setProperty("jruby.rackEnv", options.environment);
-        params.property = props;
-
-        File url = null;
-        try {
-            url = Which.jarFile(GlassFishMain.class);
-        } catch (IOException e) {
-            System.err.println("[ERROR] Error starting GlassFish");
-            e.printStackTrace();
-        }
-        params.libraries = url.getParentFile().getAbsolutePath() + File.separator + "grizzly"+File.separator +"grizzly-jruby.jar";
-
-
-        EmbeddedDeployer dep = server.getDeployer();
-        dep.deploy(new File(options.appDir), params);
-
 
     }
 
-    private static void configureLogService(Server server, final Options options){
 
-        String logLevel = getLogLevel(options.log_level);
-        LoggingConfig logConfig = server.getHabitat().getComponent(LoggingConfig.class);
-        try {
-            Map<String, String> props = logConfig.getLoggingProperties();
-            for (String key : props.keySet()) {
-
-                if (key.endsWith(".level") && (props.get(key) == null || !props.get(key).equals(logLevel))) {
-                    props.put(key, logLevel);
-                }
-            }
-
-            //if the gem is started with just -l option then we enable console logging else should be
-            // always disabled
-            if(options.log_console){
-                props.put("handlers", "java.util.logging.ConsoleHandler");
-                props.put("java.util.logging.ConsoleHandler.level",logLevel);
-            }else{
-                props.put("handlers", "");
-                props.put("java.util.logging.ConsoleHandler.level","OFF");
-            }
-            props.put("com.sun.enterprise.server.logging.GFFileHandler.file", options.log);
-            props.put("com.sun.enterprise.server.logging.GFFileHandler.formatter", "java.util.logging.SimpleFormatter");    
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        LogService logService = server.getHabitat().getByContract(LogService.class);
-        Map<String, String> levels = logService.getModuleLogLevels().getAllLogLevels();
-
-        try {
-            ConfigSupport.apply(new SingleConfigCode<LogService>() {
-                @Override
-                public Object run(LogService param) throws PropertyVetoException, TransactionFailure {
-                    param.setFile(options.log);
-                    //if the gem is started with just -l option then we enable console logging else should be
-                    // always disabled
-                    if(options.log_console){
-                        param.setLogToConsole("true");
-                    }else{
-                        param.setLogToConsole("false");
+    private static void enableMonitoring(Server server) {
+        MonitoringService ms = server.getHabitat().getByType(MonitoringService.class);
+        ContainerMonitoring cm = ms.getContainerMonitoring("jruby-container");
+        if (cm == null) {
+            try {
+                ConfigSupport.apply(new SingleConfigCode<MonitoringService>() {
+                    public Object run(MonitoringService param) throws PropertyVetoException, TransactionFailure {
+                        ContainerMonitoring newItem = param.createChild(ContainerMonitoring.class);
+                        newItem.setName("jruby-container");
+                        newItem.setLevel("HIGH");
+                        param.getContainerMonitoring().add(newItem);
+                        return newItem;
                     }
-                    return null;
-                }
-            }, logService);
-        } catch (TransactionFailure transactionFailure) {
-            System.err.println("[ERROR] There was error configuring the logger.");
-        }
-    }
+                }, ms);
 
-
-    private static void startGlassFish(Options options) {
-
-        System.setProperty("jruby.runtime", String.valueOf(options.runtimes));
-        System.setProperty("jruby.runtime.min", String.valueOf(options.runtimes_min));
-        System.setProperty("jruby.runtime.max", String.valueOf(options.runtimes_max));
-        System.setProperty("rails.env", options.environment);
-        System.setProperty("jruby.gem.port", String.valueOf(options.port));
-        System.setProperty("GlassFish_Platform", "Static");
-        System.setProperty("glassfish.static.cache.dir", options.domainDir);
-        System.setProperty("jruby.log.file", options.log);
-        System.setProperty("jruby.log.location", options.appDir+File.separator+"log");
-
-
-        String logLevel = getLogLevel(options.log_level);
-
-        Properties props = new Properties();
-        try {
-            String logFile = options.domainDir + File.separator + "config" + File.separator + "logging.properties";
-            InputStream fis = new FileInputStream(logFile);
-            props.load(fis);
-            fis.close();
-            for (Object key : props.keySet()) {
-
-                if (((String) key).endsWith(".level") && (props.get(key) == null || !props.get(key).equals(logLevel))) {
-                    props.put(key, logLevel);
-                }
+            } catch (TransactionFailure tf) {
+                System.err.println("Error during enabling monitoring" + tf.getMessage());
             }
+        } else {
+            try {
+                ConfigSupport.apply(new SingleConfigCode<ContainerMonitoring>() {
+                    public Object run(ContainerMonitoring param) throws PropertyVetoException, TransactionFailure {
+                        param.setLevel("HIGH");
+                        return null;
+                    }
+                }, cm);
 
-            //if the gem is started with just -l option then we enable console logging else should be
-            // always disabled
-            if(options.log_console){
-                props.put("handlers", "java.util.logging.ConsoleHandler");
-                props.put("java.util.logging.ConsoleHandler.level",logLevel);
-            }else{
-                props.put("handlers", "");
-                props.put("java.util.logging.ConsoleHandler.level","OFF");
+            } catch (TransactionFailure tf) {
+                System.err.println("Error during enabling monitoring: " + tf.getMessage());
             }
-            props.put("com.sun.enterprise.server.logging.GFFileHandler.file", options.log);
-            props.put("com.sun.enterprise.server.logging.GFFileHandler.formatter", "java.util.logging.SimpleFormatter");
-            OutputStream fos = new FileOutputStream(logFile);
-            props.store(fos, "Updated Glassfish gem level to: " + logLevel);
-            fos.close();
-        } catch (FileNotFoundException e) {
-            //skip
-        } catch (IOException e) {
-            //skip
         }
 
-        //We disable al messages shown by anonymous loggers. This will filter lot of junk!
-        LogManager.getLogManager().getLogger("").setLevel(Level.OFF);        
-        printStatusMessage(options);
-        ASMain.main(new String[]{options.appDir, "--" + "contextroot", options.contextRoot, "--domaindir", options.domainDir});
     }
 
     public static void start(final Options options) {
@@ -419,8 +340,8 @@ public class GlassFishMain {
         }
 
         if (!options.daemon) {
-            System.out.println("Starting GlassFish server at: " + host + ":" + options.port+ " in " + options.environment + " environment...");
-            System.out.println("Writing log messages to: "+options.log+".");
+            System.out.println("Starting GlassFish server at: " + host + ":" + options.port + " in " + options.environment + " environment...");
+            System.out.println("Writing log messages to: " + options.log + ".");
             System.out.println("Press Ctrl+C to stop.");
         }
     }
