@@ -40,15 +40,11 @@ package org.glassfish.scripting.gem;
 import static com.sun.akuma.CLibrary.LIBC;
 import com.sun.akuma.Daemon;
 import com.sun.akuma.JavaVMArguments;
-import com.sun.common.util.logging.LoggingConfig;
-import com.sun.enterprise.config.serverbeans.LogService;
 import com.sun.enterprise.config.serverbeans.MonitoringService;
-import com.sun.enterprise.glassfish.bootstrap.ASMain;
 import com.sun.enterprise.module.bootstrap.Which;
 import org.glassfish.api.deployment.DeployCommandParameters;
 import org.glassfish.api.embedded.EmbeddedDeployer;
 import org.glassfish.api.embedded.EmbeddedFileSystem;
-import org.glassfish.api.embedded.LifecycleException;
 import org.glassfish.api.embedded.Server;
 import org.glassfish.api.monitoring.ContainerMonitoring;
 import org.jvnet.hk2.config.ConfigSupport;
@@ -57,25 +53,19 @@ import org.jvnet.hk2.config.TransactionFailure;
 
 import java.beans.PropertyVetoException;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 import java.util.Properties;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
@@ -98,6 +88,11 @@ public class GlassFishMain {
         }
 
         try {
+            //create the log file if does not exist
+            File logFile = new File(options.log);
+            logFile.getParentFile().mkdirs();
+            logFile.createNewFile();
+
             FileHandler fh = new FileHandler(options.log);
             fh.setFormatter(new SimpleFormatter());
             root.addHandler(fh);
