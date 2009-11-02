@@ -10,7 +10,7 @@
 
     <properties>
         <glassfish.version>3.0-b70</glassfish.version>
-        <gem.version>0.9.6</gem.version>
+        <gem.version>0.9.6.dev</gem.version>
         <jruby-container.version>1.0-b14</jruby-container.version>
         <hk2.version>0.4.5</hk2.version>
         <grizzly-jruby.version>1.8.24</grizzly-jruby.version>
@@ -137,7 +137,7 @@
             <plugin>
                 <groupId>org.jruby.plugins</groupId>
                 <artifactId>jruby-rake-plugin</artifactId>
-                <version>1.2.0</version>
+                <version>1.4.0RC1</version>
                 <executions>
                     <execution>
                         <id>download-actionwebservice</id>
