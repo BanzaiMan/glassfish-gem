@@ -13,7 +13,7 @@
         <gem.version>0.9.6.dev</gem.version>
         <jruby-container.version>1.0-b14</jruby-container.version>
         <hk2.version>0.4.5</hk2.version>
-        <grizzly-jruby.version>1.8.24</grizzly-jruby.version>
+        <grizzly-jruby.version>1.8.25-SNAPSHOT</grizzly-jruby.version>
     </properties>
     <build>
         <plugins>
