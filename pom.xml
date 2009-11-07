@@ -11,9 +11,9 @@
     <properties>
         <glassfish.version>3.0-b70</glassfish.version>
         <gem.version>0.9.6.dev</gem.version>
-        <jruby-container.version>1.0-b15</jruby-container.version>
+        <jruby-container.version>1.0-b16</jruby-container.version>
         <hk2.version>0.4.5</hk2.version>
-        <grizzly-jruby.version>1.8.26</grizzly-jruby.version>
+        <grizzly-jruby.version>1.8.27</grizzly-jruby.version>
     </properties>
     <build>
         <plugins>
