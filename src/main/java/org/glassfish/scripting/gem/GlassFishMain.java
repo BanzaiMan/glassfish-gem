@@ -199,6 +199,12 @@ public class GlassFishMain {
             }
 
             final File pid = new File(options.pid);
+
+
+            if(pid.getParentFile() != null && !pid.getParentFile().exists()){
+                System.err.println("PID file directory: "+pid.getParentFile().getAbsolutePath()+" does not exist! Please create this directory to proceed.");
+                System.exit(1);
+            }
             pid.deleteOnExit();
 
             Daemon d = new Daemon() {
