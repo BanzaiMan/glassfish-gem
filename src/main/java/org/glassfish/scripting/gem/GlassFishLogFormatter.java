@@ -48,16 +48,18 @@ import java.util.logging.LogRecord;
 public class GlassFishLogFormatter extends Formatter {
     private static final String lineSeparator = "\n";
     private final Date dat = new Date();
-
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy hh:mm:ss a");
 
     @Override
     public String format(LogRecord record) {
+        if(record.getLoggerName().equals("com.sun.grizzly.jruby.rack.JRubyRuntime"))
+            return record.getMessage()+"\n";
         dat.setTime(record.getMillis());
         StringBuffer sb = new StringBuffer();
         String message = formatMessage(record);
         if(message == null || message.isEmpty())
             return message;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy hh:mm:ss a"); 
+
         sb.append("[").append(dateFormat.format(dat)).append("] ");
 
         sb.append(message);

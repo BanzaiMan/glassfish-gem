@@ -47,6 +47,7 @@ public class Options{
     public String environment;
     public String appDir;
     public int port;
+    public String address;
     public boolean daemon;
     public String pid;
     public String log;
@@ -62,7 +63,8 @@ public class Options{
                 "runtimes-max: " + String.valueOf(runtimes_max)+" "+
                 "contextroot: " + contextRoot+" "+
                 "environment: " + environment+" "+
-                "appDir: " + appDir+" "+
+                "appDir: " + appDir +" "+
+                "address: " + address +" "+                
                 "port: "+String.valueOf(port)+" "+
                 "Deamon: "+String.valueOf(daemon)+" "+
                 "pid: " + pid + " "+

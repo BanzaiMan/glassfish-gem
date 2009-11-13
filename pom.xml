@@ -9,11 +9,11 @@
     <description>This module creates the jruby gem distribution image</description>
 
     <properties>
-        <glassfish.version>3.0-b70</glassfish.version>
+        <glassfish.version>3.0-b72</glassfish.version>
         <gem.version>0.9.6.dev</gem.version>
-        <jruby-container.version>1.0-b16</jruby-container.version>
-        <hk2.version>0.4.5</hk2.version>
-        <grizzly-jruby.version>1.8.27</grizzly-jruby.version>
+        <jruby-container.version>1.0-b17</jruby-container.version>
+        <hk2.version>0.4.13</hk2.version>
+        <grizzly-jruby.version>1.8.29-SNAPSHOT</grizzly-jruby.version>
     </properties>
     <build>
         <plugins>
@@ -28,8 +28,8 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.5</source>
+                    <target>1.5</target>
                 </configuration>
             </plugin>
             <plugin>

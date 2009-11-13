@@ -55,6 +55,7 @@ module GlassFish
         :environment  => "development",
         :app_dir      => Dir.pwd,
         :port         => 3000,
+        :address      => "0.0.0.0",
         :pid          => nil,
         :log          => nil,
         :log_console  => false,
@@ -72,6 +73,7 @@ module GlassFish
       
       opts = GetoptLong.new(
       [ '--port', '-p', GetoptLong::REQUIRED_ARGUMENT ],
+      [ '--address', '-a', GetoptLong::REQUIRED_ARGUMENT ],
       [ '--environment', '-e', GetoptLong::REQUIRED_ARGUMENT ],
       [ '--contextroot', '-c', GetoptLong::REQUIRED_ARGUMENT ],
       [ '--config', GetoptLong::REQUIRED_ARGUMENT ],
@@ -97,6 +99,8 @@ module GlassFish
           RDoc::usage
         when '--contextroot'
           config[:contextroot] = arg
+        when '--address'
+          config[:address] = arg        
         when '--port'
           config[:port] = arg.to_i
         when '--environment'
@@ -158,9 +162,14 @@ module GlassFish
         when 'http'
           val = arg['port']
           if(!val.nil?)
-            config[:port] = val.to_i
+            config[:port] = val.to_i unless val.nil?
           end
 
+          val = arg['address']
+          if(!val.nil?)
+            config[:address] = val unless val.nil?
+          end
+          
           val = arg['contextroot']
           config[:contextroot] = val unless val.nil?
         when 'log'          

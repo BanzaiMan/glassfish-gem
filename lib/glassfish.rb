@@ -63,6 +63,7 @@ module GlassFish
       opts.runtimes_max = args[:runtimes_max]
       opts.environment = args[:environment]
       opts.port = args[:port]
+      opts.address = args[:address]
       opts.contextRoot = args[:contextroot]
       opts.appDir = args[:app_dir]
       opts.daemon = args[:daemon]

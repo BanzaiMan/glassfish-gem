@@ -13,6 +13,9 @@ http:
 
     # port
     port: 3000
+    
+    #address
+    address: 0.0.0.0
 
     # context root. The default value is '/'
     contextroot: /

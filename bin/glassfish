@@ -15,6 +15,9 @@
  # -p, --port PORT::
  #    change server port (default: 3000)
  #
+ # -a, --address HOST::
+ #    bind to HOST address (default: 0.0.0.0)
+ #
  # -e, --environment ENV::
  #    change rails environment (default: development)
  #

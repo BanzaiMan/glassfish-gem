@@ -47,7 +47,7 @@ public class GlassFishConsoleHandler extends ConsoleHandler {
         if(record != null && record.getLoggerName() != null){
             //log all the warning and error messages to console
             if((record.getLevel().intValue() > 800 && record.getLevel().intValue() <= 1000) ||
-                    record.getLoggerName().equals("org.glassfish.scripting.jruby.JRubyContainer")){
+                    record.getLoggerName().equals("com.sun.grizzly.jruby.rack.JRubyRuntime")){
                 super.publish(record);                                
             }
         }

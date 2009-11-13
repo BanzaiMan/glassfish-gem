@@ -51,9 +51,9 @@ module GlassFish
       # http configuration
       # port
       begin
-        server = TCPServer.new '0.0.0.0', config[:port]
+        server = TCPServer.new config[:port]
       rescue 
-        STDERR.puts "0.0.0.0:#{config[:port]}: " + $!      
+        STDERR.puts "#{config[:address]}:#{config[:port]}: " + $!      
         #TODO: we should give an option of ephemeral port support
         exit(1) 
       end

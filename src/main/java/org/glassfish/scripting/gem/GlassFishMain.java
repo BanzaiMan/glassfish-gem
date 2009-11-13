@@ -45,6 +45,7 @@ import com.sun.enterprise.module.bootstrap.Which;
 import org.glassfish.api.deployment.DeployCommandParameters;
 import org.glassfish.api.embedded.EmbeddedDeployer;
 import org.glassfish.api.embedded.EmbeddedFileSystem;
+import org.glassfish.api.embedded.Port;
 import org.glassfish.api.embedded.Server;
 import org.glassfish.api.monitoring.ContainerMonitoring;
 import org.jvnet.hk2.config.ConfigSupport;
@@ -56,8 +57,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -124,7 +123,9 @@ public class GlassFishMain {
         server.addContainer(new JRubyContainerBuilder());
 
         try {
-            server.createPort(options.port);
+            PortImpl port = new PortImpl(server.getHabitat());
+            port.bind(options.address, options.port);
+            Runtime.getRuntime().addShutdownHook(new ShutdownThread(server, port));            
             server.start();
             DeployCommandParameters params = new DeployCommandParameters();
             params.contextroot = options.contextRoot;
@@ -153,6 +154,25 @@ public class GlassFishMain {
             }
         }
 
+    }
+
+    private static class ShutdownThread extends Thread {
+        private final Server server;
+        private final Port port;
+        ShutdownThread(Server server, Port port) {
+            this.server = server;
+            this.port = port;
+        }
+        public void run() {
+            try {
+                System.out.println("Stopping GlassFish!");
+                this.port.close();
+                this.server.stop();
+            } catch (Exception e) {
+                // log the exception                
+                System.exit(-1);
+            }
+        }
     }
 
 
@@ -278,12 +298,6 @@ public class GlassFishMain {
     }
 
     private static void printDaemonMessage(Options options) {
-        String host;
-        try {
-            host = InetAddress.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
-            host = "0.0.0.0";
-        }
         String logfilename = options.appDir + File.separator + "log" + File.separator + "glassfish-daemon.log";
 
         File log = new File(logfilename);
@@ -299,7 +313,7 @@ public class GlassFishMain {
         FileWriter fw = null;
         try {
             fw = new FileWriter(log, true);
-            String msg1 = "Starting GlassFish as daemon at: " + host + ":" + options.port + " in " + options.environment + " environment...";
+            String msg1 = "Starting GlassFish as daemon at: " + options.address + ":" + options.port + " in " + options.environment + " environment...";
             String msg2 = "Writing log messages to: " + options.log + ".";
             String msg3 = "To stop, kill -s SIGINT " + LIBC.getpid();
 
@@ -333,17 +347,10 @@ public class GlassFishMain {
     }
 
     private static void printStatusMessage(Options options) {
-        String host;
-        try {
-            host = InetAddress.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
-            host = "0.0.0.0";
-        }
-
         if (!options.daemon) {
-            System.out.println("Starting GlassFish server at: " + host + ":" + options.port + " in " + options.environment + " environment...");
+            System.out.println("Starting GlassFish server at: " + options.address + ":" + options.port + " in " + options.environment + " environment...");
             System.out.println("Writing log messages to: " + options.log + ".");
-            System.out.println("Press Ctrl+C to stop.");
+            System.out.println("Press Ctrl+C to stop.\n");
         }
     }
 
