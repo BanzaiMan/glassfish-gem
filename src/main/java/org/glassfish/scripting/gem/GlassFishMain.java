@@ -41,7 +41,6 @@ import static com.sun.akuma.CLibrary.LIBC;
 import com.sun.akuma.Daemon;
 import com.sun.akuma.JavaVMArguments;
 import com.sun.enterprise.config.serverbeans.MonitoringService;
-import com.sun.enterprise.module.bootstrap.Which;
 import org.glassfish.api.deployment.DeployCommandParameters;
 import org.glassfish.api.embedded.EmbeddedDeployer;
 import org.glassfish.api.embedded.EmbeddedFileSystem;
@@ -75,6 +74,8 @@ import java.util.logging.SimpleFormatter;
 public class GlassFishMain {
 
     private static void startGlassFishEmbedded(Options options) {
+
+        System.out.println("App Class:" + options.app);
 
         Logger root = Logger.getLogger("");
         String logLevel = getLogLevel(options.log_level);
@@ -137,9 +138,6 @@ public class GlassFishMain {
             props.setProperty("jruby.runtime.max", String.valueOf(options.runtimes_max));
             props.setProperty("jruby.rackEnv", options.environment);
             params.property = props;
-
-            File url = Which.jarFile(GlassFishMain.class);
-            params.libraries = url.getParentFile().getAbsolutePath() + File.separator + "grizzly" + File.separator + "grizzly-jruby.jar";
             enableMonitoring(server);
 
             EmbeddedDeployer dep = server.getDeployer();

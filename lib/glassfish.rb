@@ -33,6 +33,10 @@
 #only if the new code is made subject to such option by the copyright
 #holder.
 #++
+
+#Loads all the jars
+$LOAD_PATH << "#{File.dirname(__FILE__)}/../lib/java"
+
 require 'java'
 require 'glassfish-gem.jar'
 require 'akuma.jar'
@@ -49,31 +53,65 @@ module GlassFish
     import "org.glassfish.scripting.gem.GlassFishMain"
     import "org.glassfish.scripting.gem.Options"
 
-    def startup(args)
+    java.lang.System.setProperty("addtional.load.path", "#{File.dirname(__FILE__)}/../lib")
+
+
+    attr_accessor :opts
+
+    def initialize(args, &block)
       if args[:log_level] > 4
         puts "Arguments: "
-        args.each do |k, v| 
+        args.each do |k, v|
           puts "\t#{k}=>#{v}"
         end
       end
 
-      opts = Options.new()
-      opts.runtimes = args[:runtimes]
-      opts.runtimes_min = args[:runtimes_min]
-      opts.runtimes_max = args[:runtimes_max]
-      opts.environment = args[:environment]
-      opts.port = args[:port]
-      opts.address = args[:address]
-      opts.contextRoot = args[:contextroot]
-      opts.appDir = args[:app_dir]
-      opts.daemon = args[:daemon]
-      opts.pid = args[:pid]
-      opts.log = args[:log]
-      opts.log_console = args[:log_console]
-      opts.domainDir = args[:domain_dir]
-      opts.log_level = args[:log_level]
-      opts.jvm_opts = args[:jvm_options]
-      gf = GlassFishMain.start opts
+      @opts = Options.new
+      @opts.runtimes = args[:runtimes]
+      @opts.runtimes_min = args[:runtimes_min]
+      @opts.runtimes_max = args[:runtimes_max]
+      @opts.environment = args[:environment]
+      @opts.port = args[:port]
+      @opts.address = args[:address]
+      @opts.contextRoot = args[:contextroot]
+      @opts.appDir = args[:app_dir]
+      @opts.daemon = args[:daemon]
+      @opts.pid = args[:pid]
+      @opts.log = args[:log]
+      @opts.log_console = args[:log_console]
+      @opts.domainDir = args[:domain_dir]
+      @opts.log_level = args[:log_level]
+      @opts.jvm_opts = args[:jvm_options]
+
+      #Create the app using Rack builder
+      if(block)
+        @app = Rack::Builder.new(&block).to_app if block
+
+        # If the logger is setup in debug mode, wrap the app
+        # with common logger
+        @app = Rack::CommonLogger.new(@app) if Logging.debug?
+
+        @opts.app = @app;
+      end
     end
+
+    def self.start(args, &block)
+      new(args, &block).start!
+    end
+
+    def start
+      GlassFishMain.start @opts
+    end
+    alias :start! :start
+
+    def stop
+      GlassFishMain.start @opts
+    end
+
+    def name
+      "GlassFish v3 server"
+    end
+
+    alias :to_s :name
   end
 end

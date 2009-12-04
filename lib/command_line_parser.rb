@@ -45,9 +45,10 @@ require 'java'
 #
 module GlassFish
   class CommandLineParser
+    attr_accessor :config
 
     def init_opts    
-      @@config ||= {
+      {
         :runtimes     => 1,
         :runtimes_min => 1,
         :runtimes_max => 1,
@@ -69,7 +70,7 @@ module GlassFish
       
       check_java
 
-      config = init_opts            
+      @config = init_opts
       
       opts = GetoptLong.new(
       [ '--port', '-p', GetoptLong::REQUIRED_ARGUMENT ],

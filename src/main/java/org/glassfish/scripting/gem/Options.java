@@ -36,6 +36,8 @@
  */
 package org.glassfish.scripting.gem;
 
+import org.jruby.runtime.builtin.IRubyObject;
+
 /**
  * @author Vivek Pandey
  */
@@ -55,6 +57,7 @@ public class Options{
     public int log_level;
     public String domainDir;
 	public String jvm_opts;
+    public IRubyObject app;
 
     @Override
     public String toString() {

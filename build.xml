@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+The contents of this file are subject to the terms
+of the Common Development and Distribution License
+(the "License").  You may not use this file except
+in compliance with the License.
+
+You can obtain a copy of the license at
+glassfish/bootstrap/legal/CDDLv1.0.txt or
+https://glassfish.dev.java.net/public/CDDLv1.0.html.
+See the License for the specific language governing
+permissions and limitations under the License.
+
+When distributing Covered Code, include this CDDL
+HEADER in each file and include the License file at
+glassfish/bootstrap/legal/CDDLv1.0.txt.  If applicable,
+add the following below this CDDL HEADER, with the
+fields enclosed by brackets "[]" replaced with your
+own identifying information: Portions Copyright [yyyy]
+[name of copyright owner]
+-->
+<project name="GlassFish gem" basedir="." default="setup-resources">
+
+    <property name="ruby.dest" value="target/stage/lib"/>
+    <property name="grizzly.ruby.dest" value="target/stage/lib/grizzly"/>
+
+    <target name="setup-resources">
+        <echo message="Setup various resrouces to finalize gem build"/>
+
+
+        <mkdir dir="target/grizzly-jruby/"/>
+        <mkdir dir="target/stage"/>
+        <mkdir dir="target/stage/bin"/>
+
+
+        <move file="target/stage/lib/java/grizzly-jruby.jar" todir="target"/>
+
+        <unjar src="target/grizzly-jruby.jar"
+               dest="${ruby.dest}">
+            <patternset>
+                <include name="**/*.rb"/>
+            </patternset>
+        </unjar>
+
+        <jar destfile="target/stage/lib/java/grizzly-jruby.jar">
+            <zipfileset src="target/grizzly-jruby.jar">
+                <exclude name="**/*.rb"/>
+            </zipfileset>
+        </jar>
+        
+        <copy file="bin/glassfish" todir="target/stage/bin"/>
+        <copy file="bin/gfrake" todir="target/stage/bin"/>
+        <copy todir="${ruby.dest}" filtering="true">
+            <fileset dir="lib" includes="*.rb"/>
+            <filterset>
+                <filter token="GLASSFISH_GEM_VERSION" value="${gem.version}"/>
+            </filterset>
+        </copy>
+
+        <copy file="target/glassfish-gem.jar" todir="target/stage/lib/java"/>
+        <mkdir dir="target/stage/generators/gfrake/templates/"/>
+        <copy file="config/glassfish.yml"
+              todir="target/stage/generators/gfrake/templates/"/>
+        <copy todir="target/stage/">
+            <fileset dir="." includes="README.txt History.txt LICENSE.txt"/>
+        </copy>
+
+    </target>
+
+
+</project>
+

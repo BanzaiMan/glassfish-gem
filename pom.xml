@@ -9,11 +9,12 @@
     <description>This module creates the jruby gem distribution image</description>
 
     <properties>
-        <glassfish.version>3.0-b72</glassfish.version>
+        <glassfish.version>3.0-b74b</glassfish.version>
         <gem.version>0.9.6.dev</gem.version>
         <jruby-container.version>1.0-b17</jruby-container.version>
-        <hk2.version>0.4.13</hk2.version>
+        <hk2.version>1.0.0</hk2.version>
         <grizzly-jruby.version>1.8.29-SNAPSHOT</grizzly-jruby.version>
+        <jruby.version>1.4.0</jruby.version>
     </properties>
     <build>
         <plugins>
@@ -91,27 +92,9 @@
                         <phase>pre-integration-test</phase>
                         <configuration>
                             <tasks>
-                                <mkdir dir="target/stage"/>
-                                <mkdir dir="target/stage/bin"/>
-                                <mkdir dir="target/stage/lib/java"/>
-                                <mkdir dir="target/stage/lib/java/grizzly"/>
-                                <move file="target/stage/lib/java/grizzly-jruby.jar" todir="target/stage/lib/java/grizzly"/>
-                                <copy file="bin/glassfish" todir="target/stage/bin"/>
-                                <copy file="bin/gfrake" todir="target/stage/bin"/>
-                                <copy todir="target/stage/lib" filtering="true">
-                                    <fileset dir="lib" includes="*.rb"/>
-                                    <filterset>
-                                        <filter token="GLASSFISH_GEM_VERSION" value="${gem.version}"/>
-                                    </filterset>
-                                </copy>
+                                <property name="gem.version" value="${gem.version}"/>
+                                <ant target="setup-resources"/>
 
-                                <copy file="target/glassfish-gem.jar" todir="target/stage/lib/java"/>
-                                <mkdir dir="target/stage/generators/gfrake/templates/"/>
-                                <copy file="config/glassfish.yml"
-                                      todir="target/stage/generators/gfrake/templates/"/>
-                                <copy todir="target/stage/">
-                                    <fileset dir="." includes="README.txt History.txt LICENSE.txt"/>
-                                </copy>
                             </tasks>
                         </configuration>
                         <goals>
@@ -297,7 +280,12 @@
             <artifactId>grizzly-jruby</artifactId>
             <version>${grizzly-jruby.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.jruby</groupId>
+            <artifactId>jruby-complete</artifactId>
+            <version>${jruby.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
     </dependencies>
 
