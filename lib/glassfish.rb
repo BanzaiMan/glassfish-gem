@@ -55,7 +55,6 @@ module GlassFish
 
     java.lang.System.setProperty("addtional.load.path", "#{File.dirname(__FILE__)}/../lib")
 
-
     attr_accessor :opts
 
     def initialize(args, &block)
@@ -65,6 +64,8 @@ module GlassFish
           puts "\t#{k}=>#{v}"
         end
       end
+
+      java.lang.System.getProperties().put("jruby.runtime", JRuby.runtime) unless args[:daemon]
 
       @opts = Options.new
       @opts.runtimes = args[:runtimes]
