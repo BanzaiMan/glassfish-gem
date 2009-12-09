@@ -50,6 +50,7 @@ own identifying information: Portions Copyright [yyyy]
         
         <copy file="bin/glassfish" todir="target/stage/bin"/>
         <copy file="bin/gfrake" todir="target/stage/bin"/>
+
         <copy todir="${ruby.dest}" filtering="true">
             <fileset dir="lib" includes="*.rb"/>
             <filterset>
@@ -57,6 +58,13 @@ own identifying information: Portions Copyright [yyyy]
             </filterset>
         </copy>
 
+        <copy todir="${ruby.dest}" filtering="true">
+            <fileset dir="lib" includes="*.rb" excludes="glassfish.rb"/>
+            <filterset>
+                <filter token="GLASSFISH_GEM_VERSION" value="${gem.version}"/>
+            </filterset>
+        </copy>
+        
         <copy file="target/glassfish-gem.jar" todir="target/stage/lib/java"/>
         <mkdir dir="target/stage/generators/gfrake/templates/"/>
         <copy file="config/glassfish.yml"

@@ -34,6 +34,10 @@
 #holder.
 #++
 
+#
+# Invokes and runs GlassFish
+#
+
 #Loads all the jars
 $LOAD_PATH << "#{File.dirname(__FILE__)}/../lib/java"
 
@@ -43,11 +47,8 @@ require 'akuma.jar'
 require 'yaml'
 require 'ftools'
 require 'version'
+require 'config'
 
-
-#
-#Invokes and runs GlassFish
-#
 module GlassFish
   class Server
     import "org.glassfish.scripting.gem.GlassFishMain"
@@ -58,11 +59,19 @@ module GlassFish
     attr_accessor :opts
 
     def initialize(args, &block)
-      if args[:log_level] > 4
-        puts "Arguments: "
-        args.each do |k, v|
-          puts "\t#{k}=>#{v}"
+
+      unless args[:log_level].nil?
+        if args[:log_level] > 4
+          puts "Arguments: "
+          args.each do |k, v|
+            puts "\t#{k}=>#{v}"
+          end
         end
+
+        if args[:log_level] > 3
+          debug = true
+        end
+
       end
 
       java.lang.System.getProperties().put("jruby.runtime", JRuby.runtime) unless args[:daemon]
@@ -86,17 +95,21 @@ module GlassFish
 
       #Create the app using Rack builder
       if(block)
-        @app = Rack::Builder.new(&block).to_app if block
+        app = Rack::Builder.new(&block).to_app
+        app = Rack::CommonLogger.new(@app) if debug
+        if app.nil?
+          app = block
+        end
+        @opts.app = app;
 
-        # If the logger is setup in debug mode, wrap the app
-        # with common logger
-        @app = Rack::CommonLogger.new(@app) if Logging.debug?
-
-        @opts.app = @app;
+        java.lang.System.getProperties().put("glassfish.rackupApp", app)
       end
     end
 
     def self.start(args, &block)
+      #Validate the command line options
+      args = GlassFish::Config.init_opts.merge! args
+      Config.new.validate! args
       new(args, &block).start!
     end
 

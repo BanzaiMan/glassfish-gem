@@ -75,8 +75,6 @@ public class GlassFishMain {
 
     private static void startGlassFishEmbedded(Options options) {
 
-        System.out.println("App Class:" + options.app);
-
         Logger root = Logger.getLogger("");
         String logLevel = getLogLevel(options.log_level);
         root.setLevel(Level.parse(logLevel));
@@ -137,8 +135,12 @@ public class GlassFishMain {
             props.setProperty("jruby.runtime.min", String.valueOf(options.runtimes_min));
             props.setProperty("jruby.runtime.max", String.valueOf(options.runtimes_max));
             props.setProperty("jruby.rackEnv", options.environment);
+            if(java.lang.System.getProperties().get("glassfish.rackupApp") != null){
+                props.setProperty("jruby.applicationType", "config.ru");//this is a hack
+            }
+                        
             params.property = props;
-            enableMonitoring(server);
+//            enableMonitoring(server);
 
             EmbeddedDeployer dep = server.getDeployer();
             dep.deploy(new File(options.appDir), params);

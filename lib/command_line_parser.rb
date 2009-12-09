@@ -47,31 +47,13 @@ module GlassFish
   class CommandLineParser
     attr_accessor :config
 
-    def init_opts    
-      {
-        :runtimes     => 1,
-        :runtimes_min => 1,
-        :runtimes_max => 1,
-        :contextroot  => '/',
-        :environment  => "development",
-        :app_dir      => Dir.pwd,
-        :port         => 3000,
-        :address      => "0.0.0.0",
-        :pid          => nil,
-        :log          => nil,
-        :log_console  => false,
-        :log_level    => 3,
-        :daemon       => false,
-        :jvm_options  => nil
-      }
-    end
 
     def parse
-      
+
       check_java
 
-      @config = init_opts
-      
+      @config = Config.init_opts
+
       opts = GetoptLong.new(
       [ '--port', '-p', GetoptLong::REQUIRED_ARGUMENT ],
       [ '--address', '-a', GetoptLong::REQUIRED_ARGUMENT ],
@@ -89,7 +71,7 @@ module GlassFish
       [ '--help', '-h', GetoptLong::NO_ARGUMENT ]
       )
 
-      config_file = File.join(config[:app_dir], "config", "glassfish.yml") 
+      config_file = File.join(config[:app_dir], "config", "glassfish.yml")
       opts.each do |opt, arg|
         case opt
         when '--version'
@@ -101,7 +83,7 @@ module GlassFish
         when '--contextroot'
           config[:contextroot] = arg
         when '--address'
-          config[:address] = arg        
+          config[:address] = arg
         when '--port'
           config[:port] = arg.to_i
         when '--environment'
@@ -132,21 +114,18 @@ module GlassFish
 
 
       config[:app_dir] = ARGV.shift unless ARGV.empty?
-            
+
       #Read the config file from config/glasfish.yml
       config_file = Config::absolutize config[:app_dir],config_file
       read_glassfish_config(config_file, config)
 
-      #Validate the command line options
-      Config.new.validate config
-            
       config
 
     end
 
     private
 
-    # Read glassfish config file from config/glassfish.yml. CLI options will 
+    # Read glassfish config file from config/glassfish.yml. CLI options will
     # override the glassfish.yml configurations
     def read_glassfish_config(cfile, config)
 
@@ -170,10 +149,10 @@ module GlassFish
           if(!val.nil?)
             config[:address] = val unless val.nil?
           end
-          
+
           val = arg['contextroot']
           config[:contextroot] = val unless val.nil?
-        when 'log'          
+        when 'log'
           val = arg['log-file']
           if(!val.nil?)
             config[:log] = Config::absolutize config[:app_dir], val
@@ -185,7 +164,7 @@ module GlassFish
           config[:runtimes] = arg['initial'] unless arg['initial'].nil?
           config[:runtimes_min] = arg['min'] unless arg['min'].nil?
           config[:runtimes_max] = arg['max'] unless arg['max'].nil?
-        when 'daemon'          
+        when 'daemon'
           config[:daemon] = arg['enable'] unless arg['enable'].nil?
           if(!arg['pid'].nil?)
             if(!config[:daemon])
@@ -194,23 +173,23 @@ module GlassFish
               config[:pid] = File.expand_path arg['pid']
             end
           end
-          
+
           #CLI option are overriden by glassfish.yml settings
           if(!data['daemon'].nil? and (data['daemon'] or config[:daemon]))
-            config[:jvm_options] = arg['jvm-options'] unless  arg['jvm-options'].nil?         
+            config[:jvm_options] = arg['jvm-options'] unless  arg['jvm-options'].nil?
           else
             STDERR.puts "Ignoring JVM options #{arg}. JVM options can only be passed in daemon mode. To use these, enable daemon mode"
-          end          
+          end
         when 'environment'
           config[:environment] = arg unless arg.nil?
-        end      
-      end 
-    end      
+        end
+      end
+    end
 
     def check_java
-      begin 
+      begin
           java.lang.Class.forName("javax.xml.ws.Service")
-      rescue 
+      rescue
           #It is not Java6, fail
           STDERR.puts "ERROR: You are running, Java version: "+java.lang.System.getProperty("java.version")+"."
           STDERR.puts "ERROR: GlassFish gem needs Java ver. 6.0 or higher!"

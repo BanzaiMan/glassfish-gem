@@ -45,17 +45,37 @@ module GlassFish
     PID_FILE = Dir.pwd+File::SEPARATOR+"tmp"+File::SEPARATOR+"pids"+File::SEPARATOR+"glassfish"
     DEFAULT_JVM_OPTS = "-server -Xmx512m -XX:MaxPermSize=192m -XX:NewRatio=2 -XX:+DisableExplicitGC -Dhk2.file.directory.changeIntervalTimer=6000";
 
-    # Validates the configuration options. If it can will revert to default else 
-    # fail 
-    def validate config
+    def self.init_opts
+      {
+        :runtimes     => 1,
+        :runtimes_min => 1,
+        :runtimes_max => 1,
+        :contextroot  => '/',
+        :environment  => "development",
+        :app_dir      => Dir.pwd,
+        :port         => 3000,
+        :address      => "0.0.0.0",
+        :pid          => nil,
+        :log          => nil,
+        :log_console  => false,
+        :log_level    => 3,
+        :daemon       => false,
+        :jvm_options  => nil
+      }
+    end
+
+
+    # Validates the configuration options. If it can will revert to default else
+    # fail
+    def validate! config
       # http configuration
       # port
       begin
         server = TCPServer.new config[:port]
-      rescue 
-        STDERR.puts "#{config[:address]}:#{config[:port]}: " + $!      
+      rescue
+        STDERR.puts "#{config[:address]}:#{config[:port]}: " + $!
         #TODO: we should give an option of ephemeral port support
-        exit(1) 
+        exit(1)
       end
       server.close
 
@@ -63,25 +83,25 @@ module GlassFish
       if(config[:daemon])
         os = java.lang.System.getProperty("os.name").downcase
         version = java.lang.System.getProperty("os.version")
-        #check the platform, Currently daemon mode works only on linux and 
+        #check the platform, Currently daemon mode works only on linux and
         #solaris
         if(!os.include?("linux") and !os.include?("sunos"))
           Config.fail "You are running on #{java.lang.System.getProperty("os.name")}  #{version}. Currently daemon mode only works on Linux or Solaris platforms!"
         end
-        
+
         # In daemon mode you can't log to console. Let's fail and let user spcifiy the log file explicitly
 	      if(config[:log_console])
 	        Config.fail "Daemon mode detected, console logging is disabled in daemon mode. You must provide path to log file with --log|-l option in daemon mode."
         end
-	      
-        
+
+
         if(config[:jvm_options].nil?)
           config[:jvm_options] = DEFAULT_JVM_OPTS
         end
         if(config[:pid].nil?)
           config[:pid] = PID_FILE
 	      end
-	      
+
         Config.absolutize config[:app_dir], config[:pid]
       end
 
@@ -133,7 +153,7 @@ module GlassFish
       end
 
 
-      # pid file 
+      # pid file
       #
       if(!config[:pid].nil? and !config[:daemon])
             GlassFish::Config::fail("--pid option can only be used with --daemon.")
@@ -149,7 +169,7 @@ module GlassFish
         exit -1
       end
     end
-    
+
     def self.fail(message)
       STDERR.puts "ERROR: #{message}"
       STDERR.puts "Type 'glassfish -h' to get help"
@@ -166,7 +186,7 @@ module GlassFish
       end
       path
     end
-    
+
 
     private
 
@@ -176,22 +196,22 @@ module GlassFish
         File.makedirs(domain_dir)
         return true
       end
-      
+
       config_dir = File.join(domain_dir, "config")
       unless File.exist? config_dir
         File.makedirs(config_dir)
         return true
       end
-      
+
       if !File.writable_real?config_dir
         puts "ERROR: GlassFish temporary directory: #{config_dir} not writable. Please give write permission to proceed."
         return false
       end
-      
-      #glassfish gem <=0.9.5 created domain.xml, this causes latter version 
+
+      #glassfish gem <=0.9.5 created domain.xml, this causes latter version
       #to fail so removing this as no more needed
       if(File.exist?(config_dir) and File.exist?(File.join(config_dir, "domain.xml")))
-        FileUtils.rmtree config_dir        
+        FileUtils.rmtree config_dir
       end
       true
     end

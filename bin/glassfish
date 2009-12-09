@@ -49,10 +49,7 @@
  #
  # For further configuration, run GlassFish rake command 'gfrake -T'
 
- $LOAD_PATH << "#{File.dirname(__FILE__)}/../lib"
- 
- require 'command_line_parser'
- require 'server'
+ require 'glassfish'
 
  options = GlassFish::CommandLineParser.new.parse
  GlassFish::Server.start options

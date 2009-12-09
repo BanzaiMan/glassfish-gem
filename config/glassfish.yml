@@ -19,6 +19,9 @@ http:
 
     # context root. The default value is '/'
     contextroot: /
+    
+    grizzly:
+        
 
 
 #Logging configuration
