@@ -112,7 +112,7 @@ module GlassFish
       end
 
       if config[:runtimes] > config[:runtimes_max]
-        puts "Initial number of runtimes #{config[:runtimes]} is > max runtime config[:runtimes_max].\nIncreasing runtimes-max to config[:runtimes]"
+        puts "Initial number of runtimes #{config[:runtimes]} is > max runtime #{config[:runtimes_max]}.\nIncreasing runtimes-max to config[:runtimes]"
         config[:runtimes_max] = config[:runtimes]
       end
 
