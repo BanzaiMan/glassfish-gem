@@ -111,6 +111,11 @@ module GlassFish
         Config.fail "\t0 OFF\n\t1 SEVERE \n\t2 WARNING\n\t3 INFO(default)\n\t4 FINE\n\t5 FINER\n\t6 FINEST\n\t7 ALL\n"
       end
 
+      if config[:runtimes] > config[:runtimes_max]
+        puts "Initial number of runtimes #{config[:runtimes]} is > max runtime config[:runtimes_max].\nIncreasing runtimes-max to config[:runtimes]"
+        config[:runtimes_max] = config[:runtimes]
+      end
+
       # JRuby runtime
       runtimes_err = " Invalid runtime configuration, initial:#{config[:runtimes]}, min:#{config[:runtimes_min]}, max:#{config[:runtimes_max]}."
       err = false
