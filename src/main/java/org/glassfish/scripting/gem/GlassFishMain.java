@@ -88,10 +88,12 @@ public class GlassFishMain {
         try {
             //create the log file if does not exist
             File logFile = new File(options.log);
-            logFile.getParentFile().mkdirs();
-            logFile.createNewFile();
+            if(!logFile.exists()){
+                logFile.getParentFile().mkdirs();
+                logFile.createNewFile();
+            }
 
-            FileHandler fh = new FileHandler(options.log);
+            FileHandler fh = new FileHandler(options.log, true);
             fh.setFormatter(new SimpleFormatter());
             root.addHandler(fh);
         } catch (IOException e) {
@@ -115,7 +117,7 @@ public class GlassFishMain {
 
         Server.Builder builder = new Server.Builder("jruby");
 
-        builder.embeddedFileSystem(fs).logger(false).logFile(new File(options.log));
+        //builder.embeddedFileSystem(fs).logger(false).logFile(new File(options.log));
 
 
         Server server = builder.build();

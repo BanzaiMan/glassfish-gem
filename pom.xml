@@ -9,7 +9,7 @@
 
     <properties>
         <glassfish.version>3.0-b74b</glassfish.version>
-        <gem.version>1.0.0</gem.version>
+        <gem.version>1.0.1.dev</gem.version>
         <jruby-container.version>1.0-b17</jruby-container.version>
         <hk2.version>1.0.0</hk2.version>
         <grizzly-jruby.version>1.8.29</grizzly-jruby.version>
