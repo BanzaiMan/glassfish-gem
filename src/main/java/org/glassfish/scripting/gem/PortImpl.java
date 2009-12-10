@@ -37,6 +37,8 @@ package org.glassfish.scripting.gem;
 
 import com.sun.enterprise.config.serverbeans.HttpService;
 import com.sun.enterprise.config.serverbeans.VirtualServer;
+import com.sun.enterprise.config.serverbeans.Config;
+import com.sun.enterprise.config.serverbeans.ThreadPools;
 import com.sun.grizzly.config.dom.Http;
 import com.sun.grizzly.config.dom.NetworkConfig;
 import com.sun.grizzly.config.dom.NetworkListener;
@@ -60,21 +62,38 @@ import java.util.List;
  * Abstract to port creation and destruction
  */
 public class PortImpl implements Port {
-    NetworkConfig config;
-    HttpService httpService;
-    String listenerName;
-    int number;
-    String defaultVirtualServer = "server";
+    private NetworkConfig networkConfig;
+    private HttpService httpService;
+    private Config config;
+    private String listenerName;
+    private int number;
+    private String defaultVirtualServer = "server";
 
     public PortImpl(Habitat habitat) {
-        this.config = habitat.getByType(NetworkConfig.class);
+        this.config = habitat.getByType(Config.class);
+        this.networkConfig = habitat.getByType(NetworkConfig.class);
         this.httpService = habitat.getByType(HttpService.class);
     }
 
-    public void bind(final String address, final int portNumber) {
+    public void bind(final Options option) {
+        final int portNumber = option.port;
+        final String address = option.address;
         number = portNumber;
         listenerName = getListenerName();
+
         try {
+            final ThreadPool pool = config.getThreadPools().getThreadPool().get(0);
+
+            ConfigSupport.apply(new SingleConfigCode<ThreadPool>() {
+                public Object run(ThreadPool param) throws TransactionFailure {
+                    pool.setIdleThreadTimeoutSeconds(String.valueOf(option.grizzlyConfig.threadPool.idleThreadTimeoutSeconds));
+                    pool.setMaxQueueSize(String.valueOf(option.grizzlyConfig.threadPool.maxQueueSize));
+                    pool.setMinThreadPoolSize(String.valueOf(option.grizzlyConfig.threadPool.minThreadPoolSize));
+                    pool.setMaxThreadPoolSize(String.valueOf(option.grizzlyConfig.threadPool.maxThreadPoolSize));
+                    return param;
+                }
+            }, pool);
+
             ConfigSupport.apply(new SingleConfigCode<Protocols>() {
                 public Object run(Protocols param) throws TransactionFailure {
                     final Protocol protocol = param.createChild(Protocol.class);
@@ -83,10 +102,15 @@ public class PortImpl implements Port {
                     final Http http = protocol.createChild(Http.class);
                     http.setDefaultVirtualServer(defaultVirtualServer);
                     http.setServerName("");
+                    http.setChunkingEnabled(String.valueOf(option.grizzlyConfig.chunkingEnabled));
+                    http.setMaxConnections(String.valueOf(option.grizzlyConfig.maxKeepaliveConnections));
+                    http.setRequestTimeoutSeconds(String.valueOf(option.grizzlyConfig.requestTimeout));
+                    http.setSendBufferSizeBytes(String.valueOf(option.grizzlyConfig.sendBufferSize));
+                    http.setTimeoutSeconds(String.valueOf(option.grizzlyConfig.keepaliveTimeout));
                     protocol.setHttp(http);
                     return protocol;
                 }
-            }, config.getProtocols());
+            }, networkConfig.getProtocols());
             ConfigSupport.apply(new SingleConfigCode<NetworkListeners>() {
                 public Object run(NetworkListeners param) throws TransactionFailure {
                     final NetworkListener listener = param.createChild(NetworkListener.class);
@@ -94,22 +118,22 @@ public class PortImpl implements Port {
                     listener.setPort(Integer.toString(portNumber));
                     listener.setAddress(address);
                     listener.setProtocol(listenerName);
-                    listener.setThreadPool("http-thread-pool");
-                    if (listener.findThreadPool() == null) {
-                        final ThreadPool pool = config.getNetworkListeners().createChild(ThreadPool.class);
-                        pool.setName(listenerName);
-                        listener.setThreadPool(listenerName);
-                    }
+                    listener.setThreadPool("http-thread-pool");                    
                     listener.setTransport("tcp");
                     if (listener.findTransport() == null) {
-                        final Transport transport = config.getTransports().createChild(Transport.class);
+                        final Transport transport = networkConfig.getTransports().createChild(Transport.class);
                         transport.setName(listenerName);
                         listener.setTransport(listenerName);
                     }
                     param.getNetworkListener().add(listener);
                     return listener;
                 }
-            }, config.getNetworkListeners());
+            }, networkConfig.getNetworkListeners());
+
+//            NetworkListener listener = networkConfig.getNetworkListener(listenerName);
+//            ThreadPool pool = listener.findThreadPool();
+
+
             VirtualServer vs = httpService.getVirtualServerByName(defaultVirtualServer);
             ConfigSupport.apply(new SingleConfigCode<VirtualServer>() {
                 public Object run(VirtualServer avs) throws PropertyVetoException {
@@ -147,7 +171,7 @@ public class PortImpl implements Port {
     }
 
     private boolean existsListener(String lName) {
-        for (NetworkListener nl : config.getNetworkListeners().getNetworkListener()) {
+        for (NetworkListener nl : networkConfig.getNetworkListeners().getNetworkListener()) {
             if (nl.getName().equals(lName)) {
                 return true;
             }
@@ -183,9 +207,9 @@ public class PortImpl implements Port {
                     vs.setNetworkListeners(lss.replaceAll(regex, ""));
                     return null;
                 }
-            }, config.getNetworkListeners(),
+            }, networkConfig.getNetworkListeners(),
                     httpService.getVirtualServerByName(defaultVirtualServer),
-                    config.getProtocols());
+                    networkConfig.getProtocols());
         } catch (TransactionFailure tf) {
             tf.printStackTrace();
             throw new RuntimeException(tf);

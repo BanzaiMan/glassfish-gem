@@ -48,7 +48,11 @@ application.standard_exception_handling do
       puts "(file #{GlassFish::Config::FILE} already exists. Pass argument FORCE=1 to override)"
     elsif !File.directory?("config")
       puts "(directory 'config' is missing)"
-    else	
+    else
+      if File.exists?(GlassFish::Config::FILE) #FORCE=1
+        puts "(Backing up #{GlassFish::Config::FILE}.)"
+        cp GlassFish::Config::FILE, GlassFish::Config::FILE+".bak"
+      end
       cp "#{GlassFish::HOME}/generators/gfrake/templates/glassfish.yml", GlassFish::Config::FILE
     end
   end

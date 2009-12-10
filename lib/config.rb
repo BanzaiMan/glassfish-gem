@@ -60,7 +60,7 @@ module GlassFish
         :log_console  => false,
         :log_level    => 3,
         :daemon       => false,
-        :jvm_options  => nil
+        :jvm_options  => nil        
       }
     end
 

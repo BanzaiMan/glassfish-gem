@@ -123,7 +123,7 @@ public class GlassFishMain {
 
         try {
             PortImpl port = new PortImpl(server.getHabitat());
-            port.bind(options.address, options.port);
+            port.bind(options);
             Runtime.getRuntime().addShutdownHook(new ShutdownThread(server, port));            
             server.start();
             DeployCommandParameters params = new DeployCommandParameters();

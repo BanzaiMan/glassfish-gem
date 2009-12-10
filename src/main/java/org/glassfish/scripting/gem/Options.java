@@ -58,23 +58,62 @@ public class Options{
     public String domainDir;
 	public String jvm_opts;
     public IRubyObject app;
+    public GrizzlyConfig grizzlyConfig = new GrizzlyConfig();
 
     @Override
     public String toString() {
-        return "runtimes: " + String.valueOf(runtimes)+" "+
-                "runtimes-min: " + String.valueOf(runtimes_min)+" "+
-                "runtimes-max: " + String.valueOf(runtimes_max)+" "+
-                "contextroot: " + contextRoot+" "+
-                "environment: " + environment+" "+
-                "appDir: " + appDir +" "+
-                "address: " + address +" "+                
-                "port: "+String.valueOf(port)+" "+
-                "Deamon: "+String.valueOf(daemon)+" "+
-                "pid: " + pid + " "+
-                "log: " + log + " " +
-                "log_console: " + log_console + " "+
-                "log-level: " + log_level +
-				"jvm_opts: "+ jvm_opts +
-                "domain director: "+domainDir;
+        StringBuffer sb = new StringBuffer("GlassFish gem configurtion: ");
+        return sb.append("\n\t").append("runtimes: ").append(runtimes)
+                .append("\n\t").append("runtimes-min: ").append(runtimes_min)
+                .append("\n\t").append("runtimes-maz: ").append(runtimes_max)
+                .append("\n\t").append("contextroot: ").append(contextRoot)
+                .append("\n\t").append("environment: ").append(environment)
+                .append("\n\t").append("appRoot: ").append(appDir)
+                .append("\n\t").append("address: ").append(address)
+                .append("\n\t").append("port: ").append(port)
+                .append("\n\t").append("daemon: ").append(daemon)
+                .append("\n\t").append("pid: ").append(pid)
+                .append("\n\t").append("log: ").append(log)
+                .append("\n\t").append("log to console: ").append(log_console)
+                .append("\n\t").append("JVM options: ").append(jvm_opts)
+                .append("\n\t").append("domain dir: ").append(domainDir)
+                .append("\n\t").append(grizzlyConfig).toString();
+
     }
+
+    public class GrizzlyConfig{
+        public boolean chunkingEnabled=true;
+        public int requestTimeout = 30;
+        public int sendBufferSize = 8192;
+        public int maxKeepaliveConnections = 256;
+        public int keepaliveTimeout = 30;
+        public ThreadPool threadPool = new ThreadPool();
+
+        @Override
+        public String toString() {
+            StringBuffer sb = new StringBuffer("Grizzly Configuration:");
+            return sb.append("\n\t").append("chunking_enabled: ").append(chunkingEnabled)
+                    .append("\n\t").append("request_timeout: ").append(requestTimeout)
+                    .append("\n\t").append("sendBufferSize: ").append(sendBufferSize)
+                    .append("\n\t").append("maxKeepaliveConnections: ").append(maxKeepaliveConnections)
+                    .append("\n\t").append("keepaliveTimeout: ").append(keepaliveTimeout)
+                    .append("\n\t").append(threadPool).toString();
+        }
+
+        public class ThreadPool{
+            public int idleThreadTimeoutSeconds = 900;
+            public int maxQueueSize = 4096;
+            public int maxThreadPoolSize = 5;
+            public int minThreadPoolSize = 2;
+
+            @Override
+            public String toString() {
+                StringBuffer sb = new StringBuffer("Grizzly Thread Pool Config:");
+                return sb.append("\n\t").append("idle_thread_timeout_seconds: ").append(idleThreadTimeoutSeconds)
+                        .append("\n\t").append("max_queue_size: ").append(maxQueueSize)
+                        .append("\n\t").append("max_thread_pool_size: ").append(maxThreadPoolSize)
+                        .append("\n\t").append("min_thread_pool_size: ").append(minThreadPoolSize).toString();
+            }
+        }
+    }    
 }

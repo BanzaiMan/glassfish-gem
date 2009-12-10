@@ -141,20 +141,20 @@ module GlassFish
         case opt
         when 'http'
           val = arg['port']
-          if(!val.nil?)
-            config[:port] = val.to_i unless val.nil?
-          end
+          config[:port] = val.to_i unless val.nil?
 
           val = arg['address']
-          if(!val.nil?)
-            config[:address] = val unless val.nil?
-          end
+          config[:address] = val unless val.nil?
 
           val = arg['contextroot']
           config[:contextroot] = val unless val.nil?
+
+
+          config[:grizzly_config] = arg['grizzly'] unless arg['grizzly'].nil?
+
         when 'log'
           val = arg['log-file']
-          if(!val.nil?)
+          unless val.nil?
             config[:log] = Config::absolutize config[:app_dir], val
           end
 

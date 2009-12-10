@@ -93,6 +93,39 @@ module GlassFish
       @opts.log_level = args[:log_level]
       @opts.jvm_opts = args[:jvm_options]
 
+
+      unless args[:grizzly_config].nil?
+        args[:grizzly_config].each do |key, val|
+          case key
+            when "chunking-enabled"
+              @opts.grizzlyConfig.chunkingEnabled = val unless val.nil?
+            when "request-timeout"
+              @opts.grizzlyConfig.requestTimeout = val unless val.nil?
+            when "send-buffer-size"
+              @opts.grizzlyConfig.sendBufferSize = val unless val.nil?
+            when "max-keepalive-connextions"
+              @opts.grizzlyConfig.maxKeepaliveConnections = val unless val.nil?
+            when "keepalive-timeout"
+              @opts.grizzlyConfig.keepaliveTimeout = val unless val.nil?
+            when "thread-pool"
+              unless val.nil?
+                val.each do |k, v|
+                  case k
+                    when "idle-thread-timeout-seconds"
+                      @opts.grizzlyConfig.threadPool.idleThreadTimeoutSeconds = v unless v.nil?
+                    when "max-queue-size"
+                      @opts.grizzlyConfig.threadPool.maxQueueSize = v unless v.nil?
+                    when "max-thread-pool-size"
+                      @opts.grizzlyConfig.threadPool.maxThreadPoolSize = v unless v.nil?
+                    when "min-thread-pool-size"
+                      @opts.grizzlyConfig.threadPool.minThreadPoolSize = v unless v.nil?
+                  end
+                end
+              end
+          end
+        end
+      end
+
       #Create the app using Rack builder
       if(block)
         app = Rack::Builder.new(&block).to_app
