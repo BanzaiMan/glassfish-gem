@@ -20,7 +20,7 @@ http:
     # context root. The default value is '/'
     contextroot: /
 
-    # Grizzly provides NIO based HTTTP libraries used by GlassFish gem
+    # Grizzly is NIO based HTTP libraries used by GlassFish gem
     grizzly:
         #HTTP chunking enable/disable
         chunking-enabled: true
@@ -34,15 +34,27 @@ http:
         #maximum number of keep-alive connections
         max-keepalive-connextions: 256
         
-        #Keep Alive timeout, max time a connection can be deemed as idle and kept in the keep-alive state
+        #Keep Alive timeout, max time a connection can be deemed as idle and kept
+        #in the keep-alive state
         keepalive-timeout: 30
                         
         #http thread pool used by Grizzly
         thread-pool:
             #Idle threads are removed from pool, after this time (in seconds)
             idle-thread-timeout-seconds: 900
+
+            #The maxim number of tasks, which could be queued on the thread pool.
+            #-1 disables any maximum checks.
             max-queue-size: 4096
+
+            #Maximum number of threads in the threadpool servicing
+            #requests in this queue. This is the upper bound on the no. of
+            #threads that exist in the threadpool.
             max-thread-pool-size: 5
+
+            #Minimum number of threads in the threadpool servicing
+            #requests in this queue. These are created up front when this
+            #threadpool is instantiated
             min-thread-pool-size: 2                
 
 #Logging configuration
