@@ -10,10 +10,10 @@
 
     <properties>
         <glassfish.version>3.0-b74b</glassfish.version>
-        <gem.version>1.0.0.dev</gem.version>
+        <gem.version>1.0.0</gem.version>
         <jruby-container.version>1.0-b17</jruby-container.version>
         <hk2.version>1.0.0</hk2.version>
-        <grizzly-jruby.version>1.8.29-SNAPSHOT</grizzly-jruby.version>
+        <grizzly-jruby.version>1.8.29</grizzly-jruby.version>
         <jruby.version>1.4.0</jruby.version>
     </properties>
     <build>
@@ -135,8 +135,8 @@
                                 spec = Gem::Specification.new do |s|
                                 s.name = "glassfish"
                                 s.version = "${gem.version}"
-                                s.author = "Vivek Pandey, Jerome Dochez"
-                                s.email = "vivek.pandey@sun.com, jerome.dochez@sun.com"
+                                s.author = "Vivek Pandey"
+                                s.email = "vivek.pandey@sun.com"
                                 s.homepage = "http://glassfishgem.rubyforge.org/"
                                 s.platform = "universal-java"
                                 s.summary = "GlassFish V3 gem for JRuby"

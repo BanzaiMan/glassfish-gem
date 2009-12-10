@@ -1,3 +1,59 @@
+== 1.0.0
+
+This is 1.0.0 final release of GlassFish gem. This release is based on GlassFish v3 final release. See GlassFish project page[http://glassfish.dev.java.net]. 
+
+=== New features in this release
+
+1. Implemented using GlassFish v3 embedded API.
+
+2. Startup time improvement. Almost 15-18% faster startup.
+
+3. Fully Rack compliant
+
+4. Support for running GlassFish gem by passing code block
+
+      GlassFish::Server.start(:address=>"127.0.0.1", :port=>4000) do
+        use Rack::CommonLogger
+        use Rack::ShowExceptions
+        map "/lobster" do
+          use Rack::Lint
+          run HelloWorld.new
+          run Proc.new {[200, {"Content-Type" => "text/html"}, "Hello"]}
+        end
+      end
+
+5. Lots of fixes for Sinatra support (extensions, middleware etc.)
+
+6. New -a CLI switch to bind to a given IP address
+
+7. Grizzly (NIO based HTTP library) configuration thru glassfish.yml
+
+      $ gfrake config
+  
+   Then look inside config/glassfish.yml.
+  
+8. Improved support for running Rackup scripts   
+
+=== Bug fixes  
+
+25812[http://rubyforge.org/tracker/index.php?func=detail&aid=25812&group_id=5450&atid=21080]  ActionController::Request.remote_ip is not set
+
+26147[http://rubyforge.org/tracker/index.php?func=detail&aid=26147&group_id=5450&atid=21080]  Setting Hostname IP Address Incorrectly
+
+26149[http://rubyforge.org/tracker/index.php?func=detail&aid=26149&group_id=5450&atid=21080]  Glassfish Gem fails to load Rails application in the production environment
+
+26208[http://rubyforge.org/tracker/index.php?func=detail&aid=26208&group_id=5450&atid=21080]  Can't get glassfish to start rails in thread-safe mode
+
+26821[http://rubyforge.org/tracker/index.php?func=detail&aid=26821&group_id=5450&atid=21080]  Error when running rack app
+
+26866[http://rubyforge.org/tracker/index.php?func=detail&aid=26866&group_id=5450&atid=21080]  JVM crash probably due to log file running over limit
+
+26935[http://rubyforge.org/tracker/index.php?func=detail&aid=26935&group_id=5450&atid=21080]  rack.run_once not getting set
+
+27030[http://rubyforge.org/tracker/index.php?func=detail&aid=27030&group_id=5450&atid=21080]  Extending CLASSPATH poisons glassfish gem?
+
+27125[http://rubyforge.org/tracker/index.php?func=detail&aid=27125&group_id=5450&atid=21080]  Application Environment not passed to Sinatra
+
 == 0.9.5
 
 This is a quick update to 0.9.4. 

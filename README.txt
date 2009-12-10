@@ -8,11 +8,9 @@ GlassFish v3 is a Java based application server that allows deployment,
 administration and monitoring of JavaEE as well as dynamic languages based web 
 frameworks such as Ruby On Rails, Grails etc.
 
-GlassFish gem is based on GlassFish v3 nucleus. GlassFish v3 nucleus is the core
-module of GlassFish v3.
+GlassFish gem is based on GlassFish v3 nucleus. GlassFish v3 nucleus is the core module of GlassFish v3.
 
-For more information on GlassFish v3 application server see 
-https://glassfish.dev.java.net/v3.
+For more information on GlassFish v3 application server see GlassFish project page[https://glassfish.dev.java.net/].
 
 == Requires JDK 6
 Get JDK 6 from here[http://java.sun.com/javase/downloads/index.jsp]
@@ -34,7 +32,7 @@ Get JDK 6 from here[http://java.sun.com/javase/downloads/index.jsp]
 
 GlassFish gem's +glassfish+ command autodetects the application you trying to 
 run on it. Internally it uses Grizzly handler to plugin to Rack interface of 
-the application frameworks such as Rails or Merb.
+the application frameworks such as Rails, Merb or Sinatra.
 
     $ glassfish
 
@@ -56,6 +54,8 @@ That's all you need to run your application.
 	-c, --contextroot PATH: change the context root (default: '/')
 
 	-p, --port PORT:        change server port (default: 3000)
+	
+	-a, --address HOST:     bind to HOST address (default: 0.0.0.0)
 
 	-e, --environment ENV:  change rails environment (default: development)
 
@@ -117,11 +117,9 @@ Some key points:
   <tt>config/environments/production.rb</tt>.
   
   <tt>#config.threadsafe!</tt>
-
-
-=== Configuration TODOs
-
-* Document how to create JDBC resources and conection pools
+  
+  Or you can simply call config.threadsafe! form any Rails initialization 
+  script.
 
 === Known Issues
 
