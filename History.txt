@@ -1,3 +1,13 @@
+== 1.0.1
+
+This is a quick update to 1.0.0.
+
+1. A critical issue was found where log was overwritten on every restart. The issue ticket is: 27553[http://rubyforge.org/tracker/?func=detail&atid=21080&aid=27553&group_id=5450].
+
+2. GlassFish has its own Rackup handler. Run your rackup script using <b>rackup</b> command
+    $ rackup -s Glassfish
+
+
 == 1.0.0
 
 This is 1.0.0 final release of GlassFish gem. This release is based on GlassFish v3 final release. See GlassFish project page[http://glassfish.dev.java.net]. 
@@ -17,7 +27,6 @@ This is 1.0.0 final release of GlassFish gem. This release is based on GlassFish
         use Rack::ShowExceptions
         map "/lobster" do
           use Rack::Lint
-          run HelloWorld.new
           run Proc.new {[200, {"Content-Type" => "text/html"}, "Hello"]}
         end
       end

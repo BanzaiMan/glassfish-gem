@@ -27,14 +27,13 @@ own identifying information: Portions Copyright [yyyy]
     <target name="setup-resources">
         <echo message="Setup various resrouces to finalize gem build"/>
 
-
         <mkdir dir="target/grizzly-jruby/"/>
         <mkdir dir="target/stage"/>
         <mkdir dir="target/stage/bin"/>
 
 
+        <!-- Extract ruby files from grizzly-jruby.jar and repackage it without these -->
         <move file="target/stage/lib/java/grizzly-jruby.jar" todir="target"/>
-
         <unjar src="target/grizzly-jruby.jar"
                dest="${ruby.dest}">
             <patternset>
@@ -47,7 +46,8 @@ own identifying information: Portions Copyright [yyyy]
                 <exclude name="**/*.rb"/>
             </zipfileset>
         </jar>
-        
+
+        <!--Copy startup command files in staging area -->
         <copy file="bin/glassfish" todir="target/stage/bin"/>
         <copy file="bin/gfrake" todir="target/stage/bin"/>
         
@@ -57,18 +57,18 @@ own identifying information: Portions Copyright [yyyy]
 
 
         <copy todir="${ruby.dest}" filtering="true">
-            <fileset dir="lib" includes="*.rb"/>
+            <fileset  dir="lib"/>
             <filterset>
                 <filter token="GLASSFISH_GEM_VERSION" value="${gem.version}"/>
             </filterset>
         </copy>
 
-        <copy todir="${ruby.dest}" filtering="true">
-            <fileset dir="lib" includes="*.rb" excludes="glassfish.rb"/>
-            <filterset>
-                <filter token="GLASSFISH_GEM_VERSION" value="${gem.version}"/>
-            </filterset>
-        </copy>
+        <!--<copy todir="${ruby.dest}" filtering="true">-->
+            <!--<fileset dir="lib" includes="*.rb" excludes="glassfish.rb"/>-->
+            <!--<filterset>-->
+                <!--<filter token="GLASSFISH_GEM_VERSION" value="${gem.version}"/>-->
+            <!--</filterset>-->
+        <!--</copy>-->
         
         <copy file="target/glassfish-gem.jar" todir="target/stage/lib/java"/>
         <mkdir dir="target/stage/generators/gfrake/templates/"/>

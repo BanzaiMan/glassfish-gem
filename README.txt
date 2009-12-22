@@ -40,6 +40,14 @@ That's all you need to run your application.
 
     $glassfish -h
 
+To run your rackup script
+
+    $ rackup -s Glassfish
+
+or
+    $ glassfish
+
+
 ===Synopsis
 	
 	glassfish: GlassFish v3 server for Rack based frameworks such as: Rails,
@@ -89,7 +97,7 @@ That's all you need to run your application.
 	current).
 
 	For further configuration, run GlassFish rake command 'gfrake -T'
-	
+
 ===Configuration
 
 	$gfrake -T
