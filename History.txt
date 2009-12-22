@@ -1,3 +1,7 @@
+== 1.0.2
+
+Fix for regression caused in 1.0.0 in daemon mode.
+
 == 1.0.1
 
 This is a quick update to 1.0.0.

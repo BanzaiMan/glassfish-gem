@@ -117,8 +117,7 @@ public class GlassFishMain {
 
         Server.Builder builder = new Server.Builder("jruby");
 
-        //builder.embeddedFileSystem(fs).logger(false).logFile(new File(options.log));
-
+        builder.embeddedFileSystem(fs).logger(false).logFile(new File(options.log));
 
         Server server = builder.build();
         server.addContainer(new JRubyContainerBuilder());
