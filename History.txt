@@ -1,6 +1,6 @@
 == 1.0.2
 
-Fix for regression caused in 1.0.0 in daemon mode.
+Fix for regression caused in 1.0.1 in daemon mode.
 
 == 1.0.1
 
