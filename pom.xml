@@ -289,8 +289,8 @@
     </dependencies>
 
     <scm>
-        <connection>scm:svn:https://svn.dev.java.net/svn/glassfish-scripting/trunk/rails/gem</connection>
-        <developerConnection>scm:svn:https://svn.dev.java.net/svn/glassfish-scripting/trunk/rails/gem
+        <connection>scm:git:http://github.com/BanzaiMan/glassfish-gem.git</connection>
+        <developerConnection>scm:git:git@github.com:BanzaiMan/glassfish-gem.git
         </developerConnection>
     </scm>
     <repositories>
