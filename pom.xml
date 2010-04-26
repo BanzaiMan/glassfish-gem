@@ -46,7 +46,7 @@
                     <finalName>${artifactId}</finalName>
                     <archive>
                         <manifestEntries>
-                            <Class-Path>akuma.jar gf-jruby-connector.jar grizzly-jruby-module.jar glassfish-embedded-nucleus.jar
+                            <Class-Path>akuma.jar gf-jruby-connector.jar grizzly-jruby-module.jar glassfish-embedded-nucleus.jar jna.jar
                             </Class-Path>
                         </manifestEntries>
 
@@ -244,8 +244,7 @@
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
-            <version>3.0.9</version>
-            <scope>provided</scope>
+            <version>3.2.5</version>
         </dependency>
         <dependency>
             <groupId>org.jruby</groupId>
