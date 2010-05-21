@@ -40,7 +40,7 @@
  #   Log file, where the server log messages will go. By default the server logs go to log/development.log file. To see the logs on console run with -l option without any argument.
  #
  # --log-level LEVEL::
- #   Log level 0 to 7. 0:OFF, 1:SEVERE, 2:WARNING, 3:INFO (default), 4:FINE, 5:FINER, 6:FINEST, 7:ALL.
+ #   Log level 0 to 7, or equivalent name: 0 (OFF), 1 (SEVERE), 2 (WARNING), 3 (INFO, default), 4 (FINE), 5 (FINER), 6 (FINEST), 7 (ALL).
  #
  # --config FILE::
  #   Configuration file location. Use glassfish.yml as template. Generate it using 'gfrake config' command.

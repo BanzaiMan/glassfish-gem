@@ -34,11 +34,14 @@
 #holder.
 #++
 
+$LOAD_PATH << "#{File.dirname(__FILE__)}/../lib/java"
+
 require 'rdoc_usage'
 require 'getoptlong'
 require 'pathname'
 require 'config'
 require 'java'
+require 'glassfish-gem.jar'
 
 #
 # Parses command line options
@@ -106,7 +109,11 @@ module GlassFish
             config[:log] = File.expand_path arg
           end
         when '--log-level'
-          config[:log_level] = arg.to_i
+          if arg =~ /^[0-7]$/
+            config[:log_level] = arg.to_i
+          else
+            config[:log_level] = org.glassfish.scripting.gem.Options::LogLevel.value_of(arg.to_s.upcase).ordinal
+          end
         when '--config'
           config_file = arg
         end
@@ -159,7 +166,12 @@ module GlassFish
           end
 
           val = arg['log-level']
-          config[:log_level] = val.to_i unless val.nil?
+          puts "arg['log-level']: #{arg['log-level']}"
+          if val =~ /^[0-7]$/
+            config[:log_level] = val.to_i
+          else
+            config[:log_level] = org.glassfish.scripting.gem.Options::LogLevel.value_of(val.to_s.upcase).ordinal
+          end
         when 'jruby-runtime-pool'
           config[:runtimes] = arg['initial'] unless arg['initial'].nil?
           config[:runtimes_min] = arg['min'] unless arg['min'].nil?

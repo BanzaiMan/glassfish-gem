@@ -61,14 +61,14 @@ module GlassFish
     def initialize(args, &block)
 
       unless args[:log_level].nil?
-        if args[:log_level] > 4
+        if args[:log_level] > Options::LogLevel::FINE.ordinal
           puts "Arguments: "
           args.each do |k, v|
             puts "\t#{k}=>#{v}"
           end
         end
 
-        if args[:log_level] > 3
+        if args[:log_level] > Options::LogLevel::INFO.ordinal
           debug = true
         end
 
@@ -90,7 +90,7 @@ module GlassFish
       @opts.log = args[:log]
       @opts.log_console = args[:log_console]
       @opts.domainDir = args[:domain_dir]
-      @opts.log_level = args[:log_level]
+      @opts.log_level = Options::LogLevel.values()[args[:log_level]]
       @opts.jvm_opts = args[:jvm_options]
 
 
