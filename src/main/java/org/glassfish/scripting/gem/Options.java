@@ -54,11 +54,15 @@ public class Options{
     public String pid;
     public String log;
     public boolean log_console;
-    public int log_level;
+    public LogLevel log_level;
     public String domainDir;
-	public String jvm_opts;
+    public String jvm_opts;
     public IRubyObject app;
     public GrizzlyConfig grizzlyConfig = new GrizzlyConfig();
+
+    public enum LogLevel {
+        OFF, SEVERE, WARNING, INFO, FINE, FINER, FINEST, ALL
+    }
 
     @Override
     public String toString() {

@@ -47,6 +47,7 @@ import org.glassfish.api.embedded.EmbeddedFileSystem;
 import org.glassfish.api.embedded.Port;
 import org.glassfish.api.embedded.Server;
 import org.glassfish.api.monitoring.ContainerMonitoring;
+import org.glassfish.scripting.gem.Options.LogLevel;
 import org.jvnet.hk2.config.ConfigSupport;
 import org.jvnet.hk2.config.SingleConfigCode;
 import org.jvnet.hk2.config.TransactionFailure;
@@ -76,7 +77,7 @@ public class GlassFishMain {
     private static void startGlassFishEmbedded(Options options) {
 
         Logger root = Logger.getLogger("");
-        String logLevel = getLogLevel(options.log_level);
+        String logLevel = options.log_level.toString();
         root.setLevel(Level.parse(logLevel));
 
         for (Handler handler : root.getHandlers()) {
@@ -276,7 +277,7 @@ public class GlassFishMain {
                             newargs.add(arg);
                         }
                     }
-                    if (options.log_level > 4) {
+                    if (options.log_level.compareTo(LogLevel.FINE) > 0) {
                         StringBuffer buff = new StringBuffer();
                         System.out.println("Starting GlassFish with JVM options: ");
                         for (String arg : newargs) {
@@ -357,43 +358,11 @@ public class GlassFishMain {
 
     private static void logException(Exception e, Options opts) {
         //if the log level is more than INFO, then
-        if (opts.log_level > 3) {
+        if (opts.log_level.compareTo(LogLevel.INFO) > 0) {
             e.printStackTrace();
         } else {
             System.err.println(e.getMessage());
         }
     }
 
-    private static String getLogLevel(int level) {
-        String logLevel = "INFO";
-        switch (level) {
-            case 0:
-                logLevel = "OFF";
-                break;
-            case 1:
-                logLevel = "SEVERE";
-                break;
-            case 2:
-                logLevel = "WARNING";
-                break;
-            case 3:
-                logLevel = "INFO"; //default
-                break;
-            case 4:
-                logLevel = "FINE";
-                break;
-            case 5:
-                logLevel = "FINER";
-                break;
-            case 6:
-                logLevel = "FINEST";
-                break;
-            case 7:
-                logLevel = "ALL";
-                break;
-            default:
-                System.err.println("Invalid log level: " + level + ". Default log level 1:INFO will be used.");
-        }
-        return logLevel;
-    }
 }
