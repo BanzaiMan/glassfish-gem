@@ -66,7 +66,7 @@ public class Options{
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("GlassFish gem configurtion: ");
+        StringBuilder sb = new StringBuilder("GlassFish gem configurtion: ");
         return sb.append("\n\t").append("runtimes: ").append(runtimes)
                 .append("\n\t").append("runtimes-min: ").append(runtimes_min)
                 .append("\n\t").append("runtimes-maz: ").append(runtimes_max)
@@ -95,7 +95,7 @@ public class Options{
 
         @Override
         public String toString() {
-            StringBuffer sb = new StringBuffer("Grizzly Configuration:");
+            StringBuilder sb = new StringBuilder("Grizzly Configuration:");
             return sb.append("\n\t").append("chunking_enabled: ").append(chunkingEnabled)
                     .append("\n\t").append("request_timeout: ").append(requestTimeout)
                     .append("\n\t").append("sendBufferSize: ").append(sendBufferSize)
@@ -112,7 +112,7 @@ public class Options{
 
             @Override
             public String toString() {
-                StringBuffer sb = new StringBuffer("Grizzly Thread Pool Config:");
+                StringBuilder sb = new StringBuilder("Grizzly Thread Pool Config:");
                 return sb.append("\n\t").append("idle_thread_timeout_seconds: ").append(idleThreadTimeoutSeconds)
                         .append("\n\t").append("max_queue_size: ").append(maxQueueSize)
                         .append("\n\t").append("max_thread_pool_size: ").append(maxThreadPoolSize)
