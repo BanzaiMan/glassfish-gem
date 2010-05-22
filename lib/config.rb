@@ -36,7 +36,7 @@
 
 require 'java'
 require 'yaml'
-require 'ftools'
+require 'fileutils'
 require 'socket'
 
 module GlassFish
