@@ -54,49 +54,48 @@ or
 	Merb, Sinatra...
 
 ===Usage:
-	
-	glassfish [OPTION] APPLICATION_PATH
+    glassfish [OPTION] APPLICATION_PATH
 
-	-h, --help:             show help
+    -h, --help:             show help
 
-	-c, --contextroot PATH: change the context root (default: '/')
+    -c, --contextroot PATH: change the context root (default: '/')
 
-	-p, --port PORT:        change server port (default: 3000)
-	
-	-a, --address HOST:     bind to HOST address (default: 0.0.0.0)
+    -p, --port PORT:        change server port (default: 3000)
 
-	-e, --environment ENV:  change rails environment (default: development)
+    -a, --address HOST:     bind to HOST address (default: 0.0.0.0)
 
-	-n --runtimes NUMBER:   Number of JRuby runtimes to create initially
+    -e, --environment ENV:  change rails environment (default: development)
 
-	--runtimes-min NUMBER:  Minimum JRuby runtimes to create
+    -n --runtimes NUMBER:   Number of JRuby runtimes to create initially
 
-	--runtimes-max NUMBER:  Maximum number of JRuby runtimes to create
+    --runtimes-min NUMBER:  Minimum JRuby runtimes to create
 
-	-d, --daemon:           Run GlassFish as daemon. Currently works with
-	                        Linux and Solaris OS.
+    --runtimes-max NUMBER:  Maximum number of JRuby runtimes to create
 
-	-P, --pid FILE:         PID file where PID will be written. Applicable
-	                        when used with -d option. The default pid file
-	                        is tmp/pids/glassfish-<PID>.pid
+    -d, --daemon:           Run GlassFish as daemon. Currently works with
+                            Linux and Solaris OS.
 
-	-l, --log FILE:         Log file, where the server log messages will go.
-	                        By default the server logs go to
-	                        log/development.log file. To see the logs on
-	                        console run with -l option without any argument.
+    -P, --pid FILE:         PID file where PID will be written. Applicable
+                            when used with -d option. The default pid file
+                            is tmp/pids/glassfish-<PID>.pid
 
-	--log-level LEVEL:      Log level 0 to 7. 0:OFF, 1:SEVERE, 2:WARNING,
-	                        3:INFO (default), 4:FINE, 5:FINER, 6:FINEST,
-	                        7:ALL.
+    -l, --log FILE:         Log file, where the server log messages will go.
+                            By default the server logs go to
+                            log/development.log file. To see the logs on
+                            console run with -l option without any argument.
 
-	--config FILE:          Configuration file location. Use glassfish.yml
-	                        as template. Generate it using 'gfrake config'
-	                        command.
+    --log-level LEVEL:      Log level 0 to 7, or equivalent name: 0 (OFF), 1
+                            (SEVERE), 2 (WARNING), 3 (INFO, default), 4
+                            (FINE), 5 (FINER), 6 (FINEST), 7 (ALL).
 
-	APPLICATION_PATH (optional): Path to the application to be run (default:
-	current).
+    --config FILE:          Configuration file location. Use glassfish.yml
+                            as template. Generate it using 'gfrake config'
+                            command.
 
-	For further configuration, run GlassFish rake command 'gfrake -T'
+    APPLICATION_PATH (optional): Path to the application to be run (default:
+    current).
+
+    For further configuration, run GlassFish rake command 'gfrake -T'
 
 ===Configuration
 
