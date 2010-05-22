@@ -45,7 +45,7 @@ require 'java'
 require 'glassfish-gem.jar'
 require 'akuma.jar'
 require 'yaml'
-require 'ftools'
+require 'fileutils'
 require 'version'
 require 'config'
 
