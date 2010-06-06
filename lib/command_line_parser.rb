@@ -167,7 +167,7 @@ module GlassFish
 
           val = arg['log-level']
           puts "arg['log-level']: #{arg['log-level']}"
-          if val =~ /^[0-7]$/
+          if val.to_s =~ /^[0-7]$/
             config[:log_level] = val.to_i
           else
             config[:log_level] = org.glassfish.scripting.gem.Options::LogLevel.value_of(val.to_s.upcase).ordinal
