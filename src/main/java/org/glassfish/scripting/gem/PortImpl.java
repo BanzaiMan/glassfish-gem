@@ -85,7 +85,7 @@ public class PortImpl implements Port {
             final ThreadPool pool = config.getThreadPools().getThreadPool().get(0);
 
             ConfigSupport.apply(new SingleConfigCode<ThreadPool>() {
-                public Object run(ThreadPool param) throws TransactionFailure {
+                public Object run(ThreadPool param) throws TransactionFailure, PropertyVetoException {
                     pool.setIdleThreadTimeoutSeconds(String.valueOf(option.grizzlyConfig.threadPool.idleThreadTimeoutSeconds));
                     pool.setMaxQueueSize(String.valueOf(option.grizzlyConfig.threadPool.maxQueueSize));
                     pool.setMinThreadPoolSize(String.valueOf(option.grizzlyConfig.threadPool.minThreadPoolSize));
