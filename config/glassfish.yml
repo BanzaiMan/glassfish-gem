@@ -71,7 +71,7 @@ log:
 
     # Logging level. Log level 0 to 7. 0:OFF, 1:SEVERE, 2:WARNING,
     # 3:INFO (default), 4:FINE, 5:FINER, 6:FINEST, 7:ALL.
-    log-level: 3
+    log-level: info
 
 #
 # Runtime configuration
@@ -130,7 +130,3 @@ daemon:
     # http://java.sun.com/javase/6/docs/technotes/guides/vm/gc-ergonomics.html
     #
     #jvm-options: -server -Xmx2500m -Xms64m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:NewRatio=2 -XX:+DisableExplicitGC -Dhk2.file.directory.changeIntervalTimer=6000
-
-
-
-    
