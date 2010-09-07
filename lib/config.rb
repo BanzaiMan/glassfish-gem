@@ -85,7 +85,7 @@ module GlassFish
         version = java.lang.System.getProperty("os.version")
         #check the platform, Currently daemon mode works only on linux and
         #solaris
-        if(!os.include?("linux") and !os.include?("sunos"))
+        if(!os.include?("linux") and !os.include?("sunos") and !os.include?("mac os x"))
           Config.fail "You are running on #{java.lang.System.getProperty("os.name")}  #{version}. Currently daemon mode only works on Linux or Solaris platforms!"
         end
 
