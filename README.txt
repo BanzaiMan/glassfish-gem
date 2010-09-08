@@ -25,8 +25,9 @@ Get JDK 6 from here[http://java.sun.com/javase/downloads/index.jsp]
 
 1. Install the gem: <tt>gem install glassfish</tt>.
 2. Run glassfish in the top directory of your Rails or Merb application: 
-	
-	$glassfish
+  a. $ jruby -S glassfish
+  b. For applications that uses Bundler:
+    $ jruby -S bundle exec glassfish
 
 === Usage
 
@@ -84,9 +85,10 @@ or
                             log/development.log file. To see the logs on
                             console run with -l option without any argument.
 
-    --log-level LEVEL:      Log level 0 to 7, or equivalent name: 0 (OFF), 1
-                            (SEVERE), 2 (WARNING), 3 (INFO, default), 4
-                            (FINE), 5 (FINER), 6 (FINEST), 7 (ALL).
+    --log-level LEVEL:      Log level 0 to 7, or equivalent name as string.
+                            Default is 3 (or INFO).
+                            0 (OFF), 1 (SEVERE), 2 (WARNING), 3 (INFO),
+                            4 (FINE), 5 (FINER), 6 (FINEST), 7 (ALL).
 
     --config FILE:          Configuration file location. Use glassfish.yml
                             as template. Generate it using 'gfrake config'
@@ -99,11 +101,11 @@ or
 
 ===Configuration
 
-	$gfrake -T
+	$ gfrake -T
 	
-	rake clean    # Clean GlassFish generated temporary files (tmp/.glassfish)
-	rake config   # Generate a configuration file to customize GlassFish gem
-	rake version  # Display version of GlassFish gem
+	gfrake clean    # Clean GlassFish generated temporary files (tmp/.glassfish)
+	gfrake config   # Generate a configuration file to customize GlassFish gem
+	gfrake version  # Display version of GlassFish gem
 	
 <b>Note:</b> Although help screen shows rake command. You need to use gfrake instead.
 
@@ -136,10 +138,6 @@ Some key points:
 
 
 === Source
-
-You can get the GlassFish source using svn, in any of the following ways:
-
-<tt>svn co https://svn.dev.java.net/svn/glassfish-scripting/trunk/rails/gem</tt>
 
 === License
 

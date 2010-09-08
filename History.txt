@@ -1,3 +1,15 @@
+== 1.0.3
+
+Under new management.
+
+Verified to be compatible with Rails 3.
+
+Can be daemonized with JRuby 1.5+ (JRUBY-4752).
+
+Daemon mode in Mac OS X.
+
+Log level can be either an integer or the corresponding string.
+
 == 1.0.2
 
 Fix for regression caused in 1.0.1 in daemon mode.
