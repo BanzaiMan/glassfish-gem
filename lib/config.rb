@@ -86,7 +86,7 @@ module GlassFish
         #check the platform, Currently daemon mode works only on linux and
         #solaris
         if(!os.include?("linux") and !os.include?("sunos") and !os.include?("mac os x"))
-          Config.fail "You are running on #{java.lang.System.getProperty("os.name")}  #{version}. Currently daemon mode only works on Linux or Solaris platforms!"
+          Config.fail "You are running on #{java.lang.System.getProperty("os.name")}  #{version}. Currently daemon mode only works on Linux, Solaris or Mac OS X platform."
         end
 
         # In daemon mode you can't log to console. Let's fail and let user spcifiy the log file explicitly
