@@ -26,7 +26,7 @@ Get JDK 6 from here[http://java.sun.com/javase/downloads/index.jsp]
 1. Install the gem: <tt>gem install glassfish</tt>.
 2. Run glassfish in the top directory of your Rails or Merb application: 
   a. $ jruby -S glassfish
-  b. For applications that uses Bundler:
+  b. For applications that use Bundler:
     $ jruby -S bundle exec glassfish
 
 === Usage
@@ -39,7 +39,7 @@ the application frameworks such as Rails, Merb or Sinatra.
 
 That's all you need to run your application.
 
-    $glassfish -h
+    $ glassfish -h
 
 To run your rackup script
 
