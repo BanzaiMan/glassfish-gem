@@ -231,7 +231,8 @@ public class GlassFishMain {
             pid.deleteOnExit();
 
             Daemon d = new Daemon() {
-                @Override
+                // Daemon.writePidFile(String) swallows IOException, so
+                // we need to do this
                 protected void writePidFile() throws IOException {
                     FileWriter fw = null;
                     try {
