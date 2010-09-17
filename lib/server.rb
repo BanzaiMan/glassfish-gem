@@ -127,7 +127,7 @@ module GlassFish
       end
 
       #Create the app using Rack builder
-      if(block)
+      if block_given?
         app = Rack::Builder.new(&block).to_app
         app = Rack::CommonLogger.new(@app) if debug
         if app.nil?
