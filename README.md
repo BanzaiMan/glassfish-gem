@@ -141,15 +141,17 @@ Some key points:
   Or you can simply call `config.threadsafe!` form any Rails initialization
   script.
 
-=== Known Issues
+## Known Issues
 
 * Running `glassfish` in a directory that is neither a Rails or Merb
   application does not report a meaningful error.
   See [this issue](https://glassfish.dev.java.net/issues/show_bug.cgi?id=6744).
 
 
-=== Source
+## Source
 
-=== License
+This fork is available on [Github](http://github.com/BanzaiMan/glassfish-gem).
+
+## License
 
 GlassFish v3 gem is provided with [CDDL 1.0 and GPL 2.0 dual license](https://glassfish.dev.java.net/public/CDDL+GPL.html).
