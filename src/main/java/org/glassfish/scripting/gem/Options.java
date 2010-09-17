@@ -79,6 +79,7 @@ public class Options{
                 .append("\n\t").append("pid: ").append(pid)
                 .append("\n\t").append("log: ").append(log)
                 .append("\n\t").append("log to console: ").append(log_console)
+                .append("\n\t").append("log level: ").append(log_level.toString().toLowerCase())
                 .append("\n\t").append("JVM options: ").append(jvm_opts)
                 .append("\n\t").append("domain dir: ").append(domainDir)
                 .append("\n\t").append(grizzlyConfig).toString();
