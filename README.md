@@ -27,11 +27,11 @@ For more information on GlassFish v3 application server see [GlassFish project p
 
 1. Install the gem:
 
-    $ gem install glassfish
+    gem install glassfish
 
 2. Run glassfish in the top directory of your Rails or Merb application:
 
-    a. jruby -S glassfish
+    a. `jruby -S glassfish`
 
     b. For applications that use Bundler:
 
@@ -124,7 +124,7 @@ You can also use `--config` option with the `glassfish` command
 ## Application auto-detection
 
 Rails, Merb and Sinatra applications are detected automatically and configured appropriately.
-You can provide a rack-up script `*.ru` in to the application directory to plugin any other framework.
+You can provide a rack-up script `*.ru` in to the application directory to plug in any other framework.
 
 Some key points:
 
@@ -138,7 +138,7 @@ Some key points:
   
   `#config.threadsafe!`
   
-  Or you can simply call config.threadsafe! form any Rails initialization 
+  Or you can simply call `config.threadsafe!` form any Rails initialization
   script.
 
 === Known Issues
@@ -152,5 +152,4 @@ Some key points:
 
 === License
 
-GlassFish v3 gem is provided with CDDL 1.0 and GPL 2.0 dual license. For 
-details see (https://glassfish.dev.java.net/public/CDDL+GPL.html).
+GlassFish v3 gem is provided with [CDDL 1.0 and GPL 2.0 dual license](https://glassfish.dev.java.net/public/CDDL+GPL.html).
