@@ -135,8 +135,8 @@
                                 spec = Gem::Specification.new do |s|
                                 s.name = "glassfish"
                                 s.version = "${gem.version}"
-                                s.author = "Vivek Pandey"
-                                s.email = "vivek.pandey@sun.com"
+                                s.authors = ["Hirotsugu Asari", "Vivek Pandey"]
+                                s.email = ["asari.ruby@gmail.com", "vivek.pandey@sun.com"]
                                 s.homepage = "http://glassfishgem.rubyforge.org/"
                                 s.platform = "universal-java"
                                 s.summary = "GlassFish V3 gem for JRuby"
