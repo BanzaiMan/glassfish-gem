@@ -34,7 +34,8 @@
 #holder.
 #++
 
-require 'admin-cli.jar'
+require File.join(File.dirname(__FILE__), 'java', 'glassfish-embedded-nucleus')
+require File.join(File.dirname(__FILE__), 'java', 'admin-cli.jar')
 require 'java'
 
 #

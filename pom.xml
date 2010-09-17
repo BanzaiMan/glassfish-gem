@@ -284,6 +284,11 @@
             <version>${jruby.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish.admin</groupId>
+            <artifactId>admin-cli</artifactId>
+            <version>3.0.1</version>
+        </dependency>
 
     </dependencies>
 
