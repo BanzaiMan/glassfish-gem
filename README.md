@@ -1,4 +1,6 @@
-= GlassFish v3 server for Rack based web frameworks (Rails, Merb, ...)
+# Glassfish gem
+
+## Introduction
 
 GlassFish gem is a lightweight and robust deployment solution for
 Ruby on Rails applications deployed on JRuby runtime. It is based
@@ -10,29 +12,35 @@ frameworks such as Ruby On Rails, Grails etc.
 
 GlassFish gem is based on GlassFish v3 nucleus. GlassFish v3 nucleus is the core module of GlassFish v3.
 
-For more information on GlassFish v3 application server see GlassFish project page[https://glassfish.dev.java.net/].
+For more information on GlassFish v3 application server see [GlassFish project page](https://glassfish.dev.java.net/).
 
-== Requires JDK 6
-Get JDK 6 from here[http://java.sun.com/javase/downloads/index.jsp]
+## Requirement
+[JDK 6](http://java.sun.com/javase/downloads/index.jsp) is required.
 
-== Supported Rack based frameworks
+## Supported Rack-based frameworks
 
 * Rails
 * Merb
 * Sinatra
 
-=== Getting Started
+## Getting Started
 
-1. Install the gem: <tt>gem install glassfish</tt>.
-2. Run glassfish in the top directory of your Rails or Merb application: 
-  a. $ jruby -S glassfish
-  b. For applications that use Bundler:
-    $ jruby -S bundle exec glassfish
+1. Install the gem:
 
-=== Usage
+    $ gem install glassfish
 
-GlassFish gem's +glassfish+ command autodetects the application you trying to 
-run on it. Internally it uses Grizzly handler to plugin to Rack interface of 
+2. Run glassfish in the top directory of your Rails or Merb application:
+
+    a. jruby -S glassfish
+
+    b. For applications that use Bundler:
+
+        jruby -S bundle exec glassfish
+
+## Usage
+
+GlassFish gem's `glassfish` command autodetects the application you trying to
+run on it. Internally it uses Grizzly handler to plug into Rack interface of
 the application frameworks such as Rails, Merb or Sinatra.
 
     $ glassfish
@@ -49,12 +57,12 @@ or
     $ glassfish
 
 
-===Synopsis
+## Synopsis
 	
 	glassfish: GlassFish v3 server for Rack based frameworks such as: Rails,
 	Merb, Sinatra...
 
-===Usage:
+    Usage:
     glassfish [OPTION] APPLICATION_PATH
 
     -h, --help:             show help
@@ -99,42 +107,45 @@ or
 
     For further configuration, run GlassFish rake command 'gfrake -T'
 
-===Configuration
+## Configuration
 
-	$ gfrake -T
+	$ jruby -S gfrake -T
 	
-	gfrake clean    # Clean GlassFish generated temporary files (tmp/.glassfish)
-	gfrake config   # Generate a configuration file to customize GlassFish gem
-	gfrake version  # Display version of GlassFish gem
+	rake clean    # Clean GlassFish generated temporary files (tmp/.glassfish)
+	rake config   # Generate a configuration file to customize GlassFish gem
+	rake version  # Display version of GlassFish gem
 	
-<b>Note:</b> Although help screen shows rake command. You need to use gfrake instead.
+* Note: Although help screen shows `rake` command, you need to use `gfrake` instead.
 
-* <tt>gfrake config</tt> will place <b>glassfish.yml</b> in the application's config directory. <b>glassfish.yml</b> contains default options. Use it as template. You can also use <tt>--config</tt> option with the <tt>glassfish</tt> command	
+* `gfrake config` will place `glassfish.yml` in the application's config directory.
+`glassfish.yml` contains default options. Use it as template.
+You can also use `--config` option with the `glassfish` command
 
-=== Application auto-detection
+## Application auto-detection
 
-Rails, Merb and Sinatra applications are detected automatically and configured appropriately. You can provide a rack-up script <tt>*.ru</tt> in to the application directory to plugin any other framework.
+Rails, Merb and Sinatra applications are detected automatically and configured appropriately.
+You can provide a rack-up script `*.ru` in to the application directory to plugin any other framework.
 
 Some key points:
 
 * Rails version < 2.2 is single threaded, for improved scaling you can  
-  configure the JRuby runtime pool using <tt>--runtimes, --runtimes-min or 
-  --runtimes-max</tt> options.
+  configure the JRuby runtime pool using `--runtimes`, `--runtimes-min` or
+  `--runtimes-max` options.
 * Multi-thread-safe execution (as introduced in Rails 2.2 or for Merb) is 
   detected and runtime pooling is disabled. You would still need to tell Rails 
   to enable multi-threading by commenting out the following line from 
-  <tt>config/environments/production.rb</tt>.
+  `config/environments/production.rb`.
   
-  <tt>#config.threadsafe!</tt>
+  `#config.threadsafe!`
   
   Or you can simply call config.threadsafe! form any Rails initialization 
   script.
 
 === Known Issues
 
-* Running <tt>glassfish</tt> in a directory that is neither a Rails or Merb
+* Running `glassfish` in a directory that is neither a Rails or Merb
   application does not report a meaningful error.
-  See this issue[https://glassfish.dev.java.net/issues/show_bug.cgi?id=6744]
+  See [this issue](https://glassfish.dev.java.net/issues/show_bug.cgi?id=6744).
 
 
 === Source
@@ -142,4 +153,4 @@ Some key points:
 === License
 
 GlassFish v3 gem is provided with CDDL 1.0 and GPL 2.0 dual license. For 
-details see https://glassfish.dev.java.net/public/CDDL+GPL.html.
+details see (https://glassfish.dev.java.net/public/CDDL+GPL.html).
