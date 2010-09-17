@@ -1,3 +1,5 @@
+#! /usr/bin/env jruby
+
  # == Synopsis
  #
  # glassfish: GlassFish v3 server for Rack based frameworks such as: Rails, Merb, Sinatra...
