@@ -37,6 +37,7 @@
 require 'java'
 require 'yaml'
 require 'fileutils'
+require 'rake'
 require 'socket'
 
 module GlassFish
@@ -103,6 +104,10 @@ module GlassFish
 	      end
 
         Config.absolutize config[:app_dir], config[:pid]
+      end
+
+      unless dir_has_app? config[:app_dir]
+        raise RuntimeError, "#{config[:app_dir]} does not contain supported application"
       end
 
       # log_level
@@ -220,5 +225,50 @@ module GlassFish
       end
       true
     end
+
+    def dir_has_app?(dir)
+      if ! File.directory?(dir)
+        return false
+      end
+
+      return dir_has_rails?(dir) || dir_has_merb?(dir) || dir_has_rack?(dir)
+    end
+
+    def dir_has_rails?(dir)
+      Dir.chdir(dir) do
+        app = Rake.application = RakeApp.new
+        app.load_rake_file
+        return false unless task = app.lookup("environment")
+      end
+      true
+    end
+
+    def dir_has_merb?(dir)
+      Dir.chdir(dir) do
+        app = Rake.application = RakeApp.new
+        app.load_rake_file
+        return false unless task = app.lookup("merb_env")
+      end
+      true
+    end
+
+    def dir_has_rack?(dir)
+      Dir.chdir(dir) do
+        return false unless File.exist?('config.ru') || ! Dir['*/config.ru'].empty?
+      end
+      true
+    end
+
+    class RakeApp < Rake::Application
+      def load_rake_file
+        Rake::Application::DEFAULT_RAKEFILES.each do |rf|
+          if File.exist? rf
+            load rf
+            break
+          end
+        end
+      end
+    end
+    
   end
 end
