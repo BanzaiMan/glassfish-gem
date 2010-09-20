@@ -75,7 +75,7 @@ own identifying information: Portions Copyright [yyyy]
         <copy file="config/glassfish.yml"
               todir="target/stage/generators/gfrake/templates/"/>
         <copy todir="target/stage/">
-            <fileset dir="." includes="README.txt History.txt LICENSE.txt"/>
+            <fileset dir="." includes="README.md History.txt LICENSE.txt"/>
         </copy>
 
     </target>

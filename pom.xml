@@ -15,6 +15,7 @@
         <grizzly-jruby.version>1.8.31-SNAPSHOT</grizzly-jruby.version>
         <jruby.version>1.5.2</jruby.version>
         <glassfish.admin-cli.version>3.1-b19</glassfish.admin-cli.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <build>
         <plugins>
@@ -143,14 +144,15 @@
                                 s.description = "GlassFish gem is an embedded GlassFish V3 application server which
                                 would help run your Ruby on Rails application"
                                 s.files = FileList["{bin,lib,generators,config}/**/*"].to_a
+                                s.files += ['README.md', 'History.txt', 'LICENSE.txt']
                                 s.bindir = "bin"
                                 s.require_paths = ["lib"]
                                 s.executables = ["glassfish", "gfrake"]
                                 s.default_executable = "glassfish"
                                 s.test_files = FileList["{test}/**/*test.rb"].to_a
-                                s.has_rdoc = true
+                                s.has_rdoc = false
                                 #s.rdoc_options = "-S -N -t 'GlassFish gem ${gem.version} Documentation' -m README.txt"
-                                s.extra_rdoc_files = ["README.txt","History.txt", "LICENSE.txt"]
+                                #s.extra_rdoc_files = ["README.md","History.txt", "LICENSE.txt"]
                                 s.rubyforge_project = "glassfishgem"
                                 s.add_dependency('rack', '&gt;= 0.4.0')
 
