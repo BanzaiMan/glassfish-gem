@@ -51,8 +51,8 @@ require 'config'
 
 module GlassFish
   class Server
-    import "org.glassfish.scripting.gem.GlassFishMain"
-    import "org.glassfish.scripting.gem.Options"
+    java_import "org.glassfish.scripting.gem.GlassFishMain"
+    java_import "org.glassfish.scripting.gem.Options"
 
     java.lang.System.setProperty("addtional.load.path", "#{File.dirname(__FILE__)}/../lib")
 
