@@ -53,6 +53,7 @@ module GlassFish
   class Server
     java_import "org.glassfish.scripting.gem.GlassFishMain"
     java_import "org.glassfish.scripting.gem.Options"
+    java_import "com.sun.akuma.CLibrary"
 
     java.lang.System.setProperty("addtional.load.path", "#{File.dirname(__FILE__)}/../lib")
 
@@ -147,6 +148,9 @@ module GlassFish
     end
 
     def start
+      ENV.each do |k,v|
+        CLibrary::LIBC.setenv(k, v)
+      end
       GlassFishMain.start @opts
     end
     alias :start! :start
