@@ -84,11 +84,8 @@ module GlassFish
       if(config[:daemon])
         os = java.lang.System.getProperty("os.name").downcase
         version = java.lang.System.getProperty("os.version")
-        #check the platform, Currently daemon mode works only on linux and
-        #solaris
-        if(!os.include?("linux") and !os.include?("sunos") and !os.include?("mac os x"))
-          Config.fail "You are running on #{java.lang.System.getProperty("os.name")}  #{version}. Currently daemon mode only works on Linux, Solaris or Mac OS X platform."
-        end
+
+        validate_os_for_daemon_support
 
         # In daemon mode you can't log to console. Let's fail and let user spcifiy the log file explicitly
 	      if(config[:log_console])
@@ -121,25 +118,7 @@ module GlassFish
         config[:runtimes_max] = config[:runtimes]
       end
 
-      # JRuby runtime
-      runtimes_err = " Invalid runtime configuration, initial:#{config[:runtimes]}, min:#{config[:runtimes_min]}, max:#{config[:runtimes_max]}."
-      err = false
-      if(config[:runtimes] < 1 || config[:runtimes] > config[:runtimes_max] || config[:runtimes] < config[:runtimes_min])
-        err = true;
-        runtimes_err +=  "\n\tinitial runtime must be > 0, <= runtimes-max and >= runtimes-min."
-      end
-      if(config[:runtimes_min] < 1 || config[:runtimes_min] > config[:runtimes] || config[:runtimes_min] > config[:runtimes_max])
-        err = true;
-        runtimes_err += "\n\truntimes-min must be > 0, <=runtimes-max and <= initial_runtmes"
-      end
-      if(config[:runtimes_max] < 1 || config[:runtimes_max] < config[:runtimes_min] || config[:runtimes_max] < config[:runtimes])
-        err=true
-        runtimes_err += "\n\truntimes-max must be > 0, >=runtimes-min and >= initial_runtmes"
-      end
-      if(err)
-        Config.fail runtimes_err
-      end
-
+      validate_runtimes_config(config)
 
       # contextroot
       # There is not much to validate here. For now we leave it as it is
@@ -224,6 +203,36 @@ module GlassFish
         FileUtils.rmtree config_dir
       end
       true
+    end
+
+    def validate_os_for_daemon_support
+      #check the platform, Currently daemon mode works only on linux, solaris and Mac OS X.
+      if(!os.include?("linux") and !os.include?("sunos") and !os.include?("mac os x"))
+        Config.fail "You are running on #{java.lang.System.getProperty("os.name")}  #{version}. Currently daemon mode only works on Linux, Solaris or Mac OS X platform."
+      end
+
+    end
+
+    def validate_runtimes_params(config)
+      # JRuby runtime
+      runtimes_err = " Invalid runtime configuration, initial:#{config[:runtimes]}, min:#{config[:runtimes_min]}, max:#{config[:runtimes_max]}."
+      err = false
+      if(config[:runtimes] < 1 || config[:runtimes] > config[:runtimes_max] || config[:runtimes] < config[:runtimes_min])
+        err = true;
+        runtimes_err +=  "\n\tinitial runtime must be > 0, <= runtimes-max and >= runtimes-min."
+      end
+      if(config[:runtimes_min] < 1 || config[:runtimes_min] > config[:runtimes] || config[:runtimes_min] > config[:runtimes_max])
+        err = true;
+        runtimes_err += "\n\truntimes-min must be > 0, <=runtimes-max and <= initial_runtmes"
+      end
+      if(config[:runtimes_max] < 1 || config[:runtimes_max] < config[:runtimes_min] || config[:runtimes_max] < config[:runtimes])
+        err=true
+        runtimes_err += "\n\truntimes-max must be > 0, >=runtimes-min and >= initial_runtmes"
+      end
+      if(err)
+        Config.fail runtimes_err
+      end
+
     end
 
     def dir_has_app?(dir)
