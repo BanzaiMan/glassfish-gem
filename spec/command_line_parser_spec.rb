@@ -3,6 +3,6 @@ require 'command_line_parser'
 
 describe 'GlassFish::CommandLineParser' do
 
-  it 'should initialize' do
+  describe '#parse' do
   end
 end
