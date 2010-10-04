@@ -85,7 +85,7 @@ module GlassFish
         os = java.lang.System.getProperty("os.name").downcase
         version = java.lang.System.getProperty("os.version")
 
-        validate_os_for_daemon_support
+        validate_os_for_daemon_support(os)
 
         # In daemon mode you can't log to console. Let's fail and let user spcifiy the log file explicitly
 	      if(config[:log_console])
@@ -118,7 +118,7 @@ module GlassFish
         config[:runtimes_max] = config[:runtimes]
       end
 
-      validate_runtimes_config(config)
+      validate_runtimes_params(config)
 
       # contextroot
       # There is not much to validate here. For now we leave it as it is
@@ -205,7 +205,7 @@ module GlassFish
       true
     end
 
-    def validate_os_for_daemon_support
+    def validate_os_for_daemon_support(os)
       #check the platform, Currently daemon mode works only on linux, solaris and Mac OS X.
       if(!os.include?("linux") and !os.include?("sunos") and !os.include?("mac os x"))
         Config.fail "You are running on #{java.lang.System.getProperty("os.name")}  #{version}. Currently daemon mode only works on Linux, Solaris or Mac OS X platform."
