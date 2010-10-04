@@ -15,6 +15,31 @@ describe "Options" do
       Options::LogLevel::FINEST. ordinal.should == 6
       Options::LogLevel::ALL.    ordinal.should == 7
     end
-        
+
+  end
+
+  describe "GrizzlyConfig" do
+    before :each do
+      @gc = Options::GrizzlyConfig.new nil
+    end
+
+    it "contains expected default values" do
+      @gc.chunkingEnabled.should         == true
+      @gc.requestTimeout.should          == 30
+      @gc.sendBufferSize.should          == 8192
+      @gc.maxKeepaliveConnections.should == 256
+      @gc.keepaliveTimeout.should        == 30
+    end
+
+    describe "::ThreadPool" do
+      it "contains expected default values" do
+        tp = @gc.threadPool
+        tp.should be_an_instance_of Options::GrizzlyConfig::ThreadPool
+        tp.idleThreadTimeoutSeconds.should == 900
+        tp.maxQueueSize.should             == 4096
+        tp.maxThreadPoolSize.should        == 5
+        tp.minThreadPoolSize.should        == 2
+      end
+    end
   end
 end

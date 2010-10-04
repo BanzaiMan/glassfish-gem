@@ -32,4 +32,4 @@ Spec::Rake::SpecTask.new(:spec) do |t|
   t.spec_files = Dir.glob('spec/**/*_spec.rb') - JAVA_SPEC_FILES - ['spec/asadmin_spec.rb']
 end
 
-task :spec => [:mvn, spec_ns[:java]]
+task :spec => spec_ns[:java]
