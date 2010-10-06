@@ -94,9 +94,7 @@ module GlassFish
       @opts.log_level = Options::LogLevel.values()[args[:log_level]]
       @opts.jvm_opts = args[:jvm_options]
 
-      # to get around the problem where grizzly Rack adapter fails to create
-      # JRuby runtime if 'development' is not configured
-      CLibrary::LIBC.setenv('RAILS_ENV', @opts.environment)
+      java.lang.System.setProperty('rails.env', @opts.environment)
       
       unless args[:grizzly_config].nil?
         args[:grizzly_config].each do |key, val|
