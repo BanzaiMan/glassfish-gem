@@ -93,8 +93,6 @@ module GlassFish
       @opts.domainDir = args[:domain_dir]
       @opts.log_level = Options::LogLevel.values()[args[:log_level]]
       @opts.jvm_opts = args[:jvm_options]
-
-      java.lang.System.setProperty('rails.env', @opts.environment)
       
       unless args[:grizzly_config].nil?
         args[:grizzly_config].each do |key, val|
