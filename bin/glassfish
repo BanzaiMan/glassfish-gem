@@ -55,6 +55,6 @@ require 'glassfish'
 
 options = GlassFish::CommandLineParser.new.parse
 
-# options.merge!(:appDir => ARGV.first) if ARGV
+ENV['RAILS_ENV'] = options[:environment]
 
 GlassFish::Server.start options
