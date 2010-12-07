@@ -2,14 +2,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.glassfish.scripting</groupId>
     <artifactId>glassfish-gem</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.3.beta.1</version>
     <packaging>jar</packaging>
     <name>Glassfish JRuby Gem distribution</name>
     <description>This module creates the jruby gem distribution image</description>
 
     <properties>
         <glassfish.version>3.0-b74b</glassfish.version>
-        <gem.version>1.0.3.dev</gem.version>
+        <gem.version>1.0.3.beta.1</gem.version>
         <jruby-container.version>1.0-b17</jruby-container.version>
         <hk2.version>1.0.0</hk2.version>
         <grizzly-jruby.version>1.8.31-SNAPSHOT</grizzly-jruby.version>
